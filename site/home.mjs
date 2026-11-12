@@ -1,0 +1,27 @@
+import { centre, products, faqs } from './content.mjs';
+import { icon, button, bookingForm, faqMarkup } from './components.mjs';
+
+export function home(p) {
+  const featured = products.find(product => product.slug === 'bodyhealth');
+  const otherModels = [products[0], products[2], products[3]];
+  return `<section class="container landing-hero">
+<h1>Реабилитация в Астрахани</h1>
+<div class="landing-hero-stage">
+<div class="landing-hero-copy"><p class="lead">Познакомьтесь с оборудованием системы 5/95 в центре: посмотрите на аппараты, разберитесь в управлении и задайте вопросы перед выбором для дома.</p><a class="text-link" href="${p}rehabilitation/">Как проходят посещения${icon('arrow')}</a><div class="landing-invitation">${button(`${p}booking/`, 'Записаться на посещение')}<a class="landing-catalog-link" href="${p}equipment/">Уже выбираете аппарат? Открыть каталог${icon('arrow')}</a></div></div>
+<figure class="landing-hero-photo"><img src="${p}assets/sleep-use.jpg" alt="Пример использования SleepSystem из материалов системы 5/95" width="720" height="720" fetchpriority="high"><figcaption>Иллюстрация системы 5/95. Не фотография центра в Астрахани. <a href="${p}media/">Источник</a></figcaption></figure>
+</div></section>
+<section class="landing-visit"><div class="container landing-visit-layout">
+<div class="landing-visit-copy"><h2>Познакомьтесь с оборудованием в центре</h2><p>Личное знакомство помогает понять, как устроен аппарат и удобно ли вам им управлять. Вопросы о посещениях и выборе оборудования можно обсудить на месте.</p><p>До поездки уточните, какие аппараты доступны, время и условия посещения.</p><a class="text-link" href="${p}rehabilitation/">О посещениях центра${icon('arrow')}</a></div>
+<figure class="landing-visit-photo"><img src="${p}assets/foot-use.jpg" alt="Пример использования аппарата для стоп системы 5/95" width="720" height="720" loading="lazy"><figcaption>Пример использования оборудования. На фото не центр в Астрахани. <a href="${p}media/">Источник</a></figcaption></figure>
+</div></section>
+<section class="container landing-steps"><div class="landing-steps-heading"><h2>Как начать посещения</h2><a href="${p}articles/first-visit/">Подготовиться к первому визиту</a></div>
+<ol class="landing-step-list"><li><span>1</span><div><h3>Согласуйте первый визит</h3><p>Уточните время, адрес, стоимость и доступные аппараты.</p></div></li><li><span>2</span><div><h3>Познакомьтесь с аппаратами</h3><p>Посмотрите оборудование и задайте вопросы об управлении и ограничениях.</p></div></li><li><span>3</span><div><h3>Обсудите следующие шаги</h3><p>Дальнейшие посещения центра или выбор собственного аппарата для дома.</p></div></li></ol>
+</section>
+<section class="container landing-equipment"><div class="landing-equipment-heading"><div><h2>Оборудование для дома</h2><p>После знакомства в центре можно обсудить покупку собственного аппарата. Если вы уже выбираете модель, начните с каталога.</p></div><a class="text-link" href="${p}equipment/">Весь каталог${icon('arrow')}</a></div>
+<article class="landing-product"><figure class="landing-product-use"><img src="${p}assets/bodyhealth-use.jpg" alt="Пример домашнего использования BodyHealth из материалов NovuMedical" width="435" height="715" loading="lazy"><figcaption>Фото NovuMedical. Не съёмка центра в Астрахани. <a href="${p}media/">Источник</a></figcaption></figure><div class="landing-product-detail"><div class="landing-product-top"><div><h3>BodyHealth</h3><p>Массажно-тепловой аппарат для стоп и тела.</p></div><img src="${p}assets/${featured.image}" alt="Аппарат BodyHealth" width="400" height="400" loading="lazy"></div><ul class="simple-list"><li>Площадка для обеих стоп</li><li>Панель управления на корпусе</li><li>Прогрев, вибрация и стимуляция</li></ul><div class="inline-actions">${button(`${p}equipment/bodyhealth/`, 'Подробнее о BodyHealth')}<a class="text-link" href="${p}booking/?purpose=equipment&product=bodyhealth">Обсудить покупку</a></div><p class="landing-product-note">Пример линейки системы 5/95. Наличие и стоимость сообщит центр.</p></div></article>
+<div class="landing-models">${otherModels.map(model => `<a href="${p}equipment/${model.slug}/"><img src="${p}assets/${model.image}" alt="" width="100" height="80" loading="lazy"><span><small>${model.area}</small><strong>${model.name}</strong></span>${icon('arrow')}</a>`).join('')}</div>
+</section>
+<section class="container landing-centre"><div><h2>О центре</h2><p class="landing-centre-name">${centre.contact}</p></div><div class="landing-centre-copy"><p>Вопросы о посещениях центра в Астрахани и покупке оборудования можно обсудить лично.</p><div class="landing-centre-links"><a href="${p}contacts/">О центре и контакты</a><a href="${p}reviews/">Отзывы посетителей</a></div><p class="landing-review-note">Подтверждённые отзывы добавим после согласования с посетителями.</p></div></section>
+<section class="container landing-faq"><div class="landing-faq-intro"><h2>Перед первым посещением</h2><a href="${p}articles/first-visit/">Памятка перед поездкой${icon('arrow')}</a></div>${faqMarkup([faqs[0], faqs[2], faqs[3]])}</section>
+<section class="landing-booking" id="appointment"><div class="container booking-layout"><div class="landing-booking-copy"><h2>Записаться на посещение</h2><p>Посещение центра или аппарат для дома — выберите тему обращения.</p><p class="landing-booking-note">Астрахань. Время и условия посещения нужно уточнить у центра.</p></div>${bookingForm(p, 'home-booking')}</div></section>`;
+}

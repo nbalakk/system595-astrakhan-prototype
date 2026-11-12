@@ -1,0 +1,120 @@
+/* Display preferences. This file is loaded after the ordinary layout. */
+.display-toolbar{display:flex;align-items:center;justify-content:flex-end;gap:12px;flex-wrap:wrap}
+.display-settings{padding-block:18px;border-bottom:1px solid var(--line);background:var(--surface)}
+.display-settings:focus{outline:none}
+.display-settings .display-toolbar{justify-content:flex-start;gap:18px 30px;align-items:flex-end}
+.display-choice{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0;padding:0;border:0;min-width:0}
+.display-choice legend,.display-choice>span{display:block;padding:0;font-size:14px;font-weight:500;line-height:1.4;margin-bottom:7px}
+.display-choice legend{width:100%}
+.display-choice button,.display-settings [data-display-close]{min-height:44px;border:1px solid currentColor;border-radius:4px;background:var(--white);color:var(--ink);padding:8px 12px;font:500 15px/1.35 Golos,Arial,sans-serif}
+.display-choice button[aria-pressed="true"]{background:var(--ink);color:var(--white);border-color:var(--ink)}
+.display-settings [data-display-close]{text-decoration:underline;text-underline-offset:4px}
+.display-controls{display:flex;gap:16px 24px;flex-wrap:wrap;padding-top:14px}.display-choice>.display-group-label{width:100%}.display-toolbar>h2{font-size:20px;margin:0}.display-settings details{flex:1;min-width:0}.display-settings summary{cursor:pointer;min-height:44px;padding-block:8px;font-size:16px}.display-choice button{min-height:44px}.display-choice button[aria-pressed="true"]{background:var(--ink);color:var(--white)}
+
+html[data-display="accessible"]{--display-fg:#000;--display-bg:#fff;--red:#000;--red-dark:#000;--ink:#000;--muted:#000;--line:#000;--surface:#fff;--soft-red:#fff;--white:#fff;font-size:22px!important;scroll-behavior:auto;scrollbar-color:#000 #fff}
+html[data-display="accessible"][data-text-size="larger"]{font-size:26px!important}
+html[data-display="accessible"][data-text-size="largest"]{font-size:30px!important}
+html[data-display="accessible"][data-contrast="dark"]{--display-fg:#fff;--display-bg:#000;--red:#fff;--red-dark:#fff;--ink:#fff;--muted:#fff;--line:#fff;--surface:#000;--soft-red:#000;--white:#000;scrollbar-color:#fff #000;color-scheme:dark}
+html[data-display="accessible"] body{font-size:1rem!important;line-height:1.65!important;color:var(--display-fg)!important;background:var(--display-bg)!important}
+html[data-display="accessible"] body *{color:inherit!important;background-color:transparent!important;background-image:none!important;border-color:var(--display-fg)!important;box-shadow:none!important;text-shadow:none!important;font-size:inherit!important;letter-spacing:normal!important;white-space:normal!important;min-width:0!important;overflow-wrap:anywhere}
+/* Scale headings to their available reading column, including padded panels.
+   Whole-word wrapping also applies to links/spans inside a heading. Body text
+   keeps the exact 22/26/30px selection and its emergency overflow wrapping. */
+html[data-display="accessible"] main,html[data-display="accessible"] main .container{container-type:inline-size}
+html[data-display="accessible"] :is(h1,h2,h3,h4,h5,h6){font-weight:700!important;line-height:1.3!important;text-wrap:wrap!important;max-width:100%!important}
+html[data-display="accessible"] :is(h1,h2,h3,h4,h5,h6),html[data-display="accessible"] :is(h1,h2,h3,h4,h5,h6) *{overflow-wrap:normal!important;word-break:normal!important;hyphens:manual!important}
+/* Viewport limits remain safe when container query units are unsupported. */
+html[data-display="accessible"] body h1{font-size:min(2.4rem,10vw)!important;font-size:min(2.4rem,12cqi)!important;margin-block:0 .75rem!important}
+html[data-display="accessible"] body .page-head h1{font-size:min(2.4rem,8.2vw)!important;font-size:min(2.4rem,9.5cqi)!important}
+html[data-display="accessible"] body h2{font-size:min(1.45rem,8vw)!important;font-size:min(1.45rem,11cqi)!important;margin-block:0 .7rem!important}
+html[data-display="accessible"] body :is(h3,h4,h5,h6){font-size:min(1.15rem,10vw)!important;font-size:min(1.15rem,12cqi)!important;margin-block:0 .6rem!important}
+html[data-display="accessible"] body :is(p,li,dt,dd,label,input,select,textarea,summary,small,figcaption,legend){font-size:1rem!important;line-height:1.65!important}
+html[data-display="accessible"] :is(p,ul,ol,dl){max-width:68ch!important}
+html[data-display="accessible"] p{margin-block:0 .85rem!important}
+html[data-display="accessible"] a{text-decoration:underline!important;text-underline-offset:.2em!important}
+html[data-display="accessible"] a:hover{text-decoration-thickness:3px!important}
+html[data-display="accessible"] :is(a,button,input,select,textarea,summary):focus-visible{outline:3px solid var(--display-fg)!important;outline-offset:4px!important}
+html[data-display="accessible"] ::selection{background:var(--display-fg)!important;color:var(--display-bg)!important}
+html[data-display="accessible"] .container{width:min(1120px,calc(100% - 2rem))!important;max-width:100%!important;margin-inline:auto!important}
+html[data-display="accessible"] :is(main,header,footer,section,article,nav,aside,form,fieldset,figure){max-width:100%!important}
+html[data-display="accessible"] main *{grid-area:auto!important;order:initial!important}
+html[data-display="accessible"] main :is(.section,.hero,.hero-revised,.home-hero,.page-head,.rehab-opening,.product-detail,.bodyhealth-hero,.article-layout,.booking-page,.contact-layout,.review-empty,.article-index,.legal-copy){padding-block:1.25rem!important}
+html[data-display="accessible"] :is(.hero-title,.hero-stage,.home-hero,.home-hero-copy,.home-hero-actions,.visit-overview,.visit-path,.visit-preparation,.centre-purpose,.centre-journey,.practice-layout,.home-apparatus,.equipment-link-row,.equipment-link-row>a,.centre-people,.centre-person,.centre-preparation,.centre-note,.contactline,.useful-link,.welcome,.direction-rows>div,.visit-steps,.centre-story,.reviews-preview,.home-products,.featured-product,.small-products,.article-feature,.section-heading,.booking-layout,.footer-main,.page-head,.catalog-toolbar,.product-grid,.product-detail,.product-information,.specification,.rehabilitation-intro,.upcoming-material,.article-layout,.contact-layout,.booking-page,.consultation,.rehab-opening-content,.rehab-chapter,.rehab-visits-content,.rehab-confirmation,.bodyhealth-hero,.bodyhealth-device,.bodyhealth-functions,.bodyhealth-visit,.bodyhealth-documents,.bodyhealth-final-action){display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-template-rows:auto!important;grid-template-areas:none!important;gap:1rem!important;align-items:start!important;justify-content:stretch!important}
+html[data-display="accessible"] :is(.bodyhealth-heading,.bodyhealth-gallery,.bodyhealth-summary){grid-area:auto!important}
+html[data-display="accessible"] :is(.hero-intro,.product-summary,.bodyhealth-intro){display:contents!important}
+html[data-display="accessible"] :is(.hero-visit,.booking-form,.contact-panel,.consultation,.red-invitation,.portrait-placeholder,.article-callout,.catalog-disclosure,.home-apparatus,.rehab-scenario>p,.bodyhealth-control-photo){padding:1rem!important;min-height:0!important;margin-block:1rem!important;border:1px solid var(--display-fg)!important;border-radius:0!important}
+html[data-display="accessible"] :is(.section-heading,.hero-title){margin-bottom:1rem!important}
+html[data-display="accessible"] :is(.hero-visit h2,.hero-visit>p,.hero-title>p){display:block!important}
+html[data-display="accessible"] :is(.lead,.large-copy,.article-lead,.bodyhealth-purpose){font-size:1rem!important;max-width:68ch!important}
+html[data-display="accessible"] :is(.hero-photo,.home-hero-photo,.product-image,.gallery-main,.apparatus-photo,.bodyhealth-gallery .gallery-main){width:100%!important;height:auto!important;min-height:0!important;max-height:none!important;aspect-ratio:auto!important;padding:.5rem!important;border:1px solid var(--display-fg)!important;border-radius:0!important;overflow:visible!important}
+html[data-display="accessible"] main img{width:100%!important;max-width:350px!important;height:auto!important;max-height:none!important;object-fit:contain!important;mix-blend-mode:normal!important;filter:none!important;margin-inline:auto!important}
+html[data-display="accessible"] .equipment-link-row>a>img{width:5rem!important;max-width:100%!important;margin-inline:0!important}
+html[data-display="accessible"] .equipment-link-row strong{overflow-wrap:normal!important;word-break:normal!important}
+html[data-display="accessible"] figure{margin:0!important}
+html[data-display="accessible"] figcaption{margin-top:.6rem!important}
+html[data-display="accessible"] :is(.gallery-thumbs,.filters,.inline-actions,.product-actions,.consultation-actions,.bodyhealth-main-actions,.bodyhealth-visit-actions,.display-toolbar,.footer-bottom){display:flex!important;flex-wrap:wrap!important;gap:.6rem!important;width:100%!important;max-width:100%!important;margin-left:0!important;align-items:stretch!important}
+html[data-display="accessible"] :is(.product-actions,.consultation-actions,.bodyhealth-main-actions,.bodyhealth-visit-actions){flex-direction:column!important}
+html[data-display="accessible"] .gallery-thumbs button{width:4rem!important;height:auto!important;min-height:3.5rem!important;padding:.3rem!important;flex:none!important}
+html[data-display="accessible"] .gallery-thumbs img{width:auto!important;max-width:100%!important;max-height:3rem!important}
+html[data-display="accessible"] :is(.button,button,input,select,textarea,summary){min-height:2.2rem!important;max-width:100%!important;border-width:2px!important;border-style:solid!important;border-radius:0!important;padding:.45rem .65rem!important;font-size:1rem!important;line-height:1.4!important;letter-spacing:normal!important}
+html[data-display="accessible"] :is(.button,button){display:inline-flex!important;flex-wrap:wrap!important;align-items:center!important;justify-content:center!important;gap:.5rem!important;background:var(--display-bg)!important;color:var(--display-fg)!important}
+html[data-display="accessible"] :is(.button,button):hover{outline:1px solid var(--display-fg)!important;outline-offset:2px!important}
+html[data-display="accessible"] :is(button[aria-pressed="true"],.filter.active,.gallery-thumbs button.selected){background:var(--display-fg)!important;color:var(--display-bg)!important}
+html[data-display="accessible"] :is(button,a).button{width:fit-content!important;max-width:100%!important;text-decoration:underline!important}
+html[data-display="accessible"] :is(input,select,textarea){width:100%!important;caret-color:var(--display-fg)!important;background:var(--display-bg)!important;color:var(--display-fg)!important}
+html[data-display="accessible"] input::placeholder{color:var(--display-fg)!important;opacity:1!important}
+html[data-display="accessible"] :is(.field,.form-fields){margin-bottom:.85rem!important;gap:.8rem!important}
+html[data-display="accessible"] .field label{margin-bottom:.35rem!important}
+html[data-display="accessible"] .booking-form-fields{border:0!important;padding:0!important}
+html[data-display="accessible"] .booking-form-fields>.button{width:100%!important}
+html[data-display="accessible"] :is(.form-error,[aria-invalid="true"]){border:3px solid var(--display-fg)!important}
+html[data-display="accessible"] :is(.practice-topics>div,.specification dl>div,.bodyhealth-documents dl>div){display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:.35rem!important;padding-block:.7rem!important}
+html[data-display="accessible"] dd{margin-left:0!important}
+html[data-display="accessible"] :is(.product-info p,.article-art,.compact-placeholder){min-height:0!important}
+html[data-display="accessible"] :is(.hero-caption,.photo-caption,.catalog-note,.plain-note,.pending-content-note,.demo-form-note,.health-note,.form-footnote,.bodyhealth-stock-note,.bodyhealth-source-note){font-size:1rem!important;line-height:1.65!important;max-width:68ch!important}
+html[data-display="accessible"] :is(.chapter-title,.visit-steps li,.centre-journey>li,.visit-path>li){display:block!important;padding-block:.8rem!important;min-width:0!important}
+html[data-display="accessible"] :is(.chapter-title>span,.step-number,.journey-number){font-size:1rem!important;width:auto!important;height:auto!important;min-height:0!important;display:block!important;border:0!important;margin-bottom:.4rem!important}
+html[data-display="accessible"] .visit-path>li::before{display:none!important}
+html[data-display="accessible"] .visit-path>li>span{position:static!important;inset:auto!important;transform:none!important;display:block!important;width:auto!important;height:auto!important;margin-bottom:.4rem!important}
+html[data-display="accessible"] .chapter-content{padding-left:0!important}
+html[data-display="accessible"] .article-aside nav{display:flex!important;flex-direction:column!important;gap:.4rem!important;margin-top:.5rem!important}
+html[data-display="accessible"] .header-main{display:flex!important;flex-wrap:wrap!important;justify-content:space-between!important;align-items:center!important;gap:.7rem!important;min-height:0!important;padding-block:.9rem!important}
+html[data-display="accessible"] .header-main::after{display:none!important}
+html[data-display="accessible"] :is(.brand,.header-phone,.header-city){display:flex!important;flex-wrap:wrap!important;gap:.4rem!important;flex-shrink:1!important;max-width:100%!important;order:initial!important;margin-left:0!important}
+html[data-display="accessible"] .brand small{font-size:1rem!important}
+html[data-display="accessible"] .brand-mark{display:none!important}
+html[data-display="accessible"] .header-book{display:inline-flex!important}
+html[data-display="accessible"] .main-nav{display:flex!important;flex-wrap:wrap!important;justify-content:flex-start!important;gap:.3rem .8rem!important;min-height:0!important;padding-block:.6rem!important}
+html[data-display="accessible"] .main-nav a{display:block!important;max-width:100%!important;min-height:2.2rem!important;padding:.4rem 0!important;font-size:1rem!important}
+html[data-display="accessible"] :is(.menu-toggle,.mobile-book){display:none!important}
+html[data-display="accessible"] .prototype-bar{padding-block:.5rem!important;font-size:1rem!important}
+html[data-display="accessible"] .prototype-bar .container{display:block!important}
+html[data-display="accessible"] .breadcrumbs{padding-block:.8rem!important;gap:.5rem!important}
+html[data-display="accessible"] .display-settings{padding-block:.8rem!important;border-block:2px solid var(--display-fg)!important}
+html[data-display="accessible"] .display-settings .display-toolbar{align-items:flex-end!important;gap:.8rem!important}
+html[data-display="accessible"] .display-choice{flex:1 1 12rem!important;display:flex!important;gap:.4rem!important;align-items:center!important}
+html[data-display="accessible"] .display-choice legend{margin-bottom:.35rem!important;font-weight:700!important}
+html[data-display="accessible"] .display-choice button{min-width:2.5rem!important}
+html[data-display="accessible"] .display-settings [data-display-close]{align-self:flex-end!important}
+html[data-display="accessible"] .icon{width:1.15em!important;height:1.15em!important;flex:none!important}
+html[data-display="accessible"] .skip-link:focus{position:relative!important;display:block!important;top:0!important;left:0!important;padding:.5rem!important;background:var(--display-bg)!important}
+@media(max-width:640px){.display-toggle{font-size:13px}.display-settings .display-toolbar{gap:14px}.display-choice{width:100%}.display-settings [data-display-close]{width:100%}}
+@media(max-width:640px){html[data-display="accessible"] .container{width:calc(100% - 1.1rem)!important}html[data-display="accessible"] .main-nav{display:flex!important;flex-direction:column!important;align-items:stretch!important}html[data-display="accessible"] :is(.header-main,.footer-main){flex-direction:column!important;align-items:stretch!important}html[data-display="accessible"] .display-choice{flex-basis:100%!important}html[data-display="accessible"] .display-settings [data-display-close]{width:100%!important}}
+html[data-display="accessible"] .display-settings .display-toolbar>h2{font-size:1rem!important;margin:0!important}.display-settings .display-toolbar{align-items:flex-start}.display-settings details>summary{font-weight:500}html[data-display="accessible"] .display-controls{display:flex!important;flex-wrap:wrap!important;gap:.8rem!important}html[data-display="accessible"] .display-settings .display-return{flex:none!important}html[data-display="accessible"] .header-secondary{flex-wrap:wrap!important}html[data-display="accessible"] .prototype-bar span{display:none!important}
+@media(max-width:640px){html[data-display="accessible"] .header-main{flex-direction:row!important;align-items:center!important;padding-block:.6rem!important}html[data-display="accessible"] .brand{flex:1 1 calc(100% - 4rem)!important}html[data-display="accessible"] .menu-toggle{display:inline-flex!important;width:2.2rem!important;height:2.2rem!important;margin-left:auto!important;padding:.4rem!important}html[data-display="accessible"] .menu-toggle span{display:none!important}html[data-display="accessible"] :is(.header-phone,.header-book){display:none!important}html[data-display="accessible"] .main-nav{display:none!important;width:100%!important}html[data-display="accessible"] .main-nav.open{display:flex!important}html[data-display="accessible"] .main-nav .mobile-book{display:block!important}html[data-display="accessible"] .display-settings .display-toolbar{display:block!important}html[data-display="accessible"] .display-settings details{margin-block:.5rem!important}html[data-display="accessible"] .display-controls{flex-direction:column!important}html[data-display="accessible"] .display-choice{flex-basis:auto!important}}
+html[data-display="accessible"] .display-settings>.container.display-toolbar{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;gap:.5rem 1rem!important;align-items:start!important;width:min(1120px,calc(100% - 2rem))!important;margin-inline:auto!important}.display-settings>.display-toolbar>h2{grid-column:1/-1}html[data-display="accessible"] .main-nav a.mobile-book{display:none!important}
+@media(max-width:640px){html[data-display="accessible"] .display-settings>.container.display-toolbar{display:block!important;width:calc(100% - 1.1rem)!important}html[data-display="accessible"] .main-nav a.mobile-book{display:block!important}}
+
+/* The landing follows its reading order in the selected accessible scheme. */
+html[data-display="accessible"] :is(.landing-hero,.landing-visit-layout,.landing-steps,.landing-equipment,.landing-centre,.landing-faq,.landing-booking){padding-block:1.25rem!important}
+html[data-display="accessible"] :is(.landing-hero-stage,.landing-visit-layout,.landing-steps-heading,.landing-step-list,.landing-step-list>li,.landing-equipment-heading,.landing-product,.landing-product-top,.landing-models,.landing-models>a,.landing-centre,.landing-faq){display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-template-rows:auto!important;grid-template-areas:none!important;gap:1rem!important;align-items:start!important;justify-content:stretch!important}
+html[data-display="accessible"] :is(.landing-hero-copy,.landing-hero-photo){grid-area:auto!important;order:initial!important}
+html[data-display="accessible"] :is(.landing-invitation,.landing-visit,.landing-booking,.landing-booking .booking-form){color:var(--display-fg)!important;background:var(--display-bg)!important}
+html[data-display="accessible"] .landing-invitation{padding:.5rem!important;border:1px solid var(--display-fg)!important;border-radius:0!important}
+html[data-display="accessible"] :is(.landing-hero-photo,.landing-visit-photo,.landing-product-use){width:100%!important;max-width:100%!important;min-height:0!important;max-height:none!important;justify-self:stretch!important;overflow:visible!important}
+html[data-display="accessible"] :is(.landing-hero-photo,.landing-visit-photo,.landing-product-use)>img{height:auto!important;max-height:none!important;aspect-ratio:auto!important;object-fit:contain!important;border-radius:0!important}
+html[data-display="accessible"] .landing-equipment-heading>.text-link{justify-self:start!important}
+html[data-display="accessible"] .landing-step-list>li>span{display:block!important;width:auto!important;height:auto!important;min-height:0!important}
+html[data-display="accessible"] .landing-models img{width:5rem!important;max-width:100%!important;margin-inline:0!important}
+html[data-display="accessible"] .landing-models strong{overflow-wrap:normal!important;word-break:normal!important}
+html[data-display="accessible"] :is(.landing-catalog-link,.landing-centre-links){flex-wrap:wrap!important;gap:.6rem!important}
