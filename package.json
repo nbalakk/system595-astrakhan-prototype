@@ -1,0 +1,12 @@
+{
+  "name": "astrakhan-595-prototype",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "start": "node scripts/serve.mjs",
+    "check": "node scripts/check.mjs && node --test scripts/display.test.mjs scripts/booking.test.mjs"
+  },
+  "engines": { "node": ">=20" }
+}
