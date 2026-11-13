@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
 import { booking } from '../site/pages.mjs';
-import { layout } from '../site/components.mjs';
+import { bookingForm, layout } from '../site/components.mjs';
 import { products } from '../site/content.mjs';
 
 const source = await readFile(new URL('../site/app.js', import.meta.url), 'utf8');
@@ -40,30 +40,26 @@ function run(search = '', bookingPage = true) {
   const phone = new Element();
   const purpose = new Element();
   purpose.value = html.match(/<select[^>]*name="purpose">\s*<option value="([^"]+)"/)[1];
-  const error = new Element('', true);
-  const result = fromHtml(/<div class="form-result"[^>]*>(.*?)<\/div>/s, true);
   const fields = new Element(); fields.disabled = true;
-  const reset = new Element();
   const form = new Element();
   form.elements = { name, phone, purpose };
-  form.children = [fields, new Element(), result];
-  form.querySelector = selector => ({ '.form-error': error, '.form-result': result, '[data-reset-form]': reset, '[data-demo-fields]': fields })[selector] ?? null;
-  form.reset = () => { name.value = ''; phone.value = ''; purpose.value = 'visit'; };
+  form.children = [fields];
+  form.querySelector = selector => selector === '[data-booking-fields]' ? fields : null;
   const nodes = { '.booking-page h1': heading, '.booking-page .lead': intro, '.booking-expectations h2': expectationsHeading, '.booking-expectations p:first-of-type': expectationsText, '.breadcrumbs [aria-current="page"]': breadcrumb, '#booking-context': context, '#product-context': product };
   const document = {
     title: html.match(/<title>(.*?)<\/title>/s)[1],
     querySelector: selector => bookingPage ? nodes[selector] ?? null : null,
-    querySelectorAll: selector => selector === '[data-demo-form]' ? [form] : [],
+    querySelectorAll: selector => selector === '[data-booking-form]' ? [form] : [],
     addEventListener() {}
   };
   const window = new Element();
   const location = { search };
-  const forbidden = () => { throw Error('Demo form must not send or store data'); };
+  const forbidden = () => { throw Error('Unavailable booking must not send or store data'); };
   const storage = new Proxy({}, { get: forbidden, set: forbidden });
   vm.runInNewContext(source, { document, window, location, URLSearchParams, fetch: forbidden, XMLHttpRequest: forbidden, localStorage: storage, sessionStorage: storage, navigator: { sendBeacon: forbidden } });
-  return { document, heading, intro, expectationsHeading, expectationsText, breadcrumb, context, product, name, phone, purpose, form, fields, error, result, reset,
+  return { document, heading, intro, expectationsHeading, expectationsText, breadcrumb, context, product, name, phone, purpose, form, fields,
     navigate(nextSearch, event = 'popstate') { location.search = nextSearch; window.dispatch(event); },
-    submit() { let prevented = false; form.dispatch('submit', { preventDefault() { prevented = true; } }); assert(prevented, 'Demo submit must prevent a real request'); }
+    submit() { let prevented = false; form.dispatch('submit', { preventDefault() { prevented = true; } }); assert(prevented, 'Unavailable booking must prevent a real request'); }
   };
 }
 
@@ -74,22 +70,40 @@ function assertPurpose(app, purpose, heading, introPattern) {
   assert.equal(app.document.title, heading + suffix);
   assert.match(app.intro.textContent, introPattern);
   assert.equal(app.purpose.value, purpose);
-  assert.equal(app.fields.disabled, false);
+  assert.equal(app.fields.disabled, true, 'Unavailable booking controls must remain disabled');
   const expectations = {
-    visit: ['Как будет работать запись', 'После запуска сайта сотрудник сможет связаться с вами, уточнить запрос и согласовать посещение.'],
-    equipment: ['Как будет работать консультация', 'После запуска сайта сотрудник сможет связаться с вами и обсудить выбранное оборудование.'],
-    price: ['Как будет работать запрос цены', 'После запуска сайта сотрудник сможет связаться с вами и уточнить стоимость и условия покупки выбранного аппарата.']
+    visit: /перед посещением/iu,
+    equipment: /Перед выбором аппарата/iu,
+    price: /уточнении стоимости/iu
   };
-  assert.equal(app.expectationsHeading.textContent, expectations[purpose][0]);
-  assert.equal(app.expectationsText.textContent, expectations[purpose][1]);
+  assert.match(app.expectationsHeading.textContent, expectations[purpose]);
+  assert.doesNotMatch(app.expectationsText.textContent, /свяж|перезвон|после запуска/iu);
 }
 
-test('plain booking retains the visit scenario and its form selection', () => {
-  assertPurpose(run(), 'visit', 'Запись на посещение', /Посещение центра|посещение центра/);
+test('plain booking retains the visit context and its disabled form selection', () => {
+  assertPurpose(run(), 'visit', 'Запись на посещение', /посещению центра/iu);
+});
+
+test('booking controls stay disabled in the rendered page before JavaScript runs', () => {
+  for (const compact of [false, true]) {
+    const markup = bookingForm('../', 'offline-booking', compact);
+    const fieldset = markup.match(/<fieldset\b([^>]*)>([\s\S]*?)<\/fieldset>/);
+    assert(fieldset, 'Booking controls need a fieldset');
+    assert.match(fieldset[1], /\bdisabled\b/);
+    assert.match(fieldset[2], /<input\b[^>]*name="name"/);
+    assert.match(fieldset[2], /<input\b[^>]*name="phone"/);
+    assert.match(fieldset[2], /<select\b[^>]*name="purpose"/);
+    assert.match(markup.match(/<form\b([^>]*)>/)[1], /\bmethod="dialog"/, 'Without JavaScript the form must not have a network submission method');
+    const button = markup.match(/<button\b([^>]*)>([\s\S]*?)<\/button>/);
+    assert(button);
+    assert.match(button[1], /\bdisabled\b/, 'The action must explicitly remain unavailable');
+    assert.equal(button[2].replace(/<[^>]*>/g, ''), 'Онлайн-запись недоступна');
+    assert.match(markup, />Онлайн-запись пока недоступна\. Данные не отправляются<\/p>/);
+  }
 });
 
 for (const [purpose, heading, intro] of [
-  ['visit', 'Запись на посещение', /посещение центра/iu],
+  ['visit', 'Запись на посещение', /посещению центра/iu],
   ['equipment', 'Консультация по оборудованию', /выбор аппарата/iu],
   ['price', 'Узнать стоимость оборудования', /стоимость.*наличие/iu]
 ]) {
@@ -110,7 +124,7 @@ for (const [purpose, heading, intro] of [
 
 test('missing purpose with a known model retains the visit scenario and model', () => {
   const app = run('?product=bodyhealth');
-  assertPurpose(app, 'visit', 'Запись на посещение', /посещение центра/iu);
+  assertPurpose(app, 'visit', 'Запись на посещение', /посещению центра/iu);
   assert.equal(app.product.textContent, 'Вас интересует: BodyHealth');
   assert.equal(app.product.hidden, false);
 });
@@ -118,7 +132,7 @@ test('missing purpose with a known model retains the visit scenario and model', 
 test('unknown and inherited purpose keys safely fall back to visit', () => {
   for (const purpose of ['', 'unknown', 'Price', 'constructor', 'prototype', '__proto__', '<img src=x onerror=alert(1)>', 'visit\0']) {
     const app = run(`?purpose=${encodeURIComponent(purpose)}&product=bodyhealth&name=Private&phone=79999999999`);
-    assertPurpose(app, 'visit', 'Запись на посещение', /посещение центра/iu);
+    assertPurpose(app, 'visit', 'Запись на посещение', /посещению центра/iu);
     assert.equal(app.product.textContent, 'Вас интересует: BodyHealth');
     assert.equal(app.name.value, '');
     assert.equal(app.phone.value, '');
@@ -140,35 +154,24 @@ test('history and cached-page restoration refresh every context and clear a stal
   assertPurpose(app, 'equipment', 'Консультация по оборудованию', /выбор аппарата/iu);
   assert.equal(app.product.textContent, 'Вас интересует: EyeSystem');
   app.navigate('?purpose=unknown&product=constructor', 'pageshow');
-  assertPurpose(app, 'visit', 'Запись на посещение', /посещение центра/iu);
+  assertPurpose(app, 'visit', 'Запись на посещение', /посещению центра/iu);
   assert.equal(app.product.hidden, true);
   assert.equal(app.product.textContent, '');
-  app.reset.dispatch('click');
   assert.equal(app.purpose.value, 'visit');
 });
 
-test('demo validation, success clearing and repeat retain the requested purpose and model', () => {
+test('even an artificial submit cannot send data or show a success state', () => {
   const app = run('?purpose=price&product=bodyhealth');
-  app.name.value = 'А'; app.phone.value = '123'; app.submit();
-  assert.equal(app.name.getAttribute('aria-invalid'), 'true');
-  assert.equal(app.error.hidden, false);
-  assert.equal(app.name.focused, true);
-  app.name.value = 'Анна'; app.name.dispatch('input');
-  assert.equal(app.error.hidden, true);
-  assert.equal(app.name.getAttribute('aria-invalid'), null);
+  app.name.value = 'Анна';
+  app.phone.value = '+7 (999) 123-45-67';
   app.submit();
-  assert.equal(app.phone.getAttribute('aria-invalid'), 'true');
-  assert.equal(app.phone.focused, true);
-  app.phone.value = '+7 (999) 123-45-67'; app.submit();
-  assert.equal(app.result.hidden, false);
-  assert.equal(app.result.focused, true);
-  assert.match(app.result.textContent, /Реальная заявка не отправлена/);
-  assert.equal(app.name.value, '');
-  assert.equal(app.phone.value, '');
-  assert.equal(app.fields.hidden, true);
-  app.reset.dispatch('click');
-  assert.equal(app.result.hidden, true);
+  assert.equal(app.fields.disabled, true);
   assert.equal(app.fields.hidden, false);
+  assert.equal(app.form.hidden, false);
+  assert.equal(app.name.value, 'Анна');
+  assert.equal(app.phone.value, '+7 (999) 123-45-67');
+  assert.equal(app.name.getAttribute('aria-invalid'), null);
+  assert.equal(app.phone.getAttribute('aria-invalid'), null);
   assert.equal(app.purpose.value, 'price');
   assert.equal(app.product.textContent, 'Вас интересует: BodyHealth');
 });

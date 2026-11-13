@@ -1,4 +1,7 @@
 /* Homepage: photographic red-and-white landing. Other routes retain their layouts. */
+.booking-form .booking-form-note{font-size:15px;line-height:1.55;font-weight:500;color:var(--ink)}
+.booking-form :is(input,select):disabled{background:var(--surface);color:var(--muted);opacity:1;-webkit-text-fill-color:var(--muted)}
+.booking-form .button:disabled{background:var(--surface);border-color:var(--line);color:var(--muted);cursor:not-allowed;opacity:1}
 .landing-hero{padding-block:28px 42px}
 .landing-hero h1{max-width:920px;font-size:48px;line-height:1.12;margin-bottom:27px}
 .landing-hero-stage{display:grid;grid-template-columns:1.08fr 1fr;grid-template-areas:"photo copy";gap:44px;align-items:center}

@@ -71,7 +71,7 @@ html[data-display="accessible"] :is(.form-error,[aria-invalid="true"]){border:3p
 html[data-display="accessible"] :is(.practice-topics>div,.specification dl>div,.bodyhealth-documents dl>div){display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:.35rem!important;padding-block:.7rem!important}
 html[data-display="accessible"] dd{margin-left:0!important}
 html[data-display="accessible"] :is(.product-info p,.article-art,.compact-placeholder){min-height:0!important}
-html[data-display="accessible"] :is(.hero-caption,.photo-caption,.catalog-note,.plain-note,.pending-content-note,.demo-form-note,.health-note,.form-footnote,.bodyhealth-stock-note,.bodyhealth-source-note){font-size:1rem!important;line-height:1.65!important;max-width:68ch!important}
+html[data-display="accessible"] :is(.hero-caption,.photo-caption,.catalog-note,.plain-note,.pending-content-note,.booking-form-note,.health-note,.form-footnote,.bodyhealth-stock-note,.bodyhealth-source-note){font-size:1rem!important;line-height:1.65!important;max-width:68ch!important}
 html[data-display="accessible"] :is(.chapter-title,.visit-steps li,.centre-journey>li,.visit-path>li){display:block!important;padding-block:.8rem!important;min-width:0!important}
 html[data-display="accessible"] :is(.chapter-title>span,.step-number,.journey-number){font-size:1rem!important;width:auto!important;height:auto!important;min-height:0!important;display:block!important;border:0!important;margin-bottom:.4rem!important}
 html[data-display="accessible"] .visit-path>li::before{display:none!important}

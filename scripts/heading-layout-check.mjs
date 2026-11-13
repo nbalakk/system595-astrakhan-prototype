@@ -15,12 +15,13 @@ async function findPages(directory = root) {
   }
   return pages;
 }
-const routes = await findPages();
+const routes = [...await findPages(), '/booking/?purpose=price&product=bodyhealth', '/booking/?purpose=equipment&product=bodyhealth'];
 const harness = `<!doctype html><html lang="ru"><meta charset="utf-8"><title>Accessible heading layout checks</title>
 <style>body{font:16px/1.5 monospace;margin:24px}iframe{display:block;height:780px;border:1px solid #777}pre{white-space:pre-wrap}button{font:inherit;padding:10px}</style>
-<h1>Accessible heading layout checks</h1><p>16 routes × 3 text sizes × 2 schemes × 2 widths. Checks actual word ranges, horizontal overflow, clipping, and the selected body size. No preferences are stored.</p><button id="run">Run again</button><pre id="report" role="status">Running…</pre><iframe title="Current test page"></iframe>
+<h1>Accessible heading layout checks</h1><p>${routes.length} routes and booking query variants × 3 text sizes × 2 schemes × 2 widths. Checks actual word ranges, horizontal overflow, clipping, and the selected body size. No preferences are stored.</p><button id="run">Run again</button><pre id="report" role="status">Running…</pre><iframe title="Current test page"></iframe>
 <script type="module">
-const routes=${JSON.stringify(routes)};
+const availableRoutes=${JSON.stringify(routes)};
+const routes=new URLSearchParams(location.search).has('booking-only')?availableRoutes.filter(route=>route.startsWith('/booking/?')):availableRoutes;
 const fallback=new URLSearchParams(location.search).has('fallback');
 const frame=document.querySelector('iframe');
 const report=document.querySelector('#report');
@@ -65,7 +66,7 @@ function measure(doc){
 async function run(){
   runButton.disabled=true;const cases=[];const issues=[];let largestWord=null;
   for(const route of routes){
-    frame.src=route+(fallback?'?heading-fallback=1':'');
+    frame.src=route+(fallback?(route.includes('?')?'&':'?')+'heading-fallback=1':'');
     await new Promise((resolve,reject)=>{frame.onload=resolve;frame.onerror=reject});
     const doc=frame.contentDocument;await doc.fonts.ready;
     for(const width of [320,390])for(const [size,pixels] of [['large',22],['larger',26],['largest',30]])for(const theme of ['light','dark']){
@@ -91,7 +92,7 @@ http.createServer(async(req,res)=>{
     let type='text/html; charset=utf-8';
     if(url.pathname==='/__heading-check/')content=harness;
     else if(url.pathname==='/styles.css'){
-      content=(await Promise.all(['styles.css','refinement.css','bodyhealth.css','landing.css','display.css'].map(file=>readFile(path.resolve('site',file),'utf8')))).join('\n');type=types['.css'];
+      content=(await Promise.all(['styles.css','refinement.css','bodyhealth.css','landing.css','reviews.css','display.css'].map(file=>readFile(path.resolve('site',file),'utf8')))).join('\n');type=types['.css'];
       // Emulate a browser that drops unsupported container-unit declarations.
       if(url.searchParams.has('heading-fallback'))content=content.replace(/font-size:[^;}]*cqi[^;}]*;?/g,'');
     }else{

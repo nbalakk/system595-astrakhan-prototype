@@ -1,0 +1,69 @@
+/* Review samples share the landing's quiet red, Golos type and reading scale. */
+.reviews-samples{font-size:17px;color:var(--ink);min-width:0}
+.reviews-preview{padding-block:35px 38px;border-top:1px solid var(--line)}
+.reviews-preview-head{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;margin-bottom:27px}
+.reviews-preview-head h2,.reviews-next h2{font-size:29px;line-height:1.25;margin-bottom:9px}
+.reviews-samples-note{font-size:17px;line-height:1.5;color:var(--muted);margin:0}
+.reviews-preview-head>.text-link{flex:none;font-size:16px;margin-top:1px}
+.reviews-preview-layout{display:grid;grid-template-columns:1.12fr 1fr;gap:64px;align-items:start}
+.reviews-quote{margin:0;min-width:0}
+.reviews-quote blockquote{padding:0;margin:0;font-size:18px;line-height:1.6;font-weight:400}
+.reviews-quote blockquote p{margin:0;max-width:62ch}
+.reviews-quote figcaption{font-size:15px;line-height:1.5;color:var(--red);margin-top:13px}
+.reviews-quote-featured blockquote{font-size:24px;line-height:1.5;letter-spacing:-.015em}
+.reviews-preview-short{display:grid;gap:23px}
+.reviews-preview-short>.reviews-quote+.reviews-quote{border-top:1px solid var(--line);padding-top:23px}
+.reviews-page-head{padding-bottom:27px}
+.reviews-page-head h1{font-size:40px;line-height:1.16;margin-bottom:14px}
+.reviews-page-head>.lead{font-size:17px;color:var(--muted);margin:0;max-width:62ch}
+.reviews-page-collection{padding-block:9px 15px}
+.reviews-page-collection>.reviews-quote-featured{max-width:950px;margin-bottom:33px}
+.reviews-page-collection>.reviews-quote-featured blockquote{font-size:27px;line-height:1.5}
+.reviews-page-details>.reviews-quote{display:grid;grid-template-columns:minmax(170px,.43fr) minmax(0,1fr);gap:32px;border-top:1px solid var(--line);padding-block:25px}
+.reviews-page-details>.reviews-quote blockquote{grid-column:2;grid-row:1;font-size:19px;max-width:750px}
+.reviews-page-details>.reviews-quote figcaption{grid-column:1;grid-row:1;margin:2px 0 0;font-size:17px;max-width:240px}
+.reviews-next{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start;gap:30px 55px;padding-block:29px 39px;border-top:1px solid var(--line);margin-top:5px}
+.reviews-next p{font-size:17px;max-width:600px;color:var(--muted);margin:0}
+.reviews-next-actions{display:flex;flex-direction:column;align-items:flex-start;gap:11px}
+.reviews-next-actions>a:not(.button){display:inline-flex;align-items:center;min-height:44px;font-size:16px;color:var(--red)}
+@media(max-width:900px){
+.reviews-preview-layout{gap:35px;grid-template-columns:1.05fr 1fr}
+.reviews-quote-featured blockquote{font-size:22px}
+.reviews-page-details>.reviews-quote{grid-template-columns:minmax(150px,.38fr) minmax(0,1fr);gap:25px}
+.reviews-next{gap:25px}
+}
+@media(max-width:640px){
+.reviews-preview{padding-block:30px}
+.reviews-preview-head{display:block;margin-bottom:19px}
+.reviews-preview-head h2,.reviews-next h2{font-size:28px}
+.reviews-preview-head>.text-link{margin-top:9px}
+.reviews-preview-layout{grid-template-columns:minmax(0,1fr);gap:25px}
+.reviews-quote blockquote{font-size:17px}
+.reviews-quote-featured blockquote{font-size:21px}
+.reviews-quote figcaption{font-size:15px;margin-top:11px}
+.reviews-preview-short{gap:21px}
+.reviews-preview-short>.reviews-quote{padding-top:21px;border-top:1px solid var(--line)}
+.reviews-page-head{padding-bottom:21px}
+.reviews-page-head h1{font-size:33px}
+.reviews-page-collection{padding-top:3px}
+.reviews-page-collection>.reviews-quote-featured{margin-bottom:25px}
+.reviews-page-collection>.reviews-quote-featured blockquote{font-size:22px}
+.reviews-page-details>.reviews-quote{display:flex;flex-direction:column;gap:11px;padding-block:21px}
+.reviews-page-details>.reviews-quote blockquote{font-size:18px}
+.reviews-page-details>.reviews-quote figcaption{font-size:15px;max-width:none;margin:0}
+.reviews-next{grid-template-columns:minmax(0,1fr);gap:20px;padding-block:26px 31px}
+.reviews-next-actions{gap:6px}
+}
+/* Preserve the chosen 22/26/30px scale and a single reading column in both schemes. */
+html[data-display="accessible"] body :is(.reviews-preview,.reviews-page-collection,.reviews-next){padding-block:1.25rem!important}
+html[data-display="accessible"] body :is(.reviews-preview-head,.reviews-preview-layout,.reviews-preview-short,.reviews-page-details,.reviews-page-details>.reviews-quote,.reviews-next,.reviews-next-actions){display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-template-rows:auto!important;gap:1rem!important;align-items:start!important;justify-content:stretch!important}
+html[data-display="accessible"] body .reviews-samples{color:var(--display-fg)!important}
+html[data-display="accessible"] body .reviews-quote{max-width:100%!important;padding:0!important;margin:0!important}
+html[data-display="accessible"] body .reviews-quote blockquote{font-size:1rem!important;line-height:1.65!important;letter-spacing:normal!important;margin:0!important;padding:0!important;max-width:68ch!important;grid-column:auto!important;grid-row:auto!important}
+html[data-display="accessible"] body .reviews-quote figcaption{font-size:1rem!important;line-height:1.65!important;grid-column:auto!important;grid-row:auto!important;margin-top:.45rem!important;max-width:68ch!important}
+html[data-display="accessible"] body .reviews-quote blockquote p{margin-bottom:0!important}
+html[data-display="accessible"] body .reviews-page-details>.reviews-quote,html[data-display="accessible"] body .reviews-preview-short>.reviews-quote{border-top:1px solid var(--display-fg)!important;padding-top:1rem!important}
+html[data-display="accessible"] body .reviews-page-details{margin-top:1rem!important}
+html[data-display="accessible"] body :is(.reviews-samples-note,.reviews-page-head>.lead,.reviews-next p,.reviews-next-actions>a){font-size:1rem!important;line-height:1.65!important}
+html[data-display="accessible"] body .reviews-preview-head>.text-link{margin:0!important;justify-self:start!important;max-width:100%!important}
+html[data-display="accessible"] body .reviews-next-actions>a{width:fit-content!important;max-width:100%!important;min-height:2.2rem!important}

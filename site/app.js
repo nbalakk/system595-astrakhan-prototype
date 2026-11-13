@@ -49,14 +49,14 @@ const validPurposes = ['visit', 'equipment', 'price'];
 const productNames = { eyesystem: 'EyeSystem', spinesystem: 'SpineSystem', sleepsystem: 'SleepSystem', footsystem: 'FootSystem', moxi: 'Moxi', bodyhealth: 'BodyHealth' };
 const headings = { visit: 'Запись на посещение', equipment: 'Консультация по оборудованию', price: 'Узнать стоимость оборудования' };
 const introductions = {
-  visit: 'Посещение центра или выбор аппарата для дома — расскажите, что вас интересует.',
+  visit: 'Подготовьтесь к посещению центра: уточните время, формат и необходимые документы.',
   equipment: 'Обсудите выбор аппарата для дома: устройство, комплектацию и условия приобретения.',
   price: 'Уточните стоимость, наличие и условия приобретения оборудования.'
 };
 const expectations = {
-  visit: ['Как будет работать запись', 'После запуска сайта сотрудник сможет связаться с вами, уточнить запрос и согласовать посещение.'],
-  equipment: ['Как будет работать консультация', 'После запуска сайта сотрудник сможет связаться с вами и обсудить выбранное оборудование.'],
-  price: ['Как будет работать запрос цены', 'После запуска сайта сотрудник сможет связаться с вами и уточнить стоимость и условия покупки выбранного аппарата.']
+  visit: ['Что уточнить перед посещением', 'Уточните время, адрес, стоимость и доступные аппараты. Спросите о формате первого визита и необходимых документах.'],
+  equipment: ['Перед выбором аппарата', 'Для каких задач предназначен аппарат, как им пользоваться дома и какие ограничения нужно учитывать? Уточните комплектацию и условия приобретения.'],
+  price: ['При уточнении стоимости', 'Какова стоимость выбранной модели, что входит в комплект и есть ли дополнительные расходы? Уточните наличие, доставку и гарантию.']
 };
 let selectedPurpose = 'visit';
 const updateBookingContext = () => {
@@ -84,7 +84,7 @@ const updateBookingContext = () => {
     productContext.hidden = !selectedProduct;
     productContext.textContent = selectedProduct ? `Вас интересует: ${selectedProduct}` : '';
   }
-  document.querySelectorAll('[data-demo-form]').forEach(form => {
+  document.querySelectorAll('[data-booking-form]').forEach(form => {
     if (form.elements.purpose) form.elements.purpose.value = selectedPurpose;
   });
 };
@@ -92,42 +92,8 @@ updateBookingContext();
 window.addEventListener('popstate', updateBookingContext);
 window.addEventListener('pageshow', updateBookingContext);
 
-document.querySelectorAll('[data-demo-form]').forEach(form => {
-  const name = form.elements.name;
-  const phone = form.elements.phone;
-  const purpose = form.elements.purpose;
-  if (purpose) purpose.value = selectedPurpose;
-  const error = form.querySelector('.form-error');
-  const result = form.querySelector('.form-result');
-  const originalChildren = [...form.children].filter(item => item !== result);
-  const clearErrors = () => {
-    name.removeAttribute('aria-invalid'); phone.removeAttribute('aria-invalid');
-    error.hidden = true; error.textContent = '';
-  };
+document.querySelectorAll('[data-booking-form]').forEach(form => {
   form.addEventListener('submit', event => {
-    event.preventDefault(); clearErrors();
-    const digits = phone.value.replace(/\D/g, '');
-    let invalid;
-    if (name.value.trim().length < 2) {
-      error.textContent = 'Введите имя: не менее двух символов.'; invalid = name;
-    } else if (!(digits.length === 11 && /^[78]/.test(digits) || digits.length === 10)) {
-      error.textContent = 'Проверьте номер: введите 10 цифр или 11 цифр, начиная с 7 или 8.'; invalid = phone;
-    }
-    if (invalid) {
-      error.hidden = false; invalid.setAttribute('aria-invalid', 'true'); invalid.focus(); return;
-    }
-    // No request is sent. The prototype never stores the input.
-    originalChildren.forEach(child => { child.hidden = true; });
-    result.hidden = false;
-    name.value = ''; phone.value = '';
-    result.focus();
+    event.preventDefault();
   });
-  [name, phone].forEach(input => input.addEventListener('input', clearErrors));
-  form.querySelector('[data-reset-form]').addEventListener('click', () => {
-    form.reset(); if (purpose) purpose.value = selectedPurpose;
-    originalChildren.forEach(child => { child.hidden = false; });
-    clearErrors(); result.hidden = true; name.focus();
-  });
-  // Enable inputs only after the local-only submit handler is attached.
-  form.querySelector('[data-demo-fields]').disabled = false;
 });

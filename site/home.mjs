@@ -1,4 +1,5 @@
 import { centre, products, faqs } from './content.mjs';
+import { reviewsPreview } from './reviews.mjs';
 import { icon, button, bookingForm, faqMarkup } from './components.mjs';
 
 export function home(p) {
@@ -21,7 +22,8 @@ export function home(p) {
 <article class="landing-product"><figure class="landing-product-use"><img src="${p}assets/bodyhealth-use.jpg" alt="Пример домашнего использования BodyHealth из материалов NovuMedical" width="435" height="715" loading="lazy"><figcaption>Фото NovuMedical. Не съёмка центра в Астрахани. <a href="${p}media/">Источник</a></figcaption></figure><div class="landing-product-detail"><div class="landing-product-top"><div><h3>BodyHealth</h3><p>Массажно-тепловой аппарат для стоп и тела.</p></div><img src="${p}assets/${featured.image}" alt="Аппарат BodyHealth" width="400" height="400" loading="lazy"></div><ul class="simple-list"><li>Площадка для обеих стоп</li><li>Панель управления на корпусе</li><li>Прогрев, вибрация и стимуляция</li></ul><div class="inline-actions">${button(`${p}equipment/bodyhealth/`, 'Подробнее о BodyHealth')}<a class="text-link" href="${p}booking/?purpose=equipment&product=bodyhealth">Обсудить покупку</a></div><p class="landing-product-note">Пример линейки системы 5/95. Наличие и стоимость сообщит центр.</p></div></article>
 <div class="landing-models">${otherModels.map(model => `<a href="${p}equipment/${model.slug}/"><img src="${p}assets/${model.image}" alt="" width="100" height="80" loading="lazy"><span><small>${model.area}</small><strong>${model.name}</strong></span>${icon('arrow')}</a>`).join('')}</div>
 </section>
-<section class="container landing-centre"><div><h2>О центре</h2><p class="landing-centre-name">${centre.contact}</p></div><div class="landing-centre-copy"><p>Вопросы о посещениях центра в Астрахани и покупке оборудования можно обсудить лично.</p><div class="landing-centre-links"><a href="${p}contacts/">О центре и контакты</a><a href="${p}reviews/">Отзывы посетителей</a></div><p class="landing-review-note">Подтверждённые отзывы добавим после согласования с посетителями.</p></div></section>
+<section class="container landing-centre"><div><h2>О центре</h2><p class="landing-centre-name">${centre.contact}</p></div><div class="landing-centre-copy"><p>Вопросы о посещениях центра в Астрахани и покупке оборудования можно обсудить лично.</p><div class="landing-centre-links"><a href="${p}contacts/">О центре и контакты</a></div></div></section>
+${reviewsPreview(p)}
 <section class="container landing-faq"><div class="landing-faq-intro"><h2>Перед первым посещением</h2><a href="${p}articles/first-visit/">Памятка перед поездкой${icon('arrow')}</a></div>${faqMarkup([faqs[0], faqs[2], faqs[3]])}</section>
 <section class="landing-booking" id="appointment"><div class="container booking-layout"><div class="landing-booking-copy"><h2>Записаться на посещение</h2><p>Уделите время заботе о себе. Начните со знакомства с центром и обсудите удобный формат посещений.</p><p class="landing-booking-note">Астрахань. Время и условия посещения нужно уточнить у центра.</p></div>${bookingForm(p, 'home-booking')}</div></section>`;
 }
