@@ -2,6 +2,7 @@
 .booking-form .booking-form-note{font-size:15px;line-height:1.55;font-weight:500;color:var(--ink)}
 .booking-form :is(input,select):disabled{background:var(--surface);color:var(--muted);opacity:1;-webkit-text-fill-color:var(--muted)}
 .booking-form .button:disabled{background:var(--surface);border-color:var(--line);color:var(--muted);cursor:not-allowed;opacity:1}
+.footer-contact strong>a,.contact-panel .contact-phone{display:inline-flex;align-items:center;min-height:44px}
 .landing-hero{padding-block:28px 42px}
 .landing-hero h1{max-width:920px;font-size:48px;line-height:1.12;margin-bottom:27px}
 .landing-hero-stage{display:grid;grid-template-columns:1.08fr 1fr;grid-template-areas:"photo copy";gap:44px;align-items:center}
@@ -24,9 +25,9 @@
 .landing-visit-copy h2{font-size:33px;line-height:1.22;max-width:530px;margin-bottom:21px}
 .landing-visit-copy>p{font-size:17px;line-height:1.6;max-width:510px;margin-bottom:18px}
 .landing-goals{max-width:510px;margin:0 0 20px}
-.landing-goals>div{display:grid;grid-template-columns:165px minmax(0,1fr);gap:14px;margin-bottom:12px}
+.landing-goals>div{display:grid;grid-template-columns:minmax(0,1fr);gap:3px;margin-bottom:14px}
 .landing-goals dt,.landing-goals dd{font-size:17px;line-height:1.55}
-.landing-goals dt{font-weight:600}
+.landing-goals dt{font-weight:600;line-height:1.35;overflow-wrap:normal;word-break:normal;hyphens:none}
 .landing-goals dd{margin:0}
 .landing-visit-copy>p:last-of-type{font-size:16px;color:#fff0f3}
 .landing-visit-copy>.text-link{color:white;text-decoration:underline;font-size:16px;margin-top:2px}
@@ -83,9 +84,10 @@
 .landing-booking .booking-layout{gap:65px;align-items:start}
 .landing-booking-copy h2{font-size:34px;line-height:1.22;max-width:450px;margin-bottom:19px}
 .landing-booking-copy>p{font-size:18px;max-width:440px}
+.booking-call{margin-bottom:18px;font-size:16px}
 .landing-booking-copy>.landing-booking-note{font-size:16px;color:#fff0f3;max-width:400px;margin-top:27px}
 .landing-booking .booking-form{color:var(--ink);background:white}
-.landing-booking .booking-form .button{color:white}
+.landing-booking .booking-form .button:not(:disabled){color:white}
 .landing-booking ::selection,.landing-visit ::selection,.landing-invitation ::selection{color:var(--red);background:white}
 @media(max-width:1000px){
 .landing-hero-stage{gap:30px}.landing-hero h1{font-size:43px}.landing-hero-copy>.lead{font-size:18px}.landing-hero-photo>img{height:365px}.landing-invitation{padding:22px}.landing-invitation>.button{font-size:16px}
@@ -98,7 +100,6 @@
 .landing-hero-stage{grid-template-columns:minmax(0,1fr);grid-template-areas:"copy" "photo";gap:24px}.landing-hero-copy>.lead{font-size:18px;line-height:1.6;margin-bottom:9px}.landing-hero-copy>.text-link{font-size:15px;margin-bottom:14px}
 .landing-invitation{padding:20px 22px;border-radius:12px}.landing-invitation>.button{font-size:16px;padding-inline:12px}.landing-catalog-link{font-size:15px;margin-top:9px}.landing-hero-photo>img{height:285px}.landing-hero-photo figcaption{font-size:11px}
 .landing-visit-layout{grid-template-columns:minmax(0,1fr);gap:25px;padding-block:32px}.landing-visit-copy h2{font-size:29px;margin-bottom:17px}.landing-visit-copy>p{font-size:18px}.landing-visit-copy>p:last-of-type{font-size:16px}.landing-visit-photo{width:100%;max-width:390px;justify-self:start}.landing-visit-photo>img{height:auto;aspect-ratio:1;object-fit:contain}.landing-visit-photo figcaption{font-size:11px}
-.landing-goals>div{grid-template-columns:minmax(0,1fr);gap:3px;margin-bottom:14px}
 .landing-steps{padding-block:31px}.landing-steps-heading{display:block;margin-bottom:22px}.landing-steps-heading h2{font-size:25px;margin-bottom:9px}.landing-step-list{grid-template-columns:minmax(0,1fr);gap:24px}.landing-step-list>li{grid-template-columns:22px minmax(0,1fr);gap:12px}.landing-step-list h3{font-size:21px}.landing-step-list p{font-size:17px}
 .landing-equipment{padding-block:31px}.landing-equipment-heading{display:block;margin-bottom:20px}.landing-equipment-heading h2{font-size:29px}.landing-equipment-heading>.text-link{font-size:15px}
 .landing-product{grid-template-columns:minmax(0,1fr);gap:24px}.landing-product-use>img{height:355px}.landing-product-use figcaption{font-size:11px}.landing-product-top{grid-template-columns:minmax(0,1fr) 105px;gap:13px}.landing-product-top h3{font-size:27px}.landing-product-top p{font-size:17px}.landing-product-top img{width:105px;height:140px}.landing-product-detail .simple-list{font-size:16px;margin-bottom:19px}.landing-product-detail .inline-actions{gap:10px;margin-top:18px}.landing-product-detail .inline-actions .button{font-size:15px}.landing-product-note{font-size:13px}

@@ -1,4 +1,4 @@
-import { breadcrumbs, pageHead, button, icon } from './components.mjs';
+import { breadcrumbs, button, icon } from './components.mjs';
 
 const samples = [
   {
@@ -23,14 +23,14 @@ const quoteMarkup = (sample, extraClass = '') => `<figure class="reviews-quote $
 
 export function reviewsPreview(p) {
   return `<section class="container reviews-samples reviews-preview" aria-labelledby="reviews-preview-title">
-<header class="reviews-preview-head"><div><h2 id="reviews-preview-title">О посещении — своими словами</h2><p class="reviews-samples-note">Примеры отзывов для оценки оформления</p></div><a class="text-link" href="${p}reviews/">Все отзывы${icon('arrow')}</a></header>
+<header class="reviews-preview-head"><div><h2 id="reviews-preview-title">О посещении — своими словами</h2></div><a class="text-link" href="${p}reviews/">Все отзывы${icon('arrow')}</a></header>
 <div class="reviews-preview-layout">${quoteMarkup(samples[0], 'reviews-quote-featured')}<div class="reviews-preview-short">${quoteMarkup(samples[2])}${quoteMarkup(samples[3])}</div></div>
 </section>`;
 }
 
 export function reviewsPage(p) {
-  return `${breadcrumbs(p, 'Отзывы')}${pageHead('Отзывы о посещении', 'Примеры отзывов для оценки оформления', 'reviews-page-head')}
-<section class="container reviews-samples reviews-page-collection" aria-label="Примеры отзывов о посещении">
+  return `${breadcrumbs(p, 'Отзывы')}<div class="container page-head reviews-page-head"><h1>Отзывы о посещении</h1></div>
+<section class="container reviews-samples reviews-page-collection" aria-label="Отзывы о посещении">
 ${quoteMarkup(samples[0], 'reviews-quote-featured')}
 <div class="reviews-page-details">${samples.slice(1).map(sample => quoteMarkup(sample)).join('')}</div>
 </section>

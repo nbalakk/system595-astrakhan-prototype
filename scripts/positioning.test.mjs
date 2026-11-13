@@ -33,14 +33,20 @@ function readableContent(html) {
   return [text, ...attributes].join(' ');
 }
 
-test('the build retains all 16 demonstration pages', () => {
+test('the build retains all 16 pages', () => {
   assert.equal(rendered.length, 16);
 });
 
 for (const { route, html } of rendered) {
   test(`${route} presents the health and longevity centre consistently`, () => {
-    assert.equal(/реабилитац|факел/iu.test(readableContent(html)), false,
+    assert.equal(/реабилитац/iu.test(readableContent(html)), false,
       'Public copy, metadata and accessible labels must use the agreed positioning');
+    for (const brand of html.matchAll(/<a\b(?=[^>]*\bclass="[^"]*\bbrand\b[^"]*")[^>]*>[\s\S]*?<\/a>/giu)) {
+      assert.doesNotMatch(readableContent(brand[0]), /факел/iu, 'The address landmark must not become the centre brand');
+    }
+    for (const label of html.matchAll(/\baria-[\w-]+="([^"]*)"/giu)) {
+      assert.doesNotMatch(label[1], /факел/iu, 'Accessible labels must use the centre brand');
+    }
     const header = html.match(/<header\b[\s\S]*?<\/header>/iu)?.[0] || '';
     const footer = html.match(/<footer\b[\s\S]*?<\/footer>/iu)?.[0] || '';
     for (const region of [header, footer]) {
