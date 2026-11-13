@@ -5,8 +5,8 @@ import { layout } from '../site/components.mjs';
 import { products } from '../site/content.mjs';
 
 const routes = [
-  ['', 'Реабилитация в центре и оборудование для дома', pages.home],
-  ['rehabilitation/', 'Реабилитация в центре', pages.rehabilitation],
+  ['', 'Центр здоровья и долголетия для пенсионеров', pages.home],
+  ['rehabilitation/', 'Посещения центра', pages.rehabilitation],
   ['equipment/', 'Каталог оборудования системы 5/95', pages.catalog],
   ['reviews/', 'Отзывы посетителей', pages.reviews],
   ['articles/', 'Полезные материалы', pages.articles],
@@ -30,7 +30,7 @@ for (const [route, title, render] of routes) {
   const prefix = depth ? '../'.repeat(depth) : './';
   const directory = path.join('dist', route);
   await mkdir(directory, { recursive: true });
-  await writeFile(path.join(directory, 'index.html'), layout({ title, description: 'Центр реабилитации в Астрахани: знакомство с центром и оборудованием системы 5/95 для дома. Демонстрационный прототип.', route, prefix, body: render(prefix).replaceAll('<br>', '<br> ') }));
+  await writeFile(path.join(directory, 'index.html'), layout({ title, description: 'Центр здоровья и долголетия для пенсионеров в Астрахани. Знакомство с центром и оборудованием системы 5/95 для заботы о себе. Демонстрационный прототип.', route, prefix, body: render(prefix).replaceAll('<br>', '<br> ') }));
 }
 await writeFile('dist/.nojekyll', '');
 await writeFile('dist/robots.txt', 'User-agent: *\nDisallow: /\n');

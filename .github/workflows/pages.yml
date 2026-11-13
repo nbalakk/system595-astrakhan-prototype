@@ -25,7 +25,7 @@ jobs:
           package-manager-cache: false
       - run: node scripts/build.mjs
       - run: node scripts/check.mjs
-      - run: node --test scripts/display.test.mjs scripts/booking.test.mjs
+      - run: node --test scripts/display.test.mjs scripts/booking.test.mjs scripts/positioning.test.mjs
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
         with:

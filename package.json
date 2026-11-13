@@ -6,7 +6,7 @@
   "scripts": {
     "build": "node scripts/build.mjs",
     "start": "node scripts/serve.mjs",
-    "check": "node scripts/check.mjs && node --test scripts/display.test.mjs scripts/booking.test.mjs"
+    "check": "node --test scripts/positioning.test.mjs scripts/display.test.mjs scripts/booking.test.mjs && node scripts/check.mjs"
   },
   "engines": { "node": ">=20" }
 }

@@ -38,7 +38,7 @@ function measure(doc){
     if(!parent||!parent.getClientRects().length||/^(SCRIPT|STYLE|OPTION)$/.test(parent.tagName))continue;
     const heading=parent.closest('h1,h2,h3,h4,h5,h6');
     for(const match of text.data.matchAll(/[\\p{L}\\p{N}]+/gu)){
-      if(!heading&&!models.has(match[0]))continue;
+      if(!heading&&!models.has(match[0])&&!parent.closest('.landing-goals dt'))continue;
       const range=doc.createRange();range.setStart(text,match.index);range.setEnd(text,match.index+match[0].length);
       const rects=[...range.getClientRects()].filter(rect=>rect.width>.1&&rect.height>.1);
       if(!rects.length)continue;
@@ -91,7 +91,7 @@ http.createServer(async(req,res)=>{
     let type='text/html; charset=utf-8';
     if(url.pathname==='/__heading-check/')content=harness;
     else if(url.pathname==='/styles.css'){
-      content=(await Promise.all(['styles.css','refinement.css','bodyhealth.css','display.css'].map(file=>readFile(path.resolve('site',file),'utf8')))).join('\n');type=types['.css'];
+      content=(await Promise.all(['styles.css','refinement.css','bodyhealth.css','landing.css','display.css'].map(file=>readFile(path.resolve('site',file),'utf8')))).join('\n');type=types['.css'];
       // Emulate a browser that drops unsupported container-unit declarations.
       if(url.searchParams.has('heading-fallback'))content=content.replace(/font-size:[^;}]*cqi[^;}]*;?/g,'');
     }else{

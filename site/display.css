@@ -118,3 +118,6 @@ html[data-display="accessible"] .landing-step-list>li>span{display:block!importa
 html[data-display="accessible"] .landing-models img{width:5rem!important;max-width:100%!important;margin-inline:0!important}
 html[data-display="accessible"] .landing-models strong{overflow-wrap:normal!important;word-break:normal!important}
 html[data-display="accessible"] :is(.landing-catalog-link,.landing-centre-links){flex-wrap:wrap!important;gap:.6rem!important}
+html[data-display="accessible"] .landing-goals>div{grid-template-columns:minmax(0,1fr)!important;gap:.25rem!important;margin-bottom:.8rem!important}
+/* Keep long goal labels whole; descriptions retain the selected body size. */
+html[data-display="accessible"] .landing-goals dt{font-size:min(1rem,8.2vw)!important;font-size:min(1rem,9.5cqi)!important;overflow-wrap:normal!important;word-break:normal!important;hyphens:manual!important}
