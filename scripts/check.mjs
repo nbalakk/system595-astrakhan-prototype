@@ -6,12 +6,14 @@ const root = path.resolve('dist');
 const requiredRoutes = [
   '', 'five-steps/', 'rehabilitation/', 'equipment/', 'articles/', 'articles/first-visit/',
   'reviews/', 'contacts/', 'booking/', 'media/', 'privacy/',
+  ...['zanyatie-v-zale', 'otzyv-posetitelnitsy', 'den-pensionera', 'den-rossii-v-centre', 'novueye-v-kresle', 'teplovoy-kovrik-voprosy', 'kogda-vyveski-rasplyvayutsya'].map(slug => `articles/${slug}/`),
+  ...['blood-pressure', 'swollen-ankles', 'sleep', 'back-pain', 'knee-arthritis', 'steady-walking', 'diabetes-foot-care', 'vision-changes'].map(slug => `articles/${slug}/`),
   ...['eyesystem', 'spinesystem', 'sleepsystem', 'footsystem', 'moxi', 'bodyhealth'].map(slug => `equipment/${slug}/`)
 ];
 const legacySections = {
   '': ['appointment'],
   'rehabilitation/': ['first-visit', 'visits', 'at-home'],
-  'articles/first-visit/': ['before', 'questions', 'bring', 'home'],
+  'articles/first-visit/': ['before', 'questions', 'bring', 'home', 'documents'],
   'contacts/': ['contact-details']
 };
 let checks = 0;

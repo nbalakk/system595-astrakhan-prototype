@@ -15,7 +15,8 @@ export function rehabilitation(p) {
   </section>
   <section class="container section rehab-chapter" id="first-visit">
     <div class="chapter-title"><span aria-hidden="true">1</span><h2>С чего начать разговор</h2></div>
-    <div class="chapter-content"><p>Расскажите, что для вас важно в повседневной жизни. Возможно, хочется чаще выходить из дома, сохранять привычный ритм или найти время для заботы о себе.</p><p>Спросите Светлану, как проходит встреча, сколько времени она занимает и с какими аппаратами можно познакомиться.</p></div>
+    <div class="chapter-content"><p>Расскажите, что для вас важно в повседневной жизни. Возможно, хочется чаще выходить из дома, сохранять привычный ритм или найти время для заботы о себе.</p><p>Спросите Светлану, как проходит встреча, сколько времени она занимает и с какими аппаратами можно познакомиться.</p>
+    <p><a href="${p}articles/">Занятия и встречи на фотографиях из центра</a></p></div>
   </section>
   ${visitFilm(p)}
   <section class="surface-section" id="visits"><div class="container section rehab-chapter">

@@ -1,7 +1,8 @@
-import { association, centre, faqs } from './content.mjs';
+import { association, centre, centreStories, faqs, healthArticles } from './content.mjs';
 import { faqMarkup, icon, visitActions } from './components.mjs';
 import { visitFilm } from './reviews.mjs';
 import { fiveStepsPreview } from './five-steps.mjs';
+import { healthPreview } from './health-articles.mjs';
 
 export function home(p) {
   return `<section class="container landing-hero"><div class="landing-hero-stage">
@@ -23,6 +24,7 @@ export function home(p) {
     <a class="text-link" href="${p}rehabilitation/">Подробнее о посещении${icon('arrow')}</a></div>
 </div></section>
 ${visitFilm(p)}
+${healthPreview(p, healthArticles, centreStories)}
 ${fiveStepsPreview(p)}
 <section class="container landing-centre">
   <div><p class="landing-role">Ваш консультант</p><h2>${centre.contact}</h2></div>

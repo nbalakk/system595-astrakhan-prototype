@@ -28,7 +28,7 @@ document.querySelectorAll('[data-gallery-src]').forEach(button => {
   });
 });
 
-const centreVideoIds = new Set(['4414548478691', '4274475829987']);
+const centreVideoIds = new Set(['4414548478691', '4274475829987', '9605424941795', '4247297264355', '7050131409635']);
 document.querySelectorAll('[data-ok-player]').forEach(button => {
   const frame = button.closest('[data-video-frame]');
   const videoId = button.dataset.okPlayer;

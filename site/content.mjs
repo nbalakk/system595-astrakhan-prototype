@@ -1,3 +1,8 @@
+import { readFile } from 'node:fs/promises';
+
+export const healthArticles = JSON.parse(await readFile(new URL('./articles.json', import.meta.url), 'utf8'));
+export const centreStories = JSON.parse(await readFile(new URL('./centre-stories.json', import.meta.url), 'utf8'));
+
 const address = 'Астрахань, ул. Савушкина, 46А, ТЦ «Факел»';
 
 export const centre = {

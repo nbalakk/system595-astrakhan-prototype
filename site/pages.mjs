@@ -47,19 +47,8 @@ export function productPage(p, product) {
     ${consultation(p)}`;
 }
 
-export function articles(p) {
-  return `${breadcrumbs(p, 'Перед визитом')}
-    ${pageHead('Перед визитом', 'Как договориться о встрече, найти вход и подготовить вопросы к консультанту.')}
-    <section class="container article-index"><a class="article-feature" href="${p}articles/first-visit/">
-      <div class="article-art" aria-hidden="true">${icon('book')}<span>Первое<br>посещение</span></div>
-      <div><h2>Памятка перед поездкой</h2><p>Что уточнить по телефону, что взять с собой и где посмотреть инструкцию к аппарату.</p><span class="text-link">Прочитать памятку${icon('arrow')}</span></div></a>
-      <div class="upcoming-material"><h2>Как найти центр</h2><div><p>${centre.address}. Позвоните Светлане, если вам нужен ориентир у входа.</p>
-      <a class="text-link" href="${centre.mapUrl}">Открыть адрес на карте${icon('pin')}</a></div></div>
-    </section>`;
-}
-
 export function article(p) {
-  return `${breadcrumbs(p, 'Памятка перед поездкой', ['articles/', 'Перед визитом'])}
+  return `${breadcrumbs(p, 'Памятка перед поездкой', ['articles/', 'Статьи'])}
     <article class="container article-layout">
       <aside class="article-aside"><span>В этой памятке</span>
         <nav aria-label="Содержание памятки"><a href="#before">До поездки</a><a href="#bring">Что взять</a><a href="#questions">Что спросить</a><a href="#documents">Документы к аппарату</a></nav>
@@ -112,6 +101,7 @@ export function media(p) {
       <p>Страница в Одноклассниках называется <a href="${centre.okUrl}">«Центр Здоровья и Долголетия»</a>. Порядок записи по телефону указан <a href="https://ok.ru/profile/583466162659/statuses/157577238805987">в сообщении центра</a>.</p>
       <p>Фрагмент занятия и рассказ посетительницы опубликованы самим центром. Обложки взяты из соответствующих записей.</p>
       <ul>${Object.values(centreVideos).map(video => `<li><a href="${video.url}">${video.title}</a>, ${video.published} года, ${video.duration}.</li>`).join('')}</ul>
+      <p><a href="${p}articles/">Фотографии и заметки из жизни центра</a>. В каждой истории указаны дата и ссылка на оригинальную публикацию.</p>
       <p>Видео о пяти шагах системы 5/95 предоставила Светлана Бабак. Этим шагам посвящено несколько занятий. <a href="${p}five-steps/">Посмотреть пять шагов</a>.</p>
       <h2 id="equipment">Иллюстрации аппаратов</h2><p>Фотографии EyeSystem, SpineSystem, SleepSystem, FootSystem и Moxi показывают аппараты и примеры их использования. Источник — <a href="https://system595la.com/ru/">материалы System 5/95</a>.</p>
       <p>Фотографии BodyHealth, панели управления и пример использования опубликованы <a href="https://novumedical.org/products/bodyhealth/">на странице модели NovuMedical</a>.</p>
@@ -126,7 +116,7 @@ export function privacy(p) {
     <section class="container legal-copy"><h2>Звонок и маршрут</h2>
       <p>Ссылка с номером телефона открывает набор номера, ссылка с адресом — карту. Имя и телефон для этого вводить не нужно.</p>
       ${visitActions()}
-      <h2>Видео из Одноклассников</h2><p>Когда вы нажимаете «Смотреть видео» на обложке занятия или отзыва, загружается плеер Одноклассников. Рядом с каждой записью есть прямая ссылка на неё.</p>
+      <h2>Видео из Одноклассников</h2><p>Когда вы нажимаете «Смотреть видео» на обложке, загружается плеер Одноклассников. Рядом с каждой записью есть прямая ссылка на неё.</p>
       <h2>Настройки отображения</h2><p>Если вы включите версию для слабовидящих, браузер запомнит размер текста и выбранные цвета на этом устройстве. Кнопка «Обычная версия» возвращает исходный вид.</p>
     </section>`;
 }

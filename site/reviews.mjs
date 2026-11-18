@@ -13,8 +13,9 @@ function filmSection(p, kind) {
       <div class="interview-copy"><h2 id="${headingId}">${video.title}</h2>
         <p class="interview-meta"><time datetime="${video.date}">${video.published}</time> · ${video.duration}</p>
         <p>${video.description}</p>
+        ${kind === 'feedback' ? '<p>Если вы используете инсулин, изменения дозы обсуждайте со своим лечащим врачом.</p>' : ''}
         <a class="text-link" href="${video.url}">Открыть в Одноклассниках${icon('arrow')}</a>
-        ${kind === 'lesson' ? `<p><a href="${p}reviews/">Посмотреть отзыв посетительницы</a></p>` : ''}
+        ${kind === 'lesson' ? `<p><a href="${p}reviews/">Посмотреть отзыв посетительницы</a></p>` : `<p><a href="${p}articles/">Другие истории из жизни центра</a></p>`}
       </div>
     </div>
   </section>`;

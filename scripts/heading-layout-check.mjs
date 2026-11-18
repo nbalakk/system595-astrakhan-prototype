@@ -1,5 +1,6 @@
 // Run `node scripts/heading-layout-check.mjs`, open the printed local URL,
 // and read the report after its real-browser checks finish. Never ships in dist.
+// Use ?articles-only for the article journey and add &noscript for the static HTML.
 import http from 'node:http';
 import path from 'node:path';
 import { readFile, readdir } from 'node:fs/promises';
@@ -27,12 +28,21 @@ const harness = `<!doctype html><html lang="ru"><meta charset="utf-8"><title>Acc
 <h1>Accessible heading layout checks</h1><p>${routes.length} pages and old links × 3 text sizes × 2 schemes × 2 widths. Checks visit information on old links, word ranges, overflow, clipping and text size.</p><button id="run">Run again</button><pre id="report" role="status">Running…</pre><iframe title="Current test page"></iframe>
 <script type="module">
 const availableRoutes=${JSON.stringify(routes)};
-const routes=new URLSearchParams(location.search).has('booking-only')?availableRoutes.filter(route=>route.startsWith('/booking/?')):availableRoutes;
-const fallback=new URLSearchParams(location.search).has('fallback');
+const options=new URLSearchParams(location.search);
+let routes=availableRoutes;
+if(options.has('booking-only'))routes=availableRoutes.filter(route=>route.startsWith('/booking/?'));
+if(options.has('articles-only'))routes=availableRoutes.filter(route=>route==='/'||route.startsWith('/articles/'));
+const fallback=options.has('fallback');
+const noscript=options.has('noscript');
 const frame=document.querySelector('iframe');
+if(noscript)frame.setAttribute('sandbox','allow-same-origin');
 const report=document.querySelector('#report');
 const runButton=document.querySelector('#run');
 const models=new Set(['EyeSystem','BodyHealth','SpineSystem','SleepSystem','FootSystem','Moxi']);
+const photoSources=new Map([
+  ['/articles/teplovoy-kovrik-voprosy/','https://ok.ru/profile/583466162659/statuses/157546717183459'],
+  ['/articles/kogda-vyveski-rasplyvayutsya/','https://ok.ru/profile/583466162659/statuses/157318563626467']
+]);
 const nextFrame=()=>new Promise(resolve=>setTimeout(resolve,0));
 function measure(doc){
   const win=doc.defaultView;
@@ -79,6 +89,26 @@ async function run(){
     frame.src=route+(fallback?(route.includes('?')?'&':'?')+'heading-fallback=1':'');
     await new Promise((resolve,reject)=>{frame.onload=resolve;frame.onerror=reject});
     const doc=frame.contentDocument;await doc.fonts.ready;
+    const story=doc.querySelector('article.centre-story');
+    if(story){
+      const trigger=story.querySelector('button[data-ok-player]');
+      const photoStory=photoSources.has(route);
+      const expectedSource=photoStory?photoSources.get(route):'https://ok.ru/video/'+trigger?.dataset.okPlayer;
+      const source=[...story.querySelectorAll('a')].find(link=>link.href===expectedSource);
+      const invalidTrigger=photoStory?Boolean(story.querySelector('[data-video-frame],[data-ok-player]')):!trigger||trigger.hidden!==noscript;
+      if(invalidTrigger||!source?.getClientRects().length||story.querySelector('iframe,audio,video')){
+        issues.push({route,failures:['Every story needs its visible original source, and only video stories can offer playback on request']});
+      }
+    }
+    if(noscript){
+      frame.style.width='320px';
+      await nextFrame();
+      const articleLink=doc.querySelector('header nav a[href$="/articles/"]');
+      const menu=doc.querySelector('.menu-toggle');
+      if(!articleLink?.getClientRects().length||menu?.getClientRects().length){
+        issues.push({route,width:320,failures:['The header article link must work without opening a scripted menu']});
+      }
+    }
     if(route.startsWith('/booking/?')){
       const main=doc.querySelector('main');
       if(doc.title!==visitPage.title||visitContent(doc)!==visitContent(visitPage)||
@@ -97,7 +127,7 @@ async function run(){
       report.textContent=JSON.stringify({status:'running',cases:cases.length,issues:issues.length,last:label},null,2);
     }
   }
-  report.textContent=JSON.stringify({status:issues.length?'FAIL':'PASS',fallback,cases:cases.length,headings:cases.reduce((n,c)=>n+c.headingCount,0),words:cases.reduce((n,c)=>n+c.words,0),largestWord,issues,results:cases},null,2);runButton.disabled=false;
+  report.textContent=JSON.stringify({status:issues.length?'FAIL':'PASS',fallback,noscript,cases:cases.length,headings:cases.reduce((n,c)=>n+c.headingCount,0),words:cases.reduce((n,c)=>n+c.words,0),largestWord,issues,results:cases},null,2);runButton.disabled=false;
 }
 runButton.addEventListener('click',run);run();
 </script></html>`;
