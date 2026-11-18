@@ -15,10 +15,16 @@ async function findPages(directory = root) {
   }
   return pages;
 }
-const routes = [...await findPages(), '/booking/?purpose=price&product=bodyhealth', '/booking/?purpose=equipment&product=bodyhealth'];
+const oldBookingLinks = [
+  '/booking/?purpose=price',
+  '/booking/?purpose=equipment',
+  '/booking/?purpose=price&product=bodyhealth',
+  '/booking/?purpose=equipment&product=eyesystem'
+];
+const routes = [...await findPages(), ...oldBookingLinks];
 const harness = `<!doctype html><html lang="ru"><meta charset="utf-8"><title>Accessible heading layout checks</title>
 <style>body{font:16px/1.5 monospace;margin:24px}iframe{display:block;height:780px;border:1px solid #777}pre{white-space:pre-wrap}button{font:inherit;padding:10px}</style>
-<h1>Accessible heading layout checks</h1><p>${routes.length} routes and booking query variants × 3 text sizes × 2 schemes × 2 widths. Checks actual word ranges, horizontal overflow, clipping, and the selected body size. No preferences are stored.</p><button id="run">Run again</button><pre id="report" role="status">Running…</pre><iframe title="Current test page"></iframe>
+<h1>Accessible heading layout checks</h1><p>${routes.length} pages and old links × 3 text sizes × 2 schemes × 2 widths. Checks visit information on old links, word ranges, overflow, clipping and text size.</p><button id="run">Run again</button><pre id="report" role="status">Running…</pre><iframe title="Current test page"></iframe>
 <script type="module">
 const availableRoutes=${JSON.stringify(routes)};
 const routes=new URLSearchParams(location.search).has('booking-only')?availableRoutes.filter(route=>route.startsWith('/booking/?')):availableRoutes;
@@ -65,10 +71,21 @@ function measure(doc){
 }
 async function run(){
   runButton.disabled=true;const cases=[];const issues=[];let largestWord=null;
+  const visitResponse=await fetch('/booking/');
+  if(!visitResponse.ok)throw Error('Visit information could not be loaded');
+  const visitPage=new DOMParser().parseFromString(await visitResponse.text(),'text/html');
+  const visitContent=doc=>doc.querySelector('main')?.textContent.replace(/\\s+/g,' ').trim();
   for(const route of routes){
     frame.src=route+(fallback?(route.includes('?')?'&':'?')+'heading-fallback=1':'');
     await new Promise((resolve,reject)=>{frame.onload=resolve;frame.onerror=reject});
     const doc=frame.contentDocument;await doc.fonts.ready;
+    if(route.startsWith('/booking/?')){
+      const main=doc.querySelector('main');
+      if(doc.title!==visitPage.title||visitContent(doc)!==visitContent(visitPage)||
+         !main?.querySelector('a[href^="tel:"]')||!main.querySelector('a[href^="https://yandex.ru/maps/"]')||main.querySelector('form')){
+        issues.push({route,failures:['Old URL must show the same visit information, direct call and map']});
+      }
+    }
     for(const width of [320,390])for(const [size,pixels] of [['large',22],['larger',26],['largest',30]])for(const theme of ['light','dark']){
       frame.style.width=width+'px';Object.assign(doc.documentElement.dataset,{display:'accessible',textSize:size,contrast:theme});
       await nextFrame();const result=measure(doc);const label={route,width,size,theme};
@@ -84,7 +101,7 @@ async function run(){
 }
 runButton.addEventListener('click',run);run();
 </script></html>`;
-const types={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.ttf':'font/ttf','.png':'image/png','.jpg':'image/jpeg','.svg':'image/svg+xml'};
+const types={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.ttf':'font/ttf','.png':'image/png','.jpg':'image/jpeg','.webp':'image/webp','.vtt': 'text/vtt; charset=utf-8', '.mp4':'video/mp4','.svg':'image/svg+xml'};
 http.createServer(async(req,res)=>{
   try{
     const url=new URL(req.url,'http://localhost');
@@ -92,7 +109,7 @@ http.createServer(async(req,res)=>{
     let type='text/html; charset=utf-8';
     if(url.pathname==='/__heading-check/')content=harness;
     else if(url.pathname==='/styles.css'){
-      content=(await Promise.all(['styles.css','refinement.css','bodyhealth.css','landing.css','reviews.css','display.css'].map(file=>readFile(path.resolve('site',file),'utf8')))).join('\n');type=types['.css'];
+      content=await readFile(path.join(root,'styles.css'),'utf8');type=types['.css'];
       // Emulate a browser that drops unsupported container-unit declarations.
       if(url.searchParams.has('heading-fallback'))content=content.replace(/font-size:[^;}]*cqi[^;}]*;?/g,'');
     }else{

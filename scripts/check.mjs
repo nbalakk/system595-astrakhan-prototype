@@ -3,23 +3,42 @@ import path from 'node:path';
 import assert from 'node:assert/strict';
 
 const root = path.resolve('dist');
-const required = ['index.html', 'rehabilitation/index.html', 'equipment/index.html', 'equipment/eyesystem/index.html', 'equipment/bodyhealth/index.html', 'reviews/index.html', 'articles/index.html', 'articles/first-visit/index.html', 'contacts/index.html', 'booking/index.html'];
+const requiredRoutes = [
+  '', 'five-steps/', 'rehabilitation/', 'equipment/', 'articles/', 'articles/first-visit/',
+  'reviews/', 'contacts/', 'booking/', 'media/', 'privacy/',
+  ...['eyesystem', 'spinesystem', 'sleepsystem', 'footsystem', 'moxi', 'bodyhealth'].map(slug => `equipment/${slug}/`)
+];
+const legacySections = {
+  '': ['appointment'],
+  'rehabilitation/': ['first-visit', 'visits', 'at-home'],
+  'articles/first-visit/': ['before', 'questions', 'bring', 'home'],
+  'contacts/': ['contact-details']
+};
 let checks = 0;
-for (const file of required) {
+for (const route of requiredRoutes) {
+  const file = route + 'index.html';
   const html = await readFile(path.join(root, file), 'utf8');
   assert.match(html, /<h1[ >]/, `${file}: heading`);
   assert.match(html, /name="viewport"/, `${file}: viewport`);
-  assert.match(html, /noindex/, `${file}: site must not be indexed yet`);
+  assert.match(html, /<meta\b(?=[^>]*name="robots")(?=[^>]*content="[^"]*\bnoindex\b)[^>]*>/i, `${file}: keep the site out of search results`);
+  for (const id of legacySections[route] ?? []) {
+    assert(html.includes(`id="${id}"`), `${route}#${id}: previous section link needs a visitor destination`);
+    checks++;
+  }
   checks += 3;
 }
 async function inspect(dir) {
   for (const entry of await readdir(dir, { withFileTypes: true })) {
     const file = path.join(dir, entry.name);
     if (entry.isDirectory()) { await inspect(file); continue; }
-    assert(!/\.(?:md|env|log)$/.test(file), 'Internal files must not enter distribution');
+    assert(!/\.(?:md|zip|env|log)$|^\.env(?:\.|$)/i.test(entry.name), 'Internal files must not enter distribution');
     assert(!/^(?:review-pm(?:-v\d+)?|docs|preview|\.git)(?:[\\/]|$)/.test(path.relative(root, file)), 'Internal review material must not enter distribution');
     if (!file.endsWith('.html')) continue;
     const html = await readFile(file, 'utf8');
+    for (const resource of html.matchAll(/<(?:img|picture|source|iframe|script|video|audio|link)\b[^>]*>/gi)) {
+      const remote = /\b(?:src|srcset|poster|href)="(?:[^"]*,\s*)?(?:https?:)?\/\//i;
+      assert(!remote.test(resource[0]), `${file}: external media or scripts must not make a request on page load`);
+    }
     const readable = html.replace(/<(?:script|style)\b[^>]*>[\s\S]*?<\/(?:script|style)>/gi, '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
     assert(!/прототип|демонстрацион|сценарий записи|после запуска сайта|на готовом сайте|позже добавим|здесь появ|появятся после подтверждения|планируем добавить|будет добавлен|место для реальной фотографии/iu.test(readable), `${file}: remove development copy from visitor content`);
     assert(!html.includes('class="prototype-bar"'), `${file}: no draft banner`);
@@ -30,7 +49,7 @@ async function inspect(dir) {
       assert.match(markup, /<a\b[^>]*href="tel:\+79093738094"[^>]*>/, `${file}: ${region} must link to the main centre telephone`);
       checks++;
     }
-    for (const match of html.matchAll(/(?:href|src)="([^"]+)"/g)) {
+    for (const match of html.matchAll(/\b(?:href|src|poster)="([^"]+)"/g)) {
       const value = match[1];
       if (value.startsWith('tel:')) {
         assert(['tel:+79093738094', 'tel:+79170867329'].includes(value), `${file}: only the two supplied telephone numbers may be linked`);
@@ -52,25 +71,18 @@ async function inspect(dir) {
       }
       checks++;
     }
-    assert(!/<form[^>]+action="https?:/i.test(html), 'Unavailable booking cannot post externally');
-    if (html.includes('data-booking-form')) {
-      assert.match(html, /<fieldset[^>]*disabled[^>]*data-booking-fields/, 'Booking fields stay disabled');
-      assert.match(html, /Онлайн-запись пока недоступна\. Данные не отправляются/, 'Unavailable booking is stated next to the form');
-      assert.match(html, /<button[^>]*type="submit"[^>]*disabled/, 'Unavailable submit stays disabled');
-      assert(!html.includes('form-result'), 'No fictional booking success');
-      const fields = html.match(/<fieldset[^>]*data-booking-fields[^>]*>[\s\S]*?<\/fieldset>/)?.[0] || '';
-      assert(!/href="tel:/i.test(fields), 'Telephone links must stay outside disabled booking controls');
-      checks += 5;
-    }
+    assert.doesNotMatch(html, /<form\b|data-booking-form/i, `${file}: visits are arranged directly by phone`);
+    assert.doesNotMatch(html, /(?:[?&]|&amp;)(?:purpose|product)=/i, `${file}: navigation must not launch an old enquiry scenario`);
+    checks += 2;
   }
 }
 await inspect(root);
 const contacts = await readFile(path.join(root, 'contacts/index.html'), 'utf8');
-for (const value of ['tel:+79093738094', 'tel:+79170867329', 'https://www.instagram.com/novumedical_astrakhan/']) {
+for (const value of ['tel:+79093738094', 'tel:+79170867329']) {
   assert(contacts.includes(`href="${value}"`), `Contacts must include the supplied clickable ${value}`);
   checks++;
 }
-assert.match(contacts, /Светлана Михайловна Бабак/, 'Contacts must identify the supplied contact person');
+assert.match(contacts, /Светлана (?:Михайловна )?Бабак/, 'Contacts must identify the consultant');
 const mapLink = [...contacts.matchAll(/<a\b[^>]*href="([^"]+)"/g)].map(match => match[1]).find(value => value.startsWith('https://yandex.ru/maps/'));
 assert(mapLink, 'Contacts must include a Yandex Maps address search');
 const mapUrl = new URL(mapLink.replaceAll('&amp;', '&'));
@@ -81,20 +93,13 @@ for (const part of [/Астрахань/u, /Савушкина/u, /46А/u, /Фа
 assert(!mapUrl.hash, 'The map search must not pin unverified coordinates');
 checks += 4;
 const js = await readFile(path.join(root, 'app.js'), 'utf8');
-assert(!/\b(?:fetch|XMLHttpRequest|localStorage|sessionStorage|indexedDB|sendBeacon)\b|document\.cookie/.test(js), 'Booking must not transmit or persist form data');
+assert(!/\b(?:fetch|XMLHttpRequest|localStorage|sessionStorage|indexedDB|sendBeacon)\b|document\.cookie/.test(js), 'Site interactions must not transmit or store visitor data');
 const displayJs = await readFile(path.join(root, 'display.js'), 'utf8');
 assert(!/\b(?:fetch|XMLHttpRequest|sessionStorage|indexedDB|sendBeacon)\b|document\.cookie/.test(displayJs), 'Display preferences cannot send data or use other storage');
 assert.match(displayJs, /centre595\.display/, 'Only the owned display-preference key is used');
 assert(!/\.elements\b|querySelector\(['"](?:input|form)/.test(displayJs), 'Display script must not read form fields');
-for (const [route, minimum] of [['index.html', 3], ['reviews/index.html', 4]]) {
-  const html = await readFile(path.join(root, route), 'utf8');
-  assert(!html.includes('Примеры отзывов для оценки оформления'), `${route}: old review caption must be absent`);
-  assert([...html.matchAll(/<blockquote\b/g)].length >= minimum, `${route}: populated reviews`);
-  if (route === 'reviews/index.html') assert.match(html, /aria-label="Отзывы о посещении"/, `${route}: reviews use the agreed accessible label`);
-  assert(!/aggregateRating|reviewRating|itemprop="ratingValue"|проверенный отзыв|проверено|звёзд|звезд/iu.test(html), `${route}: no fabricated rating or verification`);
-  checks += route === 'reviews/index.html' ? 4 : 3;
-}
-const media = await readFile(path.join(root, 'media/index.html'), 'utf8');
-assert(!/отзыв/iu.test(media.match(/<main\b[\s\S]*?<\/main>/i)?.[0] || ''), 'Photo sources must not contain a public review-sample disclosure');
-checks++;
-console.log(`PASS: ${checks} page, link, content and asset checks; required pages present; booking privacy and distribution checks passed.`);
+const stylesheet = await readFile(path.join(root, 'styles.css'), 'utf8');
+assert.doesNotMatch(stylesheet, /(?:url\(\s*|@import\s+)["']?(?:https?:)?\/\//i, 'Styles must use local assets');
+const robots = await readFile(path.join(root, 'robots.txt'), 'utf8');
+assert.match(robots, /User-agent:\s*\*\s+Disallow:\s*\/\s*$/i);
+console.log(`PASS: ${checks} page, link, asset and visit checks; all previous routes are present.`);

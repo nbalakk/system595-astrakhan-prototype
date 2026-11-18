@@ -1,40 +1,132 @@
-import { centre, products } from './content.mjs';
-import { icon, button, bookingForm, productCard, breadcrumbs, pageHead, consultation } from './components.mjs';
+import { association, centre, centreVideos, products } from './content.mjs';
+import { breadcrumbs, consultation, icon, pageHead, productCard, visitActions } from './components.mjs';
 import { bodyhealthPage } from './bodyhealth.mjs';
 
 export { home } from './home.mjs';
 export { rehabilitation } from './rehabilitation.mjs';
+export { reviewsPage as reviews } from './reviews.mjs';
 
 export function catalog(p) {
-  return `${breadcrumbs(p, 'Оборудование')}${pageHead('Оборудование<br>для домашнего использования', 'Узнайте больше об аппаратах системы 5/95. Познакомьтесь с устройством в центре или получите консультацию перед выбором.')}<section class="container catalog-section"><div class="catalog-disclosure">${icon('book')}<p>${centre.catalogNote}</p></div><div class="catalog-toolbar"><div class="filters" role="group" aria-label="Область применения"><button class="filter active" data-filter="all" aria-pressed="true">Все аппараты</button><button class="filter" data-filter="eyes" aria-pressed="false">Область глаз</button><button class="filter" data-filter="body" aria-pressed="false">Спина и тело</button><button class="filter" data-filter="feet" aria-pressed="false">Стопы</button></div><span class="filter-count" aria-live="polite">Показано: ${products.length}</span></div><div class="product-grid">${products.map(x => productCard(x, p)).join('')}</div></section>${consultation(p)}`;
+  return `${breadcrumbs(p, 'Аппараты системы 5/95')}
+    ${pageHead('Аппараты системы 5/95', 'Фотографии помогут узнать аппарат и подготовить вопросы к встрече. Если вас интересует определённая модель, уточните у Светланы, можно ли увидеть её в центре.')}
+    <section class="container catalog-section" aria-label="Фотографии и описания аппаратов">
+      <div class="product-grid">${products.map(model => productCard(model, p)).join('')}</div>
+      <p class="photo-caption">Фотографии из материалов System 5/95 и NovuMedical. <a href="${p}media/#equipment">Источники изображений</a></p>
+      <p><a class="text-link" href="${p}articles/first-visit/#documents">Инструкции и сертификаты на аппараты${icon('arrow')}</a></p>
+    </section>
+    ${consultation(p)}`;
+}
+
+function modelPhotos(p, product) {
+  return `<div class="product-gallery">
+    <div class="gallery-main"><img id="product-main-image" src="${p}assets/${product.image}" alt="Аппарат ${product.name}" width="720" height="540"></div>
+    ${product.lifestyle ? `<div class="gallery-thumbs" role="group" aria-label="Фотографии аппарата">
+      <button class="selected" aria-pressed="true" data-gallery-src="${p}assets/${product.image}" data-gallery-alt="Аппарат ${product.name}"><img src="${p}assets/${product.image}" alt="Общий вид аппарата" width="100" height="80"></button>
+      <button aria-pressed="false" data-gallery-lifestyle data-gallery-src="${p}assets/${product.lifestyle}" data-gallery-alt="Пример использования ${product.name} из материалов системы 5/95"><img src="${p}assets/${product.lifestyle}" alt="Пример использования" width="100" height="80"></button>
+    </div>` : ''}
+    <p class="photo-caption">Иллюстрации из материалов системы 5/95. <a href="${p}media/#equipment">Источник фотографий</a></p>
+  </div>`;
 }
 
 export function productPage(p, product) {
   if (product.slug === 'bodyhealth') return bodyhealthPage(p, product);
-  return `${breadcrumbs(p, product.name, ['equipment/', 'Оборудование'])}<section class="container product-detail"><div class="product-gallery"><div class="gallery-main"><img id="product-main-image" src="${p}assets/${product.image}" alt="Аппарат ${product.name}" width="720" height="540"></div>${product.lifestyle ? `<div class="gallery-thumbs" role="group" aria-label="Фотографии аппарата"><button class="selected" aria-pressed="true" data-gallery-src="${p}assets/${product.image}" data-gallery-alt="Аппарат ${product.name}"><img src="${p}assets/${product.image}" alt="Вид аппарата" width="100" height="80"></button><button aria-pressed="false" data-gallery-src="${p}assets/${product.lifestyle}" data-gallery-alt="Пример использования ${product.name} из материалов системы 5/95"><img src="${p}assets/${product.lifestyle}" alt="Пример использования" width="100" height="80"></button></div>` : ''}<p class="photo-caption">Фото из материалов системы 5/95. Не является съёмкой центра в Астрахани. <a href="${p}media/">Источник</a></p></div><div class="product-summary"><span class="product-area">${product.area}</span><h1>${product.name}</h1><p class="lead">${product.description}</p><p class="availability">Наличие в центре и стоимость уточняйте перед посещением.</p><div class="product-actions">${button(`${p}booking/?purpose=price&product=${product.slug}`, 'Узнать стоимость')}${button(`${p}booking/?purpose=equipment&product=${product.slug}`, 'Получить консультацию', true)}</div><a class="text-link" href="${p}booking/?product=${product.slug}">Познакомиться с аппаратом в центре${icon('arrow')}</a></div></section><section class="container product-information section"><div><h2>Что важно знать<br>перед выбором</h2><p>Перед покупкой уточните модель аппарата, документы и условия приобретения.</p></div><div><h3>Посмотрите аппарат в работе</h3><p>Уточните, есть ли именно эта модель в центре и можно ли познакомиться с её управлением. Фото в каталоге не подтверждает наличие аппарата.</p><h3>Сверьте модель и комплектацию</h3><p>Попросите точное название, технический паспорт и инструкцию. Размеры, режимы и параметры должны относиться к конкретной версии устройства.</p><h3>Обсудите возможность применения</h3><p>Уточните ограничения в инструкции и обсудите использование с лечащим врачом. Не выбирайте режимы по рекламным описаниям или чужим отзывам.</p><h3>Уточните условия покупки</h3><p>Узнайте итоговую стоимость, доступность, сроки передачи, гарантию и порядок обращения в сервис.</p></div></section><section class="surface-section"><div class="container section specification"><h2>Данные конкретной модели</h2><dl><div><dt>Модель</dt><dd>${product.name}</dd></div><div><dt>Комплектация и параметры</dt><dd>Сверьте с техническим паспортом выбранной модели</dd></div><div><dt>Стоимость и наличие</dt><dd>Уточняются у центра</dd></div><div><dt>Гарантия и обслуживание</dt><dd>Уточняйте по документам поставщика</dd></div></dl><p class="photo-caption">Изображения и сведения об устройстве — из <a href="${product.source}" target="_blank" rel="noopener">каталога System595LA</a>.</p></div></section>${consultation(p)}`;
+  return `${breadcrumbs(p, product.name, ['equipment/', 'Аппараты системы 5/95'])}
+    <section class="container product-detail">
+      ${modelPhotos(p, product)}
+      <div class="product-summary"><span class="product-area">${product.area}</span>
+        <h1>${product.name}</h1><p class="lead">${product.description}</p>
+        <h2>Вопрос для встречи</h2><p>${product.question}</p>
+        <p>Если хотите увидеть ${product.name}, назовите модель Светлане при звонке. Она уточнит, какой аппарат можно посмотреть в день встречи.</p>
+        <a class="text-link" href="${centre.phoneHref}">Позвонить Светлане ${centre.phone}</a>
+      </div>
+    </section>
+    <section class="surface-section"><div class="container section product-information">
+      <div><h2>Инструкции и сертификаты на аппараты</h2></div><div><p>Попросите Светлану показать инструкцию к ${product.name}. Сверьте полное обозначение на корпусе с названием в инструкции. Уточните, есть ли у этой модели сертификат или декларация и где можно посмотреть документ.</p>
+      <a class="text-link" href="${p}articles/first-visit/#documents">О документах к модели${icon('arrow')}</a></div>
+    </div></section>
+    ${consultation(p)}`;
 }
 
 export function articles(p) {
-  return `${breadcrumbs(p, 'Полезные материалы')}${pageHead('Полезные материалы', 'Понятные памятки о первом посещении центра и выборе оборудования для дома.')}<section class="container article-index"><a class="article-feature" href="${p}articles/first-visit/"><div class="article-art">${icon('book')}<span>Первое<br>посещение</span></div><div><span class="article-meta">Памятка · 4 минуты</span><h2>Как подготовиться к первому посещению центра</h2><p>Какие вопросы записать, что уточнить до поездки и как подойти к выбору аппарата для дома.</p><span class="text-link">Читать памятку${icon('arrow')}</span></div></a><div class="upcoming-material"><h2>Если выбираете аппарат для дома</h2><div><p>Сравните устройство моделей, разберитесь в управлении и подготовьте вопросы о комплектации, гарантии и обслуживании.</p><a class="text-link" href="${p}equipment/">Перейти к оборудованию${icon('arrow')}</a></div></div></section>${consultation(p)}`;
+  return `${breadcrumbs(p, 'Перед визитом')}
+    ${pageHead('Перед визитом', 'Как договориться о встрече, найти вход и подготовить вопросы к консультанту.')}
+    <section class="container article-index"><a class="article-feature" href="${p}articles/first-visit/">
+      <div class="article-art" aria-hidden="true">${icon('book')}<span>Первое<br>посещение</span></div>
+      <div><h2>Памятка перед поездкой</h2><p>Что уточнить по телефону, что взять с собой и где посмотреть инструкцию к аппарату.</p><span class="text-link">Прочитать памятку${icon('arrow')}</span></div></a>
+      <div class="upcoming-material"><h2>Как найти центр</h2><div><p>${centre.address}. Позвоните Светлане, если вам нужен ориентир у входа.</p>
+      <a class="text-link" href="${centre.mapUrl}">Открыть адрес на карте${icon('pin')}</a></div></div>
+    </section>`;
 }
 
 export function article(p) {
-  return `${breadcrumbs(p, 'Подготовка к посещению', ['articles/', 'Полезные материалы'])}<article class="container article-layout"><aside class="article-aside"><span>Памятка</span><p>4 минуты чтения</p><nav aria-label="Содержание статьи"><a href="#before">До записи</a><a href="#questions">Вопросы к центру</a><a href="#bring">Что взять с собой</a><a href="#home">Если выбираете аппарат</a></nav></aside><div class="article-body"><h1>Как подготовиться к первому посещению центра</h1><p class="article-lead">Знакомство пройдёт спокойнее, если заранее разобраться в организационных вопросах и записать то, что хочется спросить.</p><p class="article-notice">Памятка поможет подготовить организационные вопросы. Возможность использования оборудования и ограничения обсудите с лечащим врачом.</p><h2 id="before">Сначала уточните условия</h2><p>До поездки получите точный адрес, ориентиры у входа и время встречи. Спросите о стоимости, длительности и формате первого посещения.</p><p>Если вам важны вход без ступеней, лифт или возможность прийти с сопровождающим, обсудите это заранее.</p><h2 id="questions">Запишите несколько вопросов</h2><ul class="article-checklist"><li>Какие услуги и аппараты доступны сейчас?</li><li>Кто проводит знакомство и помогает разобраться в оборудовании?</li><li>Нужны ли предварительная запись и какие-либо документы?</li><li>Как устроены последующие посещения и сколько они стоят?</li><li>Где можно прочитать инструкцию и ограничения конкретного аппарата?</li></ul><p>Такой список помогает получить конкретные ответы и спокойно сравнить варианты после встречи.</p><h2 id="bring">Уточните, что взять с собой</h2><p>Спросите у центра, нужны ли документы, сменная обувь или другие вещи. Не приобретайте специальные принадлежности до подтверждения требований.</p><p>Вопрос о возможности использования оборудования при вашем состоянии здоровья адресуйте лечащему врачу. Центр должен предоставить инструкцию конкретной модели, чтобы обсуждение опиралось на документы.</p><h2 id="home">Если вы выбираете аппарат для дома</h2><p>До покупки узнайте точную модель и комплектацию, размеры, условия размещения и ухода. Попросите показать управление и объяснить, где найти инструкцию.</p><p>Отдельно уточните итоговую цену, сроки передачи, гарантию, сервис и порядок обращения при неисправности. Устные обещания стоит сверить с документами продавца.</p><div class="article-callout"><h3>Возьмите время на решение</h3><p>Запишите название понравившейся модели и важные условия. Вернитесь к инструкции и своим вопросам после посещения, прежде чем принимать решение.</p></div><h2>Что уточнить перед поездкой</h2><ul class="article-checklist"><li>Какой точный адрес и как найти вход?</li><li>В какое время прийти и сколько длится посещение?</li><li>Какие аппараты доступны и какова стоимость посещения?</li><li>Что взять с собой и можно ли прийти с сопровождающим?</li></ul><a class="text-link" href="${p}articles/">Все полезные материалы${icon('arrow')}</a></div></article>${consultation(p)}`;
+  return `${breadcrumbs(p, 'Памятка перед поездкой', ['articles/', 'Перед визитом'])}
+    <article class="container article-layout">
+      <aside class="article-aside"><span>В этой памятке</span>
+        <nav aria-label="Содержание памятки"><a href="#before">До поездки</a><a href="#bring">Что взять</a><a href="#questions">Что спросить</a><a href="#documents">Документы к аппарату</a></nav>
+      </aside>
+      <div class="article-body"><h1>Памятка перед поездкой</h1><p class="article-lead">Для первого звонка достаточно сказать, что вы хотите познакомиться с центром. Светлана Бабак поможет выбрать время.</p>
+        <h2 id="before">До поездки</h2><p>Запишите адрес и время встречи. Уточните, сколько она продлится и где удобнее войти в здание. Если нужен путь без ступеней или вы хотите прийти вместе с близким, расскажите об этом Светлане.</p>
+        <p><a href="${centre.mapUrl}">Открыть адрес на карте</a></p>
+        <h2 id="bring">Что взять с собой</h2><p>Запишите вопросы в телефон или на бумагу. Спросите заранее, нужны ли какие-либо документы или сменная обувь.</p>
+        <h2 id="questions">Что спросить на встрече</h2><ul class="article-checklist"><li>Что я могу посмотреть сегодня?</li><li>Как называется этот аппарат и для чего он предназначен?</li><li>Где находится управление и как остановить работу?</li><li>Как договориться о следующей встрече, если захочется вернуться?</li></ul>
+        <h2 id="documents">Инструкции и сертификаты на аппараты</h2><p id="home">Попросите показать полное название модели на корпусе и инструкцию с тем же обозначением. В инструкции найдите назначение, правила использования и ограничения.</p>
+        <p>Если хотите ознакомиться с документами, назовите Светлане конкретную модель. Спросите, есть ли для неё сертификат или декларация и как посмотреть этот документ.</p>
+        <p>Если у вас есть вопросы о своём здоровье, обсудите возможность использования аппарата с лечащим врачом.</p>
+      </div>
+    </article>${consultation(p)}`;
 }
 
-export { reviewsPage as reviews } from './reviews.mjs';
-
 export function contacts(p) {
-  return `${breadcrumbs(p, 'О центре и контакты')}${pageHead('Центр здоровья и долголетия<br>в Астрахани', 'Для пенсионеров, которые хотят заботиться о здоровье и сохранять активность с возрастом. Посещения центра и знакомство с оборудованием системы 5/95.')}<section class="container contact-layout" id="contact-details"><div><h2>О центре</h2><p class="large-copy">${centre.contact}</p><p>По вопросам посещений центра и выбора оборудования для дома обращайтесь по телефону.</p><p>На первом визите можно задать вопросы об аппаратах и обсудить дальнейшие посещения. Время, стоимость и доступные модели нужно уточнить заранее.</p><h2>С чем можно прийти</h2><ul class="simple-list"><li>Узнать о формате первого и последующих посещений.</li><li>Познакомиться с управлением аппаратов системы 5/95.</li><li>Обсудить выбор модели, комплектацию и условия покупки для дома.</li></ul><a class="text-link" href="${p}rehabilitation/">Как проходят посещения${icon('arrow')}</a></div><div class="contact-panel"><h2>Как связаться и прийти</h2><dl><div><dt>${icon('phone')} Телефоны</dt><dd><a class="contact-phone" href="${centre.phoneHref}">${centre.phone}</a><br><a class="contact-phone" href="${centre.secondaryPhoneHref}">${centre.secondaryPhone}</a></dd></div><div><dt>${icon('pin')} Адрес</dt><dd>${centre.address}</dd></div><div><dt>Instagram</dt><dd><a href="${centre.instagram}" target="_blank" rel="noopener">${centre.instagramLabel}</a></dd></div><div><dt>${icon('clock')} Время работы</dt><dd>${centre.scheduleNote}</dd></div></dl><p class="plain-note">Перед поездкой позвоните в центр и согласуйте удобное время посещения.</p><a class="button" href="${centre.mapUrl}" target="_blank" rel="noopener">Найти на карте</a></div></section>${consultation(p)}`;
+  return `${breadcrumbs(p, 'Контакты')}
+    ${pageHead('Как связаться и прийти', 'Договоритесь о времени до поездки. Когда будете звонить, скажите, что планируете прийти впервые.')}
+    <section class="container contact-layout" id="contact-details">
+      <div><h2>Консультант центра</h2><p class="large-copy">${centre.contact}</p>
+      <p>На групповых занятиях Светлана показывает, как пользоваться массажными и тепловыми аппаратами системы 5/95. У неё можно узнать, как проходит первое занятие и где найти вход.</p>
+      <p>Если вам важно прийти с близким человеком или уточнить, есть ли ступени у входа, обсудите это при звонке.</p>
+      <a class="text-link" href="${p}rehabilitation/">Как проходит первое посещение${icon('arrow')}</a></div>
+      <div class="contact-panel"><h2>Телефон и адрес</h2><dl>
+        <div><dt>${icon('phone')} Телефоны</dt><dd><a class="contact-phone" href="${centre.phoneHref}">${centre.phone}</a><br><a class="contact-phone" href="${centre.secondaryPhoneHref}">${centre.secondaryPhone}</a></dd></div>
+        <div><dt>${icon('pin')} Адрес</dt><dd>${centre.address}</dd></div>
+        <div><dt>${icon('clock')} Время посещения</dt><dd>${centre.scheduleNote}</dd></div>
+        <div><dt>Страницы центра</dt><dd><a href="${centre.okUrl}">Одноклассники</a><br><a href="${centre.instagram}">Instagram · ${centre.instagramLabel}</a></dd></div>
+      </dl><a class="button" href="${centre.mapUrl}">Открыть адрес на карте</a></div>
+    </section>`;
 }
 
 export function booking(p) {
-  return `${breadcrumbs(p, 'Запись на посещение')}<section class="container booking-page"><div><h1>Запись на посещение</h1><p class="lead">Подготовьтесь к посещению центра: уточните время, формат и необходимые документы.</p><div class="booking-expectations"><h2>Что уточнить перед посещением</h2><p>Уточните время, адрес, стоимость и доступные аппараты. Спросите о формате первого визита и необходимых документах.</p></div><a class="text-link" href="${p}articles/first-visit/">Подготовиться к посещению${icon('arrow')}</a></div><div class="booking-page-form"><h2 id="booking-context">Запись на посещение</h2><p id="product-context" class="product-context" hidden></p>${bookingForm(p, 'page-booking')}</div></section>`;
+  return `${breadcrumbs(p, 'Договориться о посещении')}
+    ${pageHead('Договориться о посещении', 'Позвоните консультанту Светлане Бабак. Выберите удобное время и уточните, как найти вход.')}
+    <section class="container contact-layout"><div><h2>Позвонить Светлане</h2>
+      <p>Можно начать так: «Хочу прийти к вам в первый раз. Когда удобнее подойти и сколько времени займёт встреча?»</p>
+      <p><a class="button" href="${centre.phoneHref}">${centre.phone}</a></p>
+      <p>Дополнительный телефон <a class="contact-phone" href="${centre.secondaryPhoneHref}">${centre.secondaryPhone}</a></p></div>
+      <div class="contact-panel"><h2>Куда прийти</h2><p>${centre.address}</p>
+      <p>По этому адресу можно открыть карту и построить маршрут от вашего дома.</p><a class="button" href="${centre.mapUrl}">Открыть карту</a></div>
+    </section>`;
 }
 
 export function media(p) {
-  return `${breadcrumbs(p, 'Источники фотографий')}${pageHead('Источники фотографий', 'Материалы производителей оборудования системы 5/95.')}<section class="container legal-copy"><h2>Аппараты системы 5/95</h2><p>Изображения EyeSystem, SpineSystem, SleepSystem, FootSystem и Moxi — из материалов <a href="https://system595la.com/ru/" target="_blank" rel="noopener">System595LA</a>.</p><p>Фотографии использования аппаратов служат иллюстрациями. На них не изображены помещение центра в Астрахани, Светлана Бабак или сотрудники центра.</p><p>Наличие конкретной модели, её комплектацию и стоимость уточняйте перед посещением или покупкой.</p><h2>BodyHealth</h2><p>Фотографии и сведения об устройстве BodyHealth — по материалам <a href="https://novumedical.org/products/bodyhealth/" target="_blank" rel="noopener">NovuMedical</a> и <a href="https://system595.com/ru/bodyhealth-ru/" target="_blank" rel="noopener">System 5/95</a>. Перед использованием запросите инструкцию и документы именно к вашей модели.</p><h2>Онлайн-запись</h2><p>Онлайн-запись пока недоступна. Данные не отправляются.</p><h2>Шрифт</h2><p>Golos Text распространяется по лицензии SIL Open Font License. <a href="${p}assets/OFL.txt">Текст лицензии</a>.</p></section>`;
+  return `${breadcrumbs(p, 'Фотографии и видео')}
+    ${pageHead('Фотографии и видео', 'Здесь собраны публикации центра и источники изображений аппаратов.')}
+    <section class="container legal-copy"><h2>Материалы центра</h2>
+      <p>Страница в Одноклассниках называется <a href="${centre.okUrl}">«Центр Здоровья и Долголетия»</a>. Порядок записи по телефону указан <a href="https://ok.ru/profile/583466162659/statuses/157577238805987">в сообщении центра</a>.</p>
+      <p>Фрагмент занятия и рассказ посетительницы опубликованы самим центром. Обложки взяты из соответствующих записей.</p>
+      <ul>${Object.values(centreVideos).map(video => `<li><a href="${video.url}">${video.title}</a>, ${video.published} года, ${video.duration}.</li>`).join('')}</ul>
+      <p>Видео о пяти шагах системы 5/95 предоставила Светлана Бабак. Этим шагам посвящено несколько занятий. <a href="${p}five-steps/">Посмотреть пять шагов</a>.</p>
+      <h2 id="equipment">Иллюстрации аппаратов</h2><p>Фотографии EyeSystem, SpineSystem, SleepSystem, FootSystem и Moxi показывают аппараты и примеры их использования. Источник — <a href="https://system595la.com/ru/">материалы System 5/95</a>.</p>
+      <p>Фотографии BodyHealth, панели управления и пример использования опубликованы <a href="https://novumedical.org/products/bodyhealth/">на странице модели NovuMedical</a>.</p>
+      <h2>Об Ассоциации</h2><p>${association.description} <a href="${association.url}">Официальная страница Ассоциации</a>.</p>
+      <h2>Шрифт</h2><p>Golos Text распространяется по лицензии SIL Open Font License. <a href="${p}assets/OFL.txt">Текст лицензии</a>.</p>
+    </section>`;
 }
+
 export function privacy(p) {
-  return `${breadcrumbs(p, 'Онлайн-запись')}${pageHead('Онлайн-запись', 'Онлайн-запись пока недоступна. Данные не отправляются.')}<section class="container legal-copy"><h2>Запись через сайт</h2><p>Форма не принимает заявки. Поля имени и телефона и кнопка отправки недоступны; центр не получает данные через эту форму.</p><p>Выбор темы и аппарата при переходе по сайту помогает ориентироваться в информации и не является заявкой.</p><h2>Настройки отображения</h2><p>Браузер запоминает только включение версии для слабовидящих, размер текста и контрастную схему. Настройки действуют при переходах между страницами. Имя, телефон и тема обращения в них не сохраняются.</p><a class="text-link" href="${p}rehabilitation/">О посещении центра${icon('arrow')}</a></section>`;
+  return `${breadcrumbs(p, 'О сайте')}
+    ${pageHead('О сайте', 'Сайт поможет подготовиться к поездке. Договориться о посещении можно напрямую со Светланой Бабак.')}
+    <section class="container legal-copy"><h2>Звонок и маршрут</h2>
+      <p>Ссылка с номером телефона открывает набор номера, ссылка с адресом — карту. Имя и телефон для этого вводить не нужно.</p>
+      ${visitActions()}
+      <h2>Видео из Одноклассников</h2><p>Когда вы нажимаете «Смотреть видео» на обложке занятия или отзыва, загружается плеер Одноклассников. Рядом с каждой записью есть прямая ссылка на неё.</p>
+      <h2>Настройки отображения</h2><p>Если вы включите версию для слабовидящих, браузер запомнит размер текста и выбранные цвета на этом устройстве. Кнопка «Обычная версия» возвращает исходный вид.</p>
+    </section>`;
 }

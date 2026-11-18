@@ -1,0 +1,38 @@
+.steps-preview {
+  padding-block: clamp(32px, 5vw, 60px);
+  border-block: 1px solid var(--line);
+}
+.steps-preview-intro { display: grid; grid-template-columns: 1fr 1fr; gap: 35px; align-items: start; }
+.steps-preview h2, .steps-detail h2 { font-size: clamp(25px, 3vw, 35px); }
+.steps-preview-intro p { margin: 0; max-width: 50ch; }
+.steps-outline, .steps-scenes { counter-reset: scene; list-style: none; padding: 0; }
+.steps-outline { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px; margin: 24px 0 10px; }
+.steps-outline li, .steps-scenes li { counter-increment: scene; }
+.steps-outline li { line-height: 1.45; font-weight: 500; border-top: 1px solid var(--line); padding-block: 10px; }
+.steps-outline li::before, .steps-scenes li::before {
+  content: counter(scene) ".";
+  color: var(--red-dark);
+  font-weight: 600;
+}
+.steps-outline li::before { display: block; margin-bottom: 5px; }
+.steps-detail { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: clamp(28px, 4vw, 60px); align-items: start; }
+.steps-video { margin: 0; }
+.steps-video video { display: block; width: 100%; height: auto; aspect-ratio: 848 / 480; background: #202125; border-radius: 6px; }
+.steps-video figcaption { margin: 10px 0 0; font-size: 15px; }
+.steps-scenes { margin: 0; }
+.steps-scenes li { position: relative; padding: 12px 0 10px 32px; border-top: 1px solid var(--line); }
+.steps-scenes li::before { position: absolute; left: 0; }
+.steps-scenes h3 { font-size: 19px; margin-bottom: 4px; }
+.steps-scenes p { margin: 0; }
+.steps-scenes button { border: 0; background: transparent; padding: 4px 0; min-height: 44px; color: var(--red-dark); text-decoration: underline; text-underline-offset: 3px; }
+@media (max-width: 800px) {
+  .steps-preview-intro, .steps-detail { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+}
+@media (max-width: 680px) {
+  .steps-outline { grid-template-columns: minmax(0, 1fr); gap: 0; margin-top: 16px; }
+  .steps-outline li::before { display: inline; margin-right: 10px; }
+}
+html[data-display="accessible"] :is(.steps-preview-intro, .steps-outline, .steps-detail) { grid-template-columns: minmax(0, 1fr) !important; }
+html[data-display="accessible"] .steps-outline li::before { display: inline; margin-right: .5em; }
+html[data-display="accessible"] .steps-scenes li { padding-left: 0; }
+html[data-display="accessible"] .steps-scenes li::before { position: static; }

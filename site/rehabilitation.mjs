@@ -1,11 +1,35 @@
-import { button, breadcrumbs, faqMarkup, consultation } from './components.mjs';
+import { breadcrumbs, consultation, faqMarkup, visitActions } from './components.mjs';
 import { faqs } from './content.mjs';
+import { visitFilm } from './reviews.mjs';
 
 export function rehabilitation(p) {
-  return `${breadcrumbs(p, 'Посещения центра')}<section class="container rehab-opening"><div class="rehab-summary"><h1>Посещения<br>центра</h1><p class="lead">Для пенсионеров, которые хотят заботиться о здоровье и сохранять активность с возрастом. Начните со знакомства с оборудованием системы 5/95.</p>${button(`${p}booking/`, 'Записаться на посещение')}</div><figure><img src="${p}assets/foot-use.jpg" alt="Пример использования аппарата для стоп системы 5/95" width="720" height="720"><figcaption>Иллюстрация использования оборудования. Не съёмка центра. <a href="${p}media/">Источник</a></figcaption></figure><nav class="rehab-contents" aria-label="Разделы о посещениях"><a href="#first-visit">Первое посещение</a><a href="#visits">Знакомство с оборудованием</a><a href="#at-home">Аппарат для дома</a></nav></section>
-<div class="container rehab-scenario"><p>До поездки уточните у центра доступные аппараты, время, стоимость и формат посещения.</p></div>
-<section class="container section rehab-chapter" id="first-visit"><div class="chapter-title"><span>1</span><h2>Первое посещение</h2></div><div class="chapter-content"><p>Первый визит — возможность задать вопросы и понять, подходит ли вам такой формат заботы о себе. Расскажите, что вас интересует, и уточните:</p><ul class="simple-list"><li>Какие аппараты доступны и как можно познакомиться с их управлением.</li><li>Какие ограничения указаны в инструкции выбранной модели.</li><li>Как согласовать время и стоимость следующих посещений.</li></ul><a class="text-link" href="${p}articles/first-visit/">Памятка перед визитом</a></div></section>
-<section class="surface-section" id="visits"><div class="container section rehab-chapter"><div class="chapter-title"><span>2</span><h2>Посещения и оборудование</h2></div><div class="chapter-content"><p>Чтобы осознанно выбирать оборудование для заботы о себе, важно разобраться в его устройстве и правилах использования. Перед применением аппарата обсудите эти вопросы:</p><dl class="practice-topics"><div><dt>Управление</dt><dd>Как устроена модель, какие у неё режимы и где найти инструкцию.</dd></div><div><dt>Ограничения</dt><dd>Возможность применения с учётом инструкции и рекомендаций лечащего врача.</dd></div><div><dt>Следующий визит</dt><dd>Какие дальнейшие посещения возможны и на каких условиях.</dd></div></dl></div></div></section>
-<section class="container section rehab-chapter" id="at-home"><div class="chapter-title"><span>3</span><h2>Аппарат для дома</h2></div><div class="chapter-content"><p>Опыт посещений помогает лучше понимать оборудование. Если решите приобрести собственный аппарат, обсудите модель, функции, комплект поставки и условия покупки.</p><p>Для домашнего применения нужна инструкция именно к вашей модели.</p><div class="inline-actions">${button(`${p}equipment/`, 'Перейти в каталог', true)}<a class="text-link" href="${p}booking/?purpose=equipment">Консультация по покупке</a></div></div></section>
-<section class="container section faq-section"><h2>Перед записью</h2>${faqMarkup(faqs.slice(0, 4))}</section>${consultation(p)}`;
+  return `${breadcrumbs(p, 'Первое посещение')}
+  <section class="container rehab-opening">
+    <div class="rehab-summary"><h1>Первое посещение</h1>
+      <p class="lead">В центре проходят групповые занятия для людей старшего возраста. Консультант Светлана Бабак показывает, как пользоваться массажными и тепловыми аппаратами системы 5/95, и отвечает на вопросы.</p>
+      ${visitActions()}
+    </div>
+    <figure><img src="${p}assets/foot-use.jpg" alt="На иллюстрации человек сидит, поставив стопы в аппарат" width="720" height="720">
+      <figcaption>Иллюстрация системы 5/95. <a href="${p}media/">Источник фотографии</a></figcaption></figure>
+    <nav class="rehab-contents" aria-label="Об этом посещении"><a href="#first-visit">Разговор со Светланой</a><a href="#visits">Знакомство с аппаратом</a><a href="#after-visit">После встречи</a></nav>
+  </section>
+  <section class="container section rehab-chapter" id="first-visit">
+    <div class="chapter-title"><span aria-hidden="true">1</span><h2>С чего начать разговор</h2></div>
+    <div class="chapter-content"><p>Расскажите, что для вас важно в повседневной жизни. Возможно, хочется чаще выходить из дома, сохранять привычный ритм или найти время для заботы о себе.</p><p>Спросите Светлану, как проходит встреча, сколько времени она занимает и с какими аппаратами можно познакомиться.</p></div>
+  </section>
+  ${visitFilm(p)}
+  <section class="surface-section" id="visits"><div class="container section rehab-chapter">
+    <div class="chapter-title"><span aria-hidden="true">2</span><h2>Как устроен аппарат</h2></div>
+    <div class="chapter-content"><p>Попросите показать модель и её управление. Где включается аппарат? Как его остановить? Где прочитать инструкцию?</p>
+    <p>Если пока хотите только посмотреть или задать вопросы, скажите об этом Светлане в начале встречи.</p>
+    <a class="text-link" href="${p}equipment/">Посмотреть фотографии аппаратов</a>
+    <p>С пятью шагами системы 5/95 знакомятся постепенно, за несколько посещений. <a href="${p}five-steps/">О пяти шагах</a>.</p></div>
+  </div></section>
+  <section class="container section rehab-chapter" id="after-visit">
+    <div class="chapter-title" id="at-home"><span aria-hidden="true">3</span><h2>После встречи</h2></div>
+    <div class="chapter-content"><p>Запишите название аппарата и вопросы, которые остались. Если захотите прийти снова, договоритесь со Светланой о следующей встрече. Своими впечатлениями можно поделиться лично или по телефону.</p>
+    <a class="text-link" href="${p}reviews/">Как оставить отклик</a></div>
+  </section>
+  <section class="container section faq-section"><h2>Перед поездкой</h2>${faqMarkup(faqs)}</section>
+  ${consultation(p)}`;
 }

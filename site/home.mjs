@@ -1,29 +1,49 @@
-import { centre, products, faqs } from './content.mjs';
-import { reviewsPreview } from './reviews.mjs';
-import { icon, button, bookingForm, faqMarkup } from './components.mjs';
+import { association, centre, faqs } from './content.mjs';
+import { faqMarkup, icon, visitActions } from './components.mjs';
+import { visitFilm } from './reviews.mjs';
+import { fiveStepsPreview } from './five-steps.mjs';
 
 export function home(p) {
-  const featured = products.find(product => product.slug === 'bodyhealth');
-  const otherModels = [products[0], products[2], products[3]];
-  return `<section class="container landing-hero">
-<h1>Центр здоровья и долголетия</h1>
-<div class="landing-hero-stage">
-<div class="landing-hero-copy"><p class="lead">Для пенсионеров Астрахани, которым важно заботиться о здоровье, оставаться активными и самостоятельными. Чтобы гулять, заниматься любимыми делами и сохранять привычный ритм жизни.</p><p class="landing-hero-context">Знакомство с оборудованием системы 5/95 — часть посещения центра.</p><a class="text-link" href="${p}rehabilitation/">Как проходят посещения${icon('arrow')}</a><div class="landing-invitation">${button(`${p}booking/`, 'Записаться на посещение')}<a class="landing-catalog-link" href="${p}equipment/">Уже выбираете аппарат? Открыть каталог${icon('arrow')}</a></div></div>
-<figure class="landing-hero-photo"><img src="${p}assets/sleep-use.jpg" alt="Пример использования SleepSystem из материалов системы 5/95" width="720" height="720" fetchpriority="high"><figcaption>Иллюстрация системы 5/95. Не фотография центра в Астрахани. <a href="${p}media/">Источник</a></figcaption></figure>
+  return `<section class="container landing-hero"><div class="landing-hero-stage">
+  <div class="landing-hero-copy">
+    <p class="landing-audience">Для людей старшего возраста в Астрахани</p>
+    <h1>Центр здоровья и долголетия</h1>
+    <p class="lead">Здесь проходят групповые занятия для тех, кому важно заботиться о здоровье и сохранять активность с возрастом. Консультант Светлана Бабак показывает, как пользоваться массажными и тепловыми аппаратами системы 5/95.</p>
+  </div>
+  <div class="landing-invitation">
+    <h2>Договориться о первом визите</h2><p>Позвоните Светлане, чтобы выбрать время.</p>
+    <p class="landing-address">${icon('pin')}<span>${centre.address}</span></p>
+    ${visitActions()}
+  </div>
 </div></section>
 <section class="landing-visit"><div class="container landing-visit-layout">
-<div class="landing-visit-copy"><h2>Что важно сохранить с возрастом</h2><dl class="landing-goals"><div><dt>Здоровье</dt><dd>Внимательнее относиться к своему самочувствию.</dd></div><div><dt>Активность</dt><dd>Гулять, встречаться с близкими, заниматься любимыми делами.</dd></div><div><dt>Самостоятельность</dt><dd>Сохранять привычный уклад и справляться с делами.</dd></div></dl><p>Приходите познакомиться с центром и понять, подходит ли вам такой формат заботы о себе. Система 5/95 — часть нашего подхода: на первом визите можно увидеть аппараты, задать вопросы об их использовании и обсудить дальнейшие посещения.</p><p>До поездки уточните, какие аппараты доступны, время и условия посещения.</p><a class="text-link" href="${p}rehabilitation/">О посещениях центра${icon('arrow')}</a></div>
-<figure class="landing-visit-photo"><img src="${p}assets/foot-use.jpg" alt="Пример использования аппарата для стоп системы 5/95" width="720" height="720" loading="lazy"><figcaption>Пример использования оборудования. На фото не центр в Астрахани. <a href="${p}media/">Источник</a></figcaption></figure>
+  <h2>Как проходит первая встреча</h2>
+  <div class="landing-visit-intro"><p>Расскажите Светлане, что для вас важно в обычной жизни. Может быть, вы хотите чаще гулять или самостоятельно справляться с делами. Спросите, как проходит занятие, и попросите показать управление аппаратом.</p>
+    <p>Если захотите продолжить, договоритесь о следующей встрече.</p>
+    <a class="text-link" href="${p}rehabilitation/">Подробнее о посещении${icon('arrow')}</a></div>
 </div></section>
-<section class="container landing-steps"><div class="landing-steps-heading"><h2>Как начать посещения</h2><a href="${p}articles/first-visit/">Подготовиться к первому визиту</a></div>
-<ol class="landing-step-list"><li><span>1</span><div><h3>Согласуйте первый визит</h3><p>Уточните время, адрес, стоимость и доступные аппараты.</p></div></li><li><span>2</span><div><h3>Познакомьтесь с аппаратами</h3><p>Посмотрите оборудование и задайте вопросы об управлении и ограничениях.</p></div></li><li><span>3</span><div><h3>Обсудите следующие шаги</h3><p>Дальнейшие посещения центра или выбор собственного аппарата для дома.</p></div></li></ol>
+${visitFilm(p)}
+${fiveStepsPreview(p)}
+<section class="container landing-centre">
+  <div><p class="landing-role">Ваш консультант</p><h2>${centre.contact}</h2></div>
+  <div class="landing-centre-copy"><p>Со Светланой можно поговорить ещё до поездки. Она подскажет, где вход, и ответит на вопросы о первом визите. Скажите, если хотите прийти с близким человеком или вам трудно подниматься по ступенькам.</p>
+  <a class="text-link" href="${centre.phoneHref}">${icon('phone')}Позвонить Светлане</a></div>
 </section>
-<section class="container landing-equipment"><div class="landing-equipment-heading"><div><h2>Оборудование для дома</h2><p>После знакомства в центре можно обсудить покупку собственного аппарата. Если вы уже выбираете модель, начните с каталога.</p></div><a class="text-link" href="${p}equipment/">Весь каталог${icon('arrow')}</a></div>
-<article class="landing-product"><figure class="landing-product-use"><img src="${p}assets/bodyhealth-use.jpg" alt="Пример домашнего использования BodyHealth из материалов NovuMedical" width="435" height="715" loading="lazy"><figcaption>Фото NovuMedical. Не съёмка центра в Астрахани. <a href="${p}media/">Источник</a></figcaption></figure><div class="landing-product-detail"><div class="landing-product-top"><div><h3>BodyHealth</h3><p>Массажно-тепловой аппарат для стоп и тела.</p></div><img src="${p}assets/${featured.image}" alt="Аппарат BodyHealth" width="400" height="400" loading="lazy"></div><ul class="simple-list"><li>Площадка для обеих стоп</li><li>Панель управления на корпусе</li><li>Прогрев, вибрация и стимуляция</li></ul><div class="inline-actions">${button(`${p}equipment/bodyhealth/`, 'Подробнее о BodyHealth')}<a class="text-link" href="${p}booking/?purpose=equipment&product=bodyhealth">Обсудить покупку</a></div><p class="landing-product-note">Пример линейки системы 5/95. Наличие и стоимость сообщит центр.</p></div></article>
-<div class="landing-models">${otherModels.map(model => `<a href="${p}equipment/${model.slug}/"><img src="${p}assets/${model.image}" alt="" width="100" height="80" loading="lazy"><span><small>${model.area}</small><strong>${model.name}</strong></span>${icon('arrow')}</a>`).join('')}</div>
+<section class="container landing-equipment">
+  <h2>Знакомство с аппаратами системы 5/95</h2>
+  <div class="landing-apparatus">
+    <figure><img src="${p}assets/bodyhealth-controls.jpg" alt="BodyHealth сверху. Внутри расположена площадка для стоп, по верхнему краю — кнопки управления." width="545" height="473" loading="lazy"><figcaption>BodyHealth, вид сверху. <a href="${p}media/">Фото из материалов производителя</a></figcaption></figure>
+    <div><h3>Как выглядит BodyHealth</h3><p>Ноги ставят на площадку внутри корпуса. На верхней панели видны кнопки и экран. В описании этой модели производитель указывает прогрев и вибрацию.</p><p>Перед поездкой спросите Светлану, какие аппараты можно увидеть во время вашего визита.</p>
+    <div class="landing-device-links"><a class="text-link" href="${p}equipment/bodyhealth/">Рассмотреть BodyHealth${icon('arrow')}</a><a href="${p}equipment/">Другие аппараты системы</a></div></div>
+  </div>
+  <aside class="landing-association"><h3>${association.name}</h3><div><p>${association.description}</p><a href="${association.url}">Об Ассоциации на сайте NovuMedical</a></div></aside>
 </section>
-<section class="container landing-centre"><div><h2>О центре</h2><p class="landing-centre-name">${centre.contact}</p></div><div class="landing-centre-copy"><p>Вопросы о посещениях центра в Астрахани и покупке оборудования можно обсудить лично.</p><div class="landing-centre-links"><a href="${p}contacts/">О центре и контакты</a></div></div></section>
-${reviewsPreview(p)}
-<section class="container landing-faq"><div class="landing-faq-intro"><h2>Перед первым посещением</h2><a href="${p}articles/first-visit/">Памятка перед поездкой${icon('arrow')}</a></div>${faqMarkup([faqs[0], faqs[2], faqs[3]])}</section>
-<section class="landing-booking" id="appointment"><div class="container booking-layout"><div class="landing-booking-copy"><h2>Записаться на посещение</h2><p>Уделите время заботе о себе. Начните со знакомства с центром и обсудите удобный формат посещений.</p><p class="landing-booking-note">Астрахань. Время и условия посещения нужно уточнить у центра.</p></div>${bookingForm(p, 'home-booking')}</div></section>`;
+<section class="container landing-faq">
+  <div class="landing-faq-intro"><h2>Перед поездкой</h2><p>Если вас интересуют документы, назовите Светлане модель аппарата. Она подскажет, где посмотреть инструкцию и как уточнить сведения о сертификате.</p><a class="text-link" href="${p}articles/first-visit/#documents">Инструкции и сертификаты на аппараты${icon('arrow')}</a></div>
+  ${faqMarkup(faqs.slice(0, 3))}
+</section>
+<section class="landing-booking" id="appointment"><div class="container landing-contacts">
+  <div><h2>Договориться о посещении</h2><p>${centre.address}</p></div>
+  <div><p>Позвоните перед поездкой, чтобы выбрать время.</p>${visitActions()}</div>
+</div></section>`;
 }

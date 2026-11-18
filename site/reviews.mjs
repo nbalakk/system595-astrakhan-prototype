@@ -1,38 +1,37 @@
-import { breadcrumbs, button, icon } from './components.mjs';
+import { centre, centreVideos } from './content.mjs';
+import { breadcrumbs, button, icon, pageHead } from './components.mjs';
 
-const samples = [
-  {
-    context: 'О первом разговоре',
-    quote: 'Я пришла с несколькими вопросами и переживала, что не всё запомню. Со мной поговорили без спешки, объяснили, с чего начинается знакомство с центром, и дали время переспросить. Для меня это было важно.'
-  },
-  {
-    context: 'О знакомстве с управлением',
-    quote: 'Сначала кнопки на аппарате показались сложными. Мне показали, где включение, как остановить работу и где посмотреть инструкцию. Потом я сама повторила эти действия и уточнила то, что осталось непонятным. Теперь представляю, какие вопросы задать перед выбором.'
-  },
-  {
-    context: 'Об обстановке',
-    quote: 'Понравилось, что можно спокойно сесть, осмотреться и поговорить, не торопясь принимать решение.'
-  },
-  {
-    context: 'О выборе аппарата для дома',
-    quote: 'Я присматривала аппарат для дома. На встрече записала название модели, размеры и вопросы о гарантии. Покупку сразу не оформляла: хотела спокойно обсудить всё с семьёй.'
-  }
-];
+function filmSection(p, kind) {
+  const video = centreVideos[kind];
+  const headingId = `film-${kind}-title`;
+  return `<section class="container reviews-preview" aria-labelledby="${headingId}">
+    <div class="reviews-preview-layout">
+      <div class="interview-frame" data-video-frame data-video-kind="${kind}">
+        <img src="${p}assets/${video.poster}" alt="${video.alt}" width="${video.width}" height="${video.height}" loading="lazy">
+        <button type="button" class="interview-play" data-ok-player="${video.id}" aria-label="Смотреть видео «${video.title}»" hidden>Смотреть видео</button>
+      </div>
+      <div class="interview-copy"><h2 id="${headingId}">${video.title}</h2>
+        <p class="interview-meta"><time datetime="${video.date}">${video.published}</time> · ${video.duration}</p>
+        <p>${video.description}</p>
+        <a class="text-link" href="${video.url}">Открыть в Одноклассниках${icon('arrow')}</a>
+        ${kind === 'lesson' ? `<p><a href="${p}reviews/">Посмотреть отзыв посетительницы</a></p>` : ''}
+      </div>
+    </div>
+  </section>`;
+}
 
-const quoteMarkup = (sample, extraClass = '') => `<figure class="reviews-quote ${extraClass}"><blockquote><p>«${sample.quote}»</p></blockquote><figcaption>${sample.context}</figcaption></figure>`;
-
-export function reviewsPreview(p) {
-  return `<section class="container reviews-samples reviews-preview" aria-labelledby="reviews-preview-title">
-<header class="reviews-preview-head"><div><h2 id="reviews-preview-title">О посещении — своими словами</h2></div><a class="text-link" href="${p}reviews/">Все отзывы${icon('arrow')}</a></header>
-<div class="reviews-preview-layout">${quoteMarkup(samples[0], 'reviews-quote-featured')}<div class="reviews-preview-short">${quoteMarkup(samples[2])}${quoteMarkup(samples[3])}</div></div>
-</section>`;
+export function visitFilm(p) {
+  return filmSection(p, 'lesson');
 }
 
 export function reviewsPage(p) {
-  return `${breadcrumbs(p, 'Отзывы')}<div class="container page-head reviews-page-head"><h1>Отзывы о посещении</h1></div>
-<section class="container reviews-samples reviews-page-collection" aria-label="Отзывы о посещении">
-${quoteMarkup(samples[0], 'reviews-quote-featured')}
-<div class="reviews-page-details">${samples.slice(1).map(sample => quoteMarkup(sample)).join('')}</div>
-</section>
-<section class="container reviews-next"><div><h2>Приходите со своими вопросами</h2><p>Ознакомьтесь с форматом посещений и запишите, что хотите уточнить о центре и аппаратах.</p></div><div class="reviews-next-actions">${button(`${p}rehabilitation/`, 'Как проходят посещения')}<a href="${p}articles/first-visit/">Подготовиться к первому визиту</a></div></section>`;
+  return `${breadcrumbs(p, 'Отклики посетителей')}
+    ${pageHead('Отклики посетителей', 'Посмотрите видео из архива центра. Если вы уже побывали на встрече, своими впечатлениями можно поделиться со Светланой.')}
+    ${filmSection(p, 'feedback')}
+    <section class="container contact-layout">
+      <div><h2>Что запомнилось</h2><p>Можно рассказать об одном моменте. Например, что помогло найти центр, какая часть объяснения была понятной или на какой вопрос вам хотелось бы ещё получить ответ.</p>
+      <p>Если хотите поделиться опытом с другими посетителями на сайте, обсудите со Светланой текст и подпись перед публикацией.</p></div>
+      <div class="contact-panel"><h2>Передать отклик</h2><p>Светлана Михайловна Бабак, консультант центра</p>
+      ${button(centre.phoneHref, 'Позвонить ' + centre.phone)}</div>
+    </section>`;
 }
