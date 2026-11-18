@@ -6,16 +6,17 @@ function filmSection(p, kind, { firstMeeting = false } = {}) {
   const headingId = `film-${kind}-title`;
   return `<section class="container reviews-preview${firstMeeting ? ' first-meeting' : ''}"${firstMeeting ? ' id="first-meeting"' : ''} aria-labelledby="${headingId}">
     <div class="reviews-preview-layout">
-      ${firstMeeting ? `<div class="first-meeting-copy"><h2 id="${headingId}">Что вас ждёт на первой встрече</h2>
-        <p>Можно начать с того, что важно лично вам: дольше гулять, чаще встречаться с людьми или самостоятельно справляться с привычными делами.</p>
-        <p>Светлана ответит на ваши вопросы и покажет, как устроено занятие. Вы сможете посмотреть аппараты и решить, хотите ли прийти ещё.</p>
-        <a class="text-link" href="${p}rehabilitation/">Подробнее о первом посещении ${icon('arrow')}</a></div>` : ''}
+      ${firstMeeting ? `<div class="first-meeting-copy"><h2 id="${headingId}">Что происходит в зале</h2>
+        <p>На <a href="${p}articles/den-rossii-v-centre/">встрече ко Дню России</a> четыре участницы в сарафанах выступали прямо в зале. Рядом сидели те, кто пришёл послушать.</p>
+        <p>В главе фильма <a href="${p}five-steps/#step-3">«Школа здоровья и долголетия»</a> видно, в каком темпе участники повторяют движения за ведущей. Если захочется попробовать, уточните у Светланы, когда будет такое занятие.</p>
+        <a class="text-link" href="${p}rehabilitation/">С чего начать первый визит ${icon('arrow')}</a></div>` : ''}
       <div class="interview-media">
       <div class="interview-frame" data-video-frame data-video-kind="${kind}">
         <img src="${p}assets/${video.poster}" alt="${video.alt}" width="${video.width}" height="${video.height}" loading="lazy">
         <button type="button" class="interview-play" data-ok-player="${video.id}" aria-label="Смотреть видео «${video.title}»" hidden>Смотреть видео</button>
       </div>
-      ${firstMeeting ? `<p class="first-meeting-caption"><span>${video.title} · ${video.duration}</span><a href="${video.url}">Оригинал в ОК</a></p>` : ''}
+      ${firstMeeting ? `<p class="first-meeting-caption"><span>${video.title} · ${video.duration}</span><a href="${video.url}">Оригинал в ОК</a></p>
+        <p class="lesson-context">Ведущая <a href="${p}articles/zanyatie-v-zale/">помогает участнице надеть массажную накидку</a>. В центре можно рассмотреть оборудование вблизи и попросить Светлану ещё раз показать то, что осталось непонятно.</p>` : ''}
       </div>
       ${firstMeeting ? '' : `<div class="interview-copy"><h2 id="${headingId}">${video.title}</h2>
         <p class="interview-meta"><time datetime="${video.date}">${video.published}</time> · ${video.duration}</p>

@@ -27,11 +27,11 @@
 }
 .welcome-copy h1 {
   margin: 0 0 16px;
-  font-size: clamp(38px, 3.85vw, 56px);
+  font-size: clamp(38px, 3.55vw, 54px);
   font-weight: 600;
   line-height: 1.04;
   letter-spacing: -.035em;
-  text-wrap: initial;
+  text-wrap: balance;
 }
 .welcome-lead { max-width: 48ch; margin: 0; font-size: 17px; line-height: 1.5; }
 .welcome-links, .home-model-links, .home-contact-links {
@@ -108,6 +108,8 @@
   letter-spacing: -.035em;
 }
 .first-meeting-copy p { max-width: 54ch; margin: 0 0 10px; }
+.first-meeting-copy p a, .lesson-context a { color: var(--red-dark); text-decoration-thickness: 1px; }
+.first-meeting .lesson-context { margin: 10px 0 0; max-width: 56ch; font-size: 16px; line-height: 1.55; }
 .first-meeting .interview-frame img { aspect-ratio: 606 / 255; object-fit: contain; }
 .first-meeting-caption { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px 12px; margin: 7px 0 0; color: var(--muted); font-size: 14px; }
 .first-meeting-caption a { color: var(--red-dark); }

@@ -6,13 +6,15 @@ import { healthPreview } from './health-articles.mjs';
 
 export function home(p) {
   const invitation = centreStories.find(story => story.slug === 'den-pensionera');
+  const featuredElsewhere = new Set([invitation.slug, 'den-rossii-v-centre', 'zanyatie-v-zale']);
+  const moreStories = centreStories.filter(story => !featuredElsewhere.has(story.slug));
   return `<section class="container welcome-spread" aria-labelledby="welcome-title">
     <div class="welcome-panel">
       <div class="welcome-copy">
-        <h1 id="welcome-title">Групповые занятия для старшего поколения</h1>
-        <p class="welcome-lead">Светлана Бабак покажет массажные и тепловые аппараты системы 5/95. На первой встрече вы увидите, как ими пользуются, и сможете задать вопросы.</p>
+        <h1 id="welcome-title">Здесь есть с кем размяться и поговорить</h1>
+        <p class="welcome-lead">Групповое занятие — повод выбраться из дома, познакомиться с ровесниками и повторить простые движения за ведущей. Светлана покажет массажные и тепловые аппараты системы 5/95 и ответит на вопросы. В первый раз можно просто посмотреть и решить, хочется ли присоединиться.</p>
         <div class="welcome-links"><a class="button welcome-primary" href="${centre.phoneHref}">${icon('phone')} Позвонить Светлане</a>
-          <a href="#first-meeting">О первой встрече</a></div>
+          <a href="#first-meeting">Что происходит в зале</a></div>
       </div>
       <figure class="welcome-photo">
         <img src="${p}assets/${invitation.image}" width="${invitation.width}" height="${invitation.height}" alt="${invitation.alt}" fetchpriority="high">
@@ -23,7 +25,7 @@ export function home(p) {
   </section>
   ${visitFilm(p, { firstMeeting: true })}
   ${fiveStepsPreview(p)}
-  ${healthPreview(p, healthArticles, centreStories)}
+  ${healthPreview(p, healthArticles, moreStories)}
   <section class="home-model-strip"><div class="container home-model">
     <figure class="home-model-photo"><img src="${p}assets/bodyhealth-controls.jpg" alt="Площадка для стоп и кнопки управления на корпусе BodyHealth" width="545" height="473" loading="lazy">
       <figcaption><a href="${p}media/#equipment">Фото производителя</a></figcaption></figure>

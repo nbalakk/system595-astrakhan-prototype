@@ -106,10 +106,32 @@ test('the homepage explains the audience and purpose of a visit', () => {
   const home = rendered.find(page => page.route === 'index.html');
   assert(home, 'Homepage must be built');
   const main = readableContent(home.html.match(/<main\b[\s\S]*?<\/main>/iu)?.[0] || '');
-  for (const concept of [/здоров/iu, /долголети/iu, /старшего (?:поколения|возраста)/iu, /5\s*\/\s*95/u, /Светлан/iu, /Бабак/iu]) {
+  for (const concept of [/здоров/iu, /долголети/iu, /(?:старшего|своего)\s+поколения|старшего\s+возраста|ровесник|пенсионер/iu, /5\s*\/\s*95/u, /Светлан/iu, /Бабак/iu]) {
     assert.match(main, concept);
   }
   assert.match(home.html, /<a\b[^>]*class="[^"]*welcome-primary[^"]*"[^>]*href="tel:\+79093738094"[^>]*>[\s\S]*?Позвонить Светлане<\/a>/u);
+});
+
+test('the first screen explains the personal value and leads to examples before the programme', () => {
+  const home = rendered.find(page => page.route === 'index.html');
+  const main = mainContent(home.html);
+  const hero = main.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>([\s\S]*?)<\/p>/iu);
+  assert(hero, 'The first screen needs a heading and a short introduction');
+  const introduction = readableContent(hero[0]);
+  assert.doesNotMatch(readableContent(hero[1]), /аппарат|оборудован/iu);
+  assert.match(introduction, /знаком|общать|общение|в\s+компании|сверстник|ровесник/iu);
+  assert.match(introduction, /двиг|движ|размять|размин|разомн/iu);
+  assert.match(introduction, /подход|подойд|реши|по\s+душе|удобн|хочет|захоч|понрав/iu);
+
+  const firstMeeting = main.indexOf('id="first-meeting"');
+  const programme = main.indexOf('aria-labelledby="steps-preview-title"');
+  assert(firstMeeting >= 0 && programme > firstMeeting, 'Examples belong before the programme');
+  const links = linksInMain(home, main.slice(firstMeeting, programme));
+  for (const route of ['articles/den-rossii-v-centre/', 'five-steps/#step-3', 'articles/zanyatie-v-zale/', 'rehabilitation/']) {
+    const destination = new URL(route, 'https://site.test/prototype/');
+    assert(links.some(link => link.url.href === destination.href && /[а-яё]/iu.test(link.label)),
+      `The first meeting needs a named link to ${route}`);
+  }
 });
 
 test('the articles hub opens with centre stories and links to all eight health guides', () => {
