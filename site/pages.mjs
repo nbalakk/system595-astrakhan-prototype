@@ -1,5 +1,5 @@
 import { association, centre, centreVideos, products } from './content.mjs';
-import { breadcrumbs, consultation, icon, pageHead, productCard, visitActions } from './components.mjs';
+import { breadcrumbs, consultation, icon, pageHead, visitActions } from './components.mjs';
 import { bodyhealthPage } from './bodyhealth.mjs';
 
 export { home } from './home.mjs';
@@ -7,12 +7,24 @@ export { rehabilitation } from './rehabilitation.mjs';
 export { reviewsPage as reviews } from './reviews.mjs';
 
 export function catalog(p) {
+  const featured = products.find(model => model.slug === 'bodyhealth');
   return `${breadcrumbs(p, 'Аппараты системы 5/95')}
-    ${pageHead('Аппараты системы 5/95', 'Фотографии помогут узнать аппарат и подготовить вопросы к встрече. Если вас интересует определённая модель, уточните у Светланы, можно ли увидеть её в центре.')}
-    <section class="container catalog-section" aria-label="Фотографии и описания аппаратов">
-      <div class="product-grid">${products.map(model => productCard(model, p)).join('')}</div>
+    <div class="container equipment-opening">
+      <header><h1>Аппараты системы 5/95</h1>
+        <p class="lead">Здесь можно рассмотреть аппараты и их управление перед встречей. Если вас интересует определённая модель, спросите у Светланы, можно ли увидеть её в центре.</p>
+        <a class="text-link" href="${p}articles/first-visit/#documents">Инструкции и сертификаты на аппараты${icon('arrow')}</a></header>
+      <a class="equipment-feature" href="${p}equipment/${featured.slug}/">
+        <img src="${p}assets/bodyhealth-controls.jpg" width="545" height="473" alt="Площадка для стоп и панель управления аппарата BodyHealth">
+        <span><strong>${featured.name}</strong><span>Рассмотреть управление ${icon('arrow')}</span></span>
+      </a>
+    </div>
+    <section class="container equipment-directory" aria-labelledby="other-models"><h2 id="other-models">Другие аппараты</h2>
+      <ul>${products.filter(model => model !== featured).map(model => `<li><a href="${p}equipment/${model.slug}/" class="equipment-row">
+        <img src="${p}assets/${model.image}" alt="" width="100" height="78" loading="lazy">
+        <span><strong>${model.name}</strong><small>${model.area}</small></span>
+        <span class="equipment-description">${model.description}</span>${icon('arrow')}
+      </a></li>`).join('')}</ul>
       <p class="photo-caption">Фотографии из материалов System 5/95 и NovuMedical. <a href="${p}media/#equipment">Источники изображений</a></p>
-      <p><a class="text-link" href="${p}articles/first-visit/#documents">Инструкции и сертификаты на аппараты${icon('arrow')}</a></p>
     </section>
     ${consultation(p)}`;
 }
@@ -20,10 +32,10 @@ export function catalog(p) {
 function modelPhotos(p, product) {
   return `<div class="product-gallery">
     <div class="gallery-main"><img id="product-main-image" src="${p}assets/${product.image}" alt="Аппарат ${product.name}" width="720" height="540"></div>
-    ${product.lifestyle ? `<div class="gallery-thumbs" role="group" aria-label="Фотографии аппарата">
+    ${product.lifestyle ? `<div class="gallery-thumbs" role="group" aria-label="Фотографии аппарата" hidden>
       <button class="selected" aria-pressed="true" data-gallery-src="${p}assets/${product.image}" data-gallery-alt="Аппарат ${product.name}"><img src="${p}assets/${product.image}" alt="Общий вид аппарата" width="100" height="80"></button>
       <button aria-pressed="false" data-gallery-lifestyle data-gallery-src="${p}assets/${product.lifestyle}" data-gallery-alt="Пример использования ${product.name} из материалов системы 5/95"><img src="${p}assets/${product.lifestyle}" alt="Пример использования" width="100" height="80"></button>
-    </div>` : ''}
+    </div><noscript><p><a href="${p}assets/${product.lifestyle}">Открыть пример использования ${product.name}</a></p></noscript>` : ''}
     <p class="photo-caption">Иллюстрации из материалов системы 5/95. <a href="${p}media/#equipment">Источник фотографий</a></p>
   </div>`;
 }
@@ -31,29 +43,27 @@ function modelPhotos(p, product) {
 export function productPage(p, product) {
   if (product.slug === 'bodyhealth') return bodyhealthPage(p, product);
   return `${breadcrumbs(p, product.name, ['equipment/', 'Аппараты системы 5/95'])}
-    <section class="container product-detail">
+    <section class="container product-detail model-spread">
+      <header class="model-heading"><h1>${product.name}</h1><p class="lead">${product.description}</p></header>
       ${modelPhotos(p, product)}
-      <div class="product-summary"><span class="product-area">${product.area}</span>
-        <h1>${product.name}</h1><p class="lead">${product.description}</p>
+      <div class="model-question">
         <h2>Вопрос для встречи</h2><p>${product.question}</p>
         <p>Если хотите увидеть ${product.name}, назовите модель Светлане при звонке. Она уточнит, какой аппарат можно посмотреть в день встречи.</p>
         <a class="text-link" href="${centre.phoneHref}">Позвонить Светлане ${centre.phone}</a>
       </div>
     </section>
-    <section class="surface-section"><div class="container section product-information">
+    <section class="container model-documents"><div class="product-information">
       <div><h2>Инструкции и сертификаты на аппараты</h2></div><div><p>Попросите Светлану показать инструкцию к ${product.name}. Сверьте полное обозначение на корпусе с названием в инструкции. Уточните, есть ли у этой модели сертификат или декларация и где можно посмотреть документ.</p>
       <a class="text-link" href="${p}articles/first-visit/#documents">О документах к модели${icon('arrow')}</a></div>
-    </div></section>
-    ${consultation(p)}`;
+    </div><a class="text-link" href="${p}equipment/">Все аппараты системы 5/95${icon('arrow')}</a></section>`;
 }
 
 export function article(p) {
   return `${breadcrumbs(p, 'Памятка перед поездкой', ['articles/', 'Статьи'])}
-    <article class="container article-layout">
-      <aside class="article-aside"><span>В этой памятке</span>
-        <nav aria-label="Содержание памятки"><a href="#before">До поездки</a><a href="#bring">Что взять</a><a href="#questions">Что спросить</a><a href="#documents">Документы к аппарату</a></nav>
-      </aside>
-      <div class="article-body"><h1>Памятка перед поездкой</h1><p class="article-lead">Для первого звонка достаточно сказать, что вы хотите познакомиться с центром. Светлана Бабак поможет выбрать время.</p>
+    <article class="container article-layout visit-memo">
+      <header class="memo-heading"><h1>Памятка перед поездкой</h1><p class="article-lead">Для первого звонка достаточно сказать, что вы хотите познакомиться с центром. Светлана Бабак поможет выбрать время.</p></header>
+      <nav class="memo-jump" aria-label="Содержание памятки"><a href="#before">До поездки</a><a href="#bring">Что взять</a><a href="#questions">Что спросить</a><a href="#documents">Документы к аппарату</a></nav>
+      <div class="article-body">
         <h2 id="before">До поездки</h2><p>Запишите адрес и время встречи. Уточните, сколько она продлится и где удобнее войти в здание. Если нужен путь без ступеней или вы хотите прийти вместе с близким, расскажите об этом Светлане.</p>
         <p><a href="${centre.mapUrl}">Открыть адрес на карте</a></p>
         <h2 id="bring">Что взять с собой</h2><p>Запишите вопросы в телефон или на бумагу. Спросите заранее, нужны ли какие-либо документы или сменная обувь.</p>
@@ -67,18 +77,20 @@ export function article(p) {
 
 export function contacts(p) {
   return `${breadcrumbs(p, 'Контакты')}
-    ${pageHead('Как связаться и прийти', 'Договоритесь о времени до поездки. Когда будете звонить, скажите, что планируете прийти впервые.')}
-    <section class="container contact-layout" id="contact-details">
-      <div><h2>Консультант центра</h2><p class="large-copy">${centre.contact}</p>
-      <p>На групповых занятиях Светлана показывает, как пользоваться массажными и тепловыми аппаратами системы 5/95. У неё можно узнать, как проходит первое занятие и где найти вход.</p>
-      <p>Если вам важно прийти с близким человеком или уточнить, есть ли ступени у входа, обсудите это при звонке.</p>
-      <a class="text-link" href="${p}rehabilitation/">Как проходит первое посещение${icon('arrow')}</a></div>
-      <div class="contact-panel"><h2>Телефон и адрес</h2><dl>
-        <div><dt>${icon('phone')} Телефоны</dt><dd><a class="contact-phone" href="${centre.phoneHref}">${centre.phone}</a><br><a class="contact-phone" href="${centre.secondaryPhoneHref}">${centre.secondaryPhone}</a></dd></div>
-        <div><dt>${icon('pin')} Адрес</dt><dd>${centre.address}</dd></div>
-        <div><dt>${icon('clock')} Время посещения</dt><dd>${centre.scheduleNote}</dd></div>
-        <div><dt>Страницы центра</dt><dd><a href="${centre.okUrl}">Одноклассники</a><br><a href="${centre.instagram}">Instagram · ${centre.instagramLabel}</a></dd></div>
-      </dl><a class="button" href="${centre.mapUrl}">Открыть адрес на карте</a></div>
+    <section class="container contacts-spread" id="contact-details"><h1>Как связаться и прийти</h1>
+      <div class="contacts-top">
+        <div class="contacts-call"><h2>Позвонить Светлане</h2>
+          <p>${centre.contact}, консультант центра. Позвоните перед поездкой, чтобы договориться о времени.</p>
+          <a class="contact-main-number" href="${centre.phoneHref}">${icon('phone')}${centre.phone}</a>
+          <p class="contact-alternate">Дополнительный телефон<br><a href="${centre.secondaryPhoneHref}">${centre.secondaryPhone}</a></p>
+        </div>
+        <div class="contacts-address"><h2>Куда прийти</h2><p class="contact-street">${centre.address}</p>
+          <p>Если планируете прийти с близким человеком или хотите узнать, есть ли ступени у входа, уточните это при звонке.</p>
+          <a class="button button-secondary" href="${centre.mapUrl}">${icon('pin')}Открыть адрес на карте</a>
+        </div>
+      </div>
+      <div class="contacts-more"><a class="text-link" href="${p}rehabilitation/">Как проходит первое посещение${icon('arrow')}</a>
+        <div><span>Страницы центра</span><a href="${centre.okUrl}">Одноклассники</a><a href="${centre.instagram}">Instagram · ${centre.instagramLabel}</a></div></div>
     </section>`;
 }
 

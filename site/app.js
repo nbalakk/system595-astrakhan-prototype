@@ -1,20 +1,38 @@
 const menu = document.querySelector('.menu-toggle');
 const nav = document.querySelector('#main-nav');
 if (menu && nav) {
-  menu.addEventListener('click', () => {
-    const open = menu.getAttribute('aria-expanded') !== 'true';
+  const compact = window.matchMedia('(max-width: 820px)');
+  function setMenu(open) {
     menu.setAttribute('aria-expanded', String(open));
     menu.setAttribute('aria-label', open ? 'Закрыть меню' : 'Открыть меню');
-    nav.classList.toggle('open', open);
+    nav.hidden = compact.matches && !open;
+  }
+  function adaptMenu() {
+    const focusWasOnMenu = document.activeElement === menu;
+    const focusWasInNav = nav.contains(document.activeElement);
+    menu.hidden = !compact.matches;
+    setMenu(false);
+    if (compact.matches && focusWasInNav) menu.focus();
+    if (!compact.matches && focusWasOnMenu) {
+      (nav.querySelector('[aria-current]') || nav.querySelector('a'))?.focus();
+    }
+  }
+  menu.addEventListener('click', () => {
+    setMenu(menu.getAttribute('aria-expanded') !== 'true');
   });
   document.addEventListener('keydown', event => {
-    if (event.key === 'Escape' && nav.classList.contains('open')) {
-      nav.classList.remove('open'); menu.setAttribute('aria-expanded', 'false');
-      menu.setAttribute('aria-label', 'Открыть меню'); menu.focus();
+    if (event.key === 'Escape' && menu.getAttribute('aria-expanded') === 'true') {
+      setMenu(false);
+      menu.focus();
     }
   });
+  compact.addEventListener('change', adaptMenu);
+  adaptMenu();
 }
 
+document.querySelectorAll('.gallery-thumbs[hidden]').forEach(group => {
+  group.hidden = false;
+});
 document.querySelectorAll('[data-gallery-src]').forEach(button => {
   button.addEventListener('click', () => {
     const image = document.querySelector('#product-main-image');

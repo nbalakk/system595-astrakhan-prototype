@@ -1,6 +1,7 @@
 // Run `node scripts/heading-layout-check.mjs`, open the printed local URL,
 // and read the report after its real-browser checks finish. Never ships in dist.
 // Use ?articles-only for the article journey and add &noscript for the static HTML.
+// Use ?redesign for every page at four normal widths and three large-text widths.
 import http from 'node:http';
 import path from 'node:path';
 import { readFile, readdir } from 'node:fs/promises';
@@ -29,13 +30,19 @@ const harness = `<!doctype html><html lang="ru"><meta charset="utf-8"><title>Acc
 <script type="module">
 const availableRoutes=${JSON.stringify(routes)};
 const options=new URLSearchParams(location.search);
+const redesign=options.has('redesign');
 let routes=availableRoutes;
 if(options.has('booking-only'))routes=availableRoutes.filter(route=>route.startsWith('/booking/?'));
 if(options.has('articles-only'))routes=availableRoutes.filter(route=>route==='/'||route.startsWith('/articles/'));
+if(redesign)routes=availableRoutes.filter(route=>!route.includes('?'));
 const fallback=options.has('fallback');
 const noscript=options.has('noscript');
 const frame=document.querySelector('iframe');
 if(noscript)frame.setAttribute('sandbox','allow-same-origin');
+if(redesign){
+  frame.setAttribute('allow',"autoplay 'none'");
+  document.querySelector('h1 + p').textContent=routes.length+' pages. Normal presentation at 360, 390, 1280 and 1440 px; three text sizes in both contrast schemes at 360, 390 and 1280 px.';
+}
 const report=document.querySelector('#report');
 const runButton=document.querySelector('#run');
 const models=new Set(['EyeSystem','BodyHealth','SpineSystem','SleepSystem','FootSystem','Moxi']);
@@ -79,6 +86,31 @@ function measure(doc){
   }
   return {body:win.getComputedStyle(doc.body).fontSize,headingCount:headings.length,h1:headings.find(el=>el.tagName==='H1')?.ownerDocument.defaultView.getComputedStyle(headings.find(el=>el.tagName==='H1')).fontSize,overflow:doc.documentElement.scrollWidth>doc.documentElement.clientWidth+1,words};
 }
+function measureOrdinary(doc){
+  const viewport=doc.documentElement.clientWidth;
+  const failures=[];
+  let headingCount=0;
+  let imageCount=0;
+  if(doc.documentElement.scrollWidth>viewport+1)failures.push('horizontal overflow');
+  const outside=rect=>rect.width>0 && (rect.left< -1 || rect.right>viewport+1);
+  for(const element of doc.querySelectorAll('h1,h2,h3,h4,h5,h6,img')){
+    const box=element.getBoundingClientRect();
+    const visibility=doc.defaultView.getComputedStyle(element).visibility;
+    if(!box.width || !box.height || visibility==='hidden' || visibility==='collapse')continue;
+    const isImage=element.tagName==='IMG';
+    if(isImage)imageCount++;else headingCount++;
+    let rects=[box];
+    if(!isImage){
+      const range=doc.createRange();
+      range.selectNodeContents(element);
+      rects.push(...range.getClientRects());
+    }
+    if(rects.some(outside))failures.push({element:element.tagName,content:isImage?element.getAttribute('src'):element.textContent.trim(),reason:'outside viewport'});
+  }
+  if(!headingCount)failures.push('No visible page headings');
+  if(doc.querySelector('audio[autoplay],video[autoplay]') || [...doc.querySelectorAll('video,audio')].some(media=>!media.paused))failures.push('Unexpected automatic playback');
+  return {headingCount,imageCount,failures};
+}
 async function run(){
   runButton.disabled=true;const cases=[];const issues=[];let largestWord=null;
   const visitResponse=await fetch('/booking/');
@@ -116,7 +148,20 @@ async function run(){
         issues.push({route,failures:['Old URL must show the same visit information, direct call and map']});
       }
     }
-    for(const width of [320,390])for(const [size,pixels] of [['large',22],['larger',26],['largest',30]])for(const theme of ['light','dark']){
+    if(redesign){
+      const preferences=doc.documentElement.dataset;
+      delete preferences.display;delete preferences.textSize;delete preferences.contrast;
+      for(const width of [360,390,1280,1440]){
+        frame.style.width=width+'px';await nextFrame();
+        const result=measureOrdinary(doc);
+        const label={route,width,mode:'ordinary'};
+        if(result.failures.length)issues.push({...label,failures:result.failures});
+        cases.push({...label,headingCount:result.headingCount,imageCount:result.imageCount,words:0,failures:result.failures.length});
+        report.textContent=JSON.stringify({status:'running',cases:cases.length,issues:issues.length,last:label},null,2);
+      }
+    }
+    const widths=redesign?[360,390,1280]:[320,390];
+    for(const width of widths)for(const [size,pixels] of [['large',22],['larger',26],['largest',30]])for(const theme of ['light','dark']){
       frame.style.width=width+'px';Object.assign(doc.documentElement.dataset,{display:'accessible',textSize:size,contrast:theme});
       await nextFrame();const result=measure(doc);const label={route,width,size,theme};
       const badWords=result.words.filter(word=>word.split||word.outside||word.clipped.length);

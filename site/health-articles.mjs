@@ -74,7 +74,7 @@ function archiveItem(prefix, story, { photo = false, summary = false } = {}) {
 function archiveList(prefix, stories, compact = false) {
   const items = stories.map((story, index) => archiveItem(prefix, story, {
     photo: !compact || index === 0,
-    summary: !compact
+    summary: !compact && index === 0
   })).join('');
   const companionRows = Math.min(3, Math.max(1, stories.length - 1));
   return `<ul class="archive-list${compact ? ' archive-list-compact' : ''}" style="--archive-rows:${companionRows}">${items}</ul>`;
@@ -89,8 +89,11 @@ export function healthIndex(prefix, articles, stories = []) {
     </section>`);
   return `${breadcrumbs(prefix, 'Статьи')}
     <div class="container health-index">
-      <header class="page-head"><h1>Статьи</h1>
-        ${stories.length ? '<a href="#health">Перейти к статьям о здоровье</a>' : ''}
+      <header class="page-head journal-mast"><h1>Статьи</h1>
+        <nav aria-label="Разделы журнала">
+          ${stories.length ? '<a href="#archive-index-title">Истории центра</a>' : ''}
+          <a href="#health">Памятки о здоровье</a>
+        </nav>
       </header>
       ${stories.length ? `<section class="centre-archive" aria-labelledby="archive-index-title">
         <h2 id="archive-index-title">Из жизни центра</h2>

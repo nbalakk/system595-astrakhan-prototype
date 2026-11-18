@@ -106,9 +106,10 @@ test('the homepage explains the audience and purpose of a visit', () => {
   const home = rendered.find(page => page.route === 'index.html');
   assert(home, 'Homepage must be built');
   const main = readableContent(home.html.match(/<main\b[\s\S]*?<\/main>/iu)?.[0] || '');
-  for (const concept of [/здоров/iu, /долголети/iu, /старшего возраста/iu, /5\s*\/\s*95/u, /Светлан/iu, /Бабак/iu]) {
+  for (const concept of [/здоров/iu, /долголети/iu, /старшего (?:поколения|возраста)/iu, /5\s*\/\s*95/u, /Светлан/iu, /Бабак/iu]) {
     assert.match(main, concept);
   }
+  assert.match(home.html, /<a\b[^>]*class="[^"]*welcome-primary[^"]*"[^>]*href="tel:\+79093738094"[^>]*>[\s\S]*?Позвонить Светлане<\/a>/u);
 });
 
 test('the articles hub opens with centre stories and links to all eight health guides', () => {
@@ -282,11 +283,18 @@ test('the five-step preview leads to a page with the locally hosted recording an
   });
   assert(times.every((seconds, index) => Number.isFinite(seconds) && (!index || seconds > times[index - 1])),
     'Each scene must start after the preceding scene');
-  const previewLists = [...home.matchAll(/<ol\b[^>]*>([\s\S]*?)<\/ol>/giu)].map(match =>
-    [...match[1].matchAll(/<li\b[^>]*>([\s\S]*?)<\/li>/giu)].map(item => readableContent(item[1]).trim())
-  );
-  assert(previewLists.some(list => list.length === 5 && titles.every((title, index) => list[index] === title)),
-    'The landing page previews the same five scenes in order');
+  const preview = home.match(/<section\b[^>]*aria-labelledby="steps-preview-title"[^>]*>([\s\S]*?)<\/section>/iu)?.[1] ?? '';
+  const posterLink = preview.match(/<a\b[^>]*href="\.\/five-steps\/"[^>]*>([\s\S]*?)<\/a>/iu)?.[1] ?? '';
+  assert.match(posterLink, /<img\b[^>]*src="\.\/assets\/five-steps-poster\.jpg"/iu);
+  assert.match(readableContent(posterLink), /Открыть фильм\s+57 секунд/iu);
+  const sceneLinks = [...preview.matchAll(/<li\b[^>]*>\s*<a\b[^>]*href="\.\/five-steps\/#([^"]+)"[^>]*>([\s\S]*?)<\/a>/giu)];
+  assert.equal(sceneLinks.length, chapters.length);
+  for (const [index, [, fragment, link]] of sceneLinks.entries()) {
+    assert(main.includes(`id="${fragment}"><h3>${titles[index]}</h3>`), 'Every preview step opens its own chapter description');
+    assert.equal(readableContent(link.match(/<span>([\s\S]*?)<\/span>/iu)?.[1] ?? '').trim(), titles[index]);
+    assert(link.includes(`datetime="PT${times[index]}S"`), 'The preview and player must use the same chapter times');
+  }
+  assert.doesNotMatch(preview, /<(video|iframe|audio)\b/iu, 'The landing preview cannot play media');
   const video = main.match(/(<video\b[^>]*>)[\s\S]*?<\/video>/i);
   assert(video, 'The recording plays directly in the guide');
   assert.match(video[1], /\bcontrols\b/i, 'The visitor controls playback');

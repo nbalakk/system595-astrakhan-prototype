@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
 import { booking, home } from '../site/pages.mjs';
+import { layout } from '../site/components.mjs';
 
 for (const [page, render, prefix] of [['home', home, './'], ['visit arrangements', booking, '../']]) {
   test(`${page} offers a direct call and map before JavaScript runs`, () => {
@@ -17,6 +18,69 @@ for (const [page, render, prefix] of [['home', home, './'], ['visit arrangements
 // Exercise the shipped client script with those old URLs as well. Booking
 // content, including the title, must not change on load or history restore.
 const script = await readFile(new URL('../site/app.js', import.meta.url), 'utf8');
+
+test('the static header exposes the navigation and telephone without JavaScript', () => {
+  const html = layout({ title: 'Статьи', description: '', route: 'articles/', prefix: '../', body: '' });
+  const header = html.match(/<header\b[\s\S]*?<\/header>/u)?.[0];
+  const nav = header.match(/<nav\b[^>]*id="main-nav"[^>]*>[\s\S]*?<\/nav>/u)?.[0];
+  assert(nav);
+  assert.doesNotMatch(nav, /\bhidden\b|aria-hidden="true"/u);
+  assert.match(nav, /href="\.\.\/articles\/" aria-current="page"/u);
+  assert.match(nav, /href="\.\.\/five-steps\/"/u);
+  assert.match(header, /<button\b[^>]*aria-controls="main-nav"[^>]*\bhidden\b/u);
+  assert.equal((header.match(/href="tel:\+79093738094"/gu) || []).length, 1);
+  assert.match(html, /href="#main"/u);
+  assert.match(html, /<main id="main" tabindex="-1">/u);
+});
+
+test('the menu keeps disclosure, keyboard focus and layout changes in sync', () => {
+  const document = new EventTarget();
+  const menu = new EventTarget();
+  const breakpoint = new EventTarget();
+  const attributes = new Map();
+  const sectionLink = { focus() { document.activeElement = sectionLink; } };
+  const nav = {
+    querySelector: () => sectionLink,
+    contains: element => element === sectionLink
+  };
+  menu.getAttribute = name => attributes.get(name);
+  menu.setAttribute = (name, value) => attributes.set(name, value);
+  menu.focus = () => { document.activeElement = menu; };
+  document.querySelector = selector => ({ '.menu-toggle': menu, '#main-nav': nav })[selector];
+  document.querySelectorAll = () => [];
+  breakpoint.matches = true;
+  vm.runInNewContext(script, { document, window: { matchMedia: () => breakpoint } });
+
+  assert.equal(menu.hidden, false);
+  assert.equal(nav.hidden, true);
+  assert.equal(menu.getAttribute('aria-expanded'), 'false');
+  menu.dispatchEvent(new Event('click'));
+  assert.equal(nav.hidden, false);
+  assert.equal(menu.getAttribute('aria-expanded'), 'true');
+  menu.dispatchEvent(new Event('click'));
+  assert.equal(nav.hidden, true);
+  menu.dispatchEvent(new Event('click'));
+  sectionLink.focus();
+  const escape = Object.assign(new Event('keydown'), { key: 'Escape' });
+  document.dispatchEvent(escape);
+  assert.equal(nav.hidden, true);
+  assert.equal(menu.getAttribute('aria-expanded'), 'false');
+  assert.equal(document.activeElement, menu);
+
+  menu.dispatchEvent(new Event('click'));
+  breakpoint.matches = false;
+  breakpoint.dispatchEvent(new Event('change'));
+  assert.equal(menu.hidden, true);
+  assert.equal(menu.getAttribute('aria-expanded'), 'false');
+  assert.equal(nav.hidden, false);
+  assert.equal(document.activeElement, sectionLink);
+  breakpoint.matches = true;
+  breakpoint.dispatchEvent(new Event('change'));
+  assert.equal(menu.hidden, false);
+  assert.equal(nav.hidden, true);
+  assert.equal(document.activeElement, menu);
+});
+
 const oldLinks = [
   '/booking/?purpose=price',
   '/booking/?purpose=equipment',
