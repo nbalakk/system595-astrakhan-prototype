@@ -45,7 +45,7 @@ const dateFormat = new Intl.DateTimeFormat('ru-RU', {
 
 function archiveMeta(story) {
   const date = `<time datetime="${escapeHtml(story.date)}">${dateFormat.format(new Date(story.date))}</time>`;
-  return story.duration ? `${date} · Видео ${escapeHtml(story.duration)}` : date;
+  return story.duration ? `${date} · Видео&nbsp;${escapeHtml(story.duration)}` : date;
 }
 
 function archiveImage(prefix, story) {
@@ -56,28 +56,6 @@ function archiveImage(prefix, story) {
   const dimensions = Number.isInteger(story.width) && Number.isInteger(story.height)
     ? ` width="${story.width}" height="${story.height}"` : '';
   return `<img src="${prefix}assets/${story.image}" alt="${escapeHtml(story.alt)}"${dimensions} loading="lazy">`;
-}
-
-function archiveItem(prefix, story, { photo = false, summary = false } = {}) {
-  const image = photo ? archiveImage(prefix, story) : '';
-  return `<li class="archive-item">
-    <article>
-      <a class="archive-headline" href="${articleUrl(prefix, story.slug)}">
-        ${image}<h3>${escapeHtml(story.title)}</h3>
-      </a>
-      <p class="archive-meta">${archiveMeta(story)}</p>
-      ${summary ? `<p>${escapeHtml(story.summary)}</p>` : ''}
-    </article>
-  </li>`;
-}
-
-function archiveList(prefix, stories, compact = false) {
-  const items = stories.map((story, index) => archiveItem(prefix, story, {
-    photo: !compact || index === 0,
-    summary: !compact && index === 0
-  })).join('');
-  const companionRows = Math.min(3, Math.max(1, stories.length - 1));
-  return `<ul class="archive-list${compact ? ' archive-list-compact' : ''}" style="--archive-rows:${companionRows}">${items}</ul>`;
 }
 
 export function healthIndex(prefix, articles, stories = []) {
@@ -91,14 +69,10 @@ export function healthIndex(prefix, articles, stories = []) {
     <div class="container health-index">
       <header class="page-head journal-mast"><h1>Статьи</h1>
         <nav aria-label="Разделы журнала">
-          ${stories.length ? '<a href="#archive-index-title">Истории центра</a>' : ''}
           <a href="#health">Памятки о здоровье</a>
+          ${stories.length ? '<a href="#archive-index-title">Архив центра</a>' : ''}
         </nav>
       </header>
-      ${stories.length ? `<section class="centre-archive" aria-labelledby="archive-index-title">
-        <h2 id="archive-index-title">Из жизни центра</h2>
-        ${archiveList(prefix, stories)}
-      </section>` : ''}
       <section class="health-topics" aria-labelledby="health">
         <h2 id="health">О здоровье</h2>
         ${groups.join('')}
@@ -106,8 +80,13 @@ export function healthIndex(prefix, articles, stories = []) {
       <nav class="health-visit-links" aria-label="Подготовка к посещению центра">
         <strong>Перед поездкой в центр</strong>
         <a href="${prefix}articles/first-visit/">Памятка к первому визиту</a>
-        <a href="${prefix}articles/first-visit/#documents">Инструкции и сертификаты на аппараты</a>
+        <a href="${prefix}articles/first-visit/#documents">Как посмотреть документы на аппарат</a>
       </nav>
+      ${stories.length ? `<details class="journal-archive">
+        <summary>Из жизни центра — архив встреч и публикаций</summary>
+        <ul id="archive-index-title">${stories.map(story => `<li><a href="${articleUrl(prefix, story.slug)}">${escapeHtml(story.title)}</a>
+          <span class="archive-meta">${archiveMeta(story)}</span></li>`).join('')}</ul>
+      </details>` : ''}
     </div>`;
 }
 
@@ -135,15 +114,12 @@ export function healthArticle(prefix, article) {
     </article>`;
 }
 
-export function healthPreview(prefix, articles, stories = []) {
-  if (!articles.length && !stories.length) return '';
-  const selected = stories.slice(0, 3);
+export function healthPreview(prefix, articles) {
+  if (!articles.length) return '';
   return `<section class="container health-preview" aria-labelledby="health-preview-title">
-    <div class="health-preview-head"><h2 id="health-preview-title">${selected.length ? 'Из жизни центра' : 'Статьи о здоровье'}</h2>
+    <div class="health-preview-head"><h2 id="health-preview-title">Статьи о здоровье</h2>
       <a class="text-link" href="${prefix}articles/">Все статьи${icon('arrow')}</a></div>
-    ${selected.length ? `${archiveList(prefix, selected, true)}
-    ${articles.length ? `<a class="health-topic-link" href="${prefix}articles/#health">Статьи о здоровье${icon('arrow')}</a>` : ''}`
-    : `<ul class="health-preview-list">${articles.slice(0, 3).map(article => `<li><a href="${articleUrl(prefix, article.slug)}">${escapeHtml(article.title)}</a></li>`).join('')}</ul>`}
+    <ul class="health-preview-list">${articles.slice(0, 3).map(article => `<li><a href="${articleUrl(prefix, article.slug)}">${escapeHtml(article.title)}</a></li>`).join('')}</ul>
   </section>`;
 }
 
@@ -153,8 +129,9 @@ export function centreStory(prefix, story) {
   const guide = healthArticles.find(article => article.slug === story.relatedSlug);
   const image = archiveImage(prefix, story);
   const videoId = story.videoId && /^\d+$/.test(story.videoId) ? story.videoId : '';
-  const media = videoId ? `<div class="interview-frame archive-video" data-video-frame>
-    ${image}<button type="button" class="interview-play" data-ok-player="${videoId}" aria-label="Смотреть видео «${title}»" hidden>Смотреть видео</button></div>` : image;
+  const media = videoId ? `<div class="reader-video" data-video-frame>
+      <button type="button" class="reader-play" data-ok-player="${videoId}" aria-label="Смотреть видео · ${escapeHtml(story.duration)}. ${title}" hidden>Смотреть видео · ${escapeHtml(story.duration)}</button>
+    </div>` : '';
   return `${breadcrumbs(prefix, title, ['articles/', 'Статьи'])}
     <article class="container health-reading centre-story">
       <header>
@@ -162,12 +139,14 @@ export function centreStory(prefix, story) {
         <h1>${title}</h1>
         <p class="lead">${escapeHtml(story.summary)}</p>
       </header>
-      ${media ? `<div class="archive-story-media">${media}</div>` : ''}
-      ${story.slug === 'otzyv-posetitelnitsy' ? '<p>Если вы используете инсулин, изменения дозы обсуждайте со своим лечащим врачом.</p>' : ''}
       ${story.paragraphs.map(paragraph => `<p>${escapeHtml(paragraph)}</p>`).join('')}
-      ${sourceUrl ? `<p><a class="text-link" href="${sourceUrl}">${videoId ? 'Открыть видео в Одноклассниках' : 'Публикация в Одноклассниках'}${icon('arrow')}</a></p>` : ''}
+      ${story.slug === 'otzyv-posetitelnitsy' ? '<p class="archive-meta">В записи упоминается инсулин. Изменение дозы обсуждают с лечащим врачом.</p>' : ''}
+      ${media}
+      ${sourceUrl ? `<p><a class="text-link" href="${sourceUrl}">${videoId ? 'Видео в Одноклассниках' : 'Публикация в Одноклассниках'}${icon('arrow')}</a></p>` : ''}
+      ${image ? `<details class="archive-illustration"><summary>${videoId ? 'Кадр из записи' : 'Иллюстрация из публикации'}</summary>${image}</details>` : ''}
       ${guide ? `<aside class="archive-related"><p>Памятка о здоровье</p>
         <a href="${articleUrl(prefix, guide.slug)}">${escapeHtml(guide.title)}</a></aside>` : ''}
+      ${story.slug === 'otzyv-posetitelnitsy' ? `<p><a class="text-link" href="${prefix}rehabilitation/">Как прийти на первую встречу${icon('arrow')}</a></p>` : ''}
       <a class="health-return" href="${prefix}articles/">Все статьи</a>
     </article>`;
 }

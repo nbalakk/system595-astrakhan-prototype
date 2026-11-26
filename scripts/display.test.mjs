@@ -2,9 +2,31 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
+import { layout } from '../site/components.mjs';
+import { centre } from '../site/content.mjs';
 
 const source = await readFile(new URL('../site/display.js', import.meta.url), 'utf8');
 const key = 'centre595.display';
+
+test('header and footer link names retain the complete visible wording in reading order', () => {
+  const html = layout({ title: 'Отзывы', description: '', route: 'reviews/', prefix: '../', body: '' });
+  const anchors = [...html.matchAll(/(<a\b[^>]*>)([\s\S]*?)<\/a>/gu)];
+  const text = markup => markup.replace(/<[^>]+>/gu, ' ').replace(/\s+/gu, ' ').trim();
+  for (const [className, expected, count] of [
+    ['centre-identity', `${centre.name} ${centre.city}`, 2],
+    ['masthead-call', `Запись по телефону ${centre.phone}`, 1],
+    ['masthead-address', 'ул. Савушкина, 46А', 1]
+  ]) {
+    const matching = anchors.filter(([, tag]) => tag.match(/class="([^"]*)"/u)?.[1].split(' ').includes(className));
+    assert.equal(matching.length, count, className);
+    for (const [, tag, content] of matching) {
+      const visible = text(content.replace(/<span class="masthead-link-hint">[^<]*<\/span>/gu, ''));
+      const name = tag.match(/aria-label="([^"]*)"/u)?.[1] ?? text(content);
+      assert.equal(visible, expected);
+      assert(name.includes(visible), `${className}: “${visible}” must be kept in “${name}”`);
+    }
+  }
+});
 
 class Element {
   constructor(dataset = {}) {

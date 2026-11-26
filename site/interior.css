@@ -7,17 +7,30 @@
   margin-block: 6px 38px;
 }
 .visit-opening-copy, .equipment-opening > header { align-self: center; min-width: 0; }
-.visit-opening h1, .equipment-opening h1, .contacts-spread h1, .journal-mast h1 {
-  font-size: clamp(36px, 4.2vw, 57px);
-  line-height: 1.08;
+.visit-opening, .equipment-opening, .contacts-spread, .booking-call-plan, .visit-memo {
+  border-top: 2px solid var(--red);
 }
+.visit-opening, .equipment-opening { padding-top: clamp(16px, 2.2vw, 30px); }
+:is(.visit-opening, .equipment-opening, .contacts-spread, .booking-call-plan, .memo-heading, .journal-mast, .model-heading, .model-bodyhealth) h1,
+main > .page-head h1 {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-weight: 400;
+  letter-spacing: -.028em;
+}
+.visit-opening h1, .equipment-opening h1, .contacts-spread h1, .journal-mast h1 {
+  font-size: clamp(37px, 4.8vw, 65px);
+  line-height: 1.06;
+}
+.visit-entry-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 5px 18px; }
+.visit-entry-actions a { min-height: 44px; display: inline-flex; align-items: center; }
+.visit-entry-actions a:not(.button) { color: var(--red-dark); }
 .visit-opening-copy .lead, .equipment-opening .lead { max-width: 44ch; }
 .visit-opening .reviews-preview {
   width: 100%; margin: 0; padding: 0 0 15px;
-  border: 1px solid var(--line); border-radius: 14px; background: #fffaf8;
+  border: 0; border-bottom: 1px solid var(--line); border-radius: 0; background: #f8f3ed;
 }
 .visit-opening .reviews-preview-layout { display: block; }
-.visit-opening .interview-frame { border-radius: 13px 13px 0 0; }
+.visit-opening .interview-frame { border-radius: 0; }
 .visit-opening .interview-frame img { width: 100%; height: auto; aspect-ratio: auto; object-fit: contain; }
 .visit-opening .interview-copy { padding: 16px 22px 0; }
 .visit-opening .interview-copy h2 { font-size: 25px; margin-bottom: 5px; }
@@ -33,22 +46,22 @@
 .visit-chapters p { margin-bottom: 6px; max-width: 57ch; }
 .visit-chapters a, .model-question a { color: var(--red-dark); }
 .visit-plan-links { display: flex; flex-wrap: wrap; gap: 3px 20px; }
-.visit-prep { background: #fbf3f3; padding: clamp(19px, 2.5vw, 36px); border-radius: 14px; }
+.visit-prep { background: #f8f3ed; padding: clamp(16px, 2.3vw, 30px); border-top: 2px solid var(--red); }
 .visit-prep .faq-list summary { padding-block: 12px; }
 .visit-prep > a { margin-top: 10px; }
 
 .equipment-opening { align-items: center; }
 .equipment-feature {
   display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
-  align-items: center; gap: 12px; background: #faf1ee; padding: clamp(15px, 2vw, 27px);
-  text-decoration: none; border-radius: 14px;
+  align-items: center; gap: 12px; background: #f7f3ec; padding: clamp(15px, 2vw, 27px);
+  text-decoration: none; border-bottom: 1px solid var(--line);
 }
 .equipment-feature img { width: 100%; height: 175px; object-fit: contain; mix-blend-mode: multiply; }
 .equipment-feature strong { display: block; font-size: clamp(24px, 2.3vw, 32px); line-height: 1.15; margin-bottom: 8px; }
 .equipment-feature > span > span { color: var(--red-dark); }
 .equipment-feature .icon { width: 17px; }
 .equipment-directory > h2 { margin-bottom: 16px; }
-.equipment-directory ul { list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--line); }
+.equipment-directory ul { list-style: none; padding: 0; margin: 0; border-top: 2px solid var(--red); }
 .equipment-row {
   display: grid; grid-template-columns: 97px minmax(150px,.7fr) minmax(0,1.35fr) 24px;
   align-items: center; gap: clamp(15px, 3vw, 44px); padding: 12px 8px;
@@ -72,7 +85,7 @@
 .model-question { grid-area: question; align-self: start; border-top: 2px solid var(--red); padding-top: 16px; }
 .model-question h2 { font-size: 22px; margin-bottom: 6px; }
 .model-question > p { margin-block: 0 10px; }
-.model-spread .gallery-main, .model-bodyhealth .gallery-main { background: #f7f3f0; border-radius: 14px; }
+.model-spread .gallery-main, .model-bodyhealth .gallery-main { background: #f7f3ec; border-radius: 3px; border-bottom: 1px solid var(--line); }
 .model-spread .gallery-main.is-lifestyle img { object-fit: contain; }
 html[data-display="accessible"] main .gallery-thumbs[hidden] { display: none!important; }
 .model-documents, .bodyhealth-documents { border-top: 1px solid var(--line); margin-top: 28px; padding-block: 24px; }
@@ -80,14 +93,14 @@ html[data-display="accessible"] main .gallery-thumbs[hidden] { display: none!imp
 .model-documents .product-information h2 { font-size: clamp(24px, 2.5vw, 30px); }
 .model-return { margin-top: -10px; margin-bottom: 26px; }
 
-.contacts-spread { padding-block: 6px 30px; }
-.contacts-top { gap: 0; margin: 24px 0 0; border: 1px solid var(--line); border-radius: 14px; }
-.contacts-call, .contacts-address { padding: clamp(20px, 3.5vw, 45px); }
-.contacts-call { background: #faf0f1; border-radius: 13px 0 0 13px; }
+.contacts-spread { padding-block: clamp(16px, 2.2vw, 30px) 30px; }
+.contacts-top { gap: 0; margin: 20px 0 0; border-block: 1px solid var(--line); }
+.contacts-call, .contacts-address { padding: clamp(20px, 2.8vw, 36px); }
+.contacts-call { background: #f8f3ed; }
 .contacts-top h2 { margin-bottom: 10px; }
 .contact-main-number { display: inline-flex; align-items: center; gap: 11px; min-height: 48px; font-size: clamp(24px, 2.3vw, 33px); font-weight: 600; color: var(--red-dark); }
-.contact-alternate { margin-top: 13px; color: var(--muted); }
-.contact-alternate a { color: var(--ink); }
+.contact-alternate, .booking-alternate { margin: 13px 0 0; color: var(--muted); }
+.contact-alternate a, .booking-alternate a { display: inline-flex; align-items: center; min-height: 44px; color: var(--ink); }
 .contacts-address .contact-street { font-size: 22px; font-weight: 500; line-height: 1.5; margin-bottom: 12px; }
 .contacts-more, .contacts-more > div { display: flex; align-items: baseline; flex-wrap: wrap; gap: 5px 20px; }
 .contacts-more { justify-content: space-between; padding-block: 17px; }
@@ -95,20 +108,10 @@ html[data-display="accessible"] main .gallery-thumbs[hidden] { display: none!imp
 
 .health-index .journal-mast { align-items: center; padding-bottom: 19px; }
 .journal-mast nav { display: flex; flex-wrap: wrap; align-items: center; gap: 0 22px; }
-.health-index .centre-archive { border-top: 2px solid var(--red); padding-top: 20px; }
-.centre-archive .archive-list { grid-template-columns: repeat(6,minmax(0,1fr)); gap: 15px clamp(12px, 2.1vw, 30px); }
-.centre-archive .archive-list > .archive-item:first-child { grid-column: 1 / span 3; }
-.centre-archive .archive-list > .archive-item:nth-child(n+2):nth-child(-n+4) { grid-column: 4 / span 3; }
-.centre-archive .archive-list > .archive-item:nth-child(n+5) { grid-column: span 2; padding-top: 15px; }
-.centre-archive .archive-item:first-child .archive-headline img { width: 100%; max-height: none; border-radius: 12px; }
-.centre-archive .archive-item:first-child h3 { font-size: clamp(23px, 2.3vw, 31px); }
-.centre-archive .archive-headline h3 { text-decoration: none; }
-.centre-archive .archive-headline:hover h3, .centre-archive .archive-headline:focus-visible h3 { text-decoration: underline; }
-.centre-archive .archive-item:not(:first-child) img { border-radius: 6px; }
 .health-reading > header { border-bottom: 2px solid var(--red); }
-.health-visit-links { border-radius: 8px; border: 0; padding: 13px 18px; background: #faf3f1; }
+.health-visit-links { border-radius: 0; border: 0; border-top: 2px solid var(--red); padding: 13px 18px; background: #f8f3ed; }
 .article-aside nav a:hover { text-decoration: underline; }
-.visit-memo { gap: 19px clamp(24px, 5vw, 70px); }
+.visit-memo { gap: 19px clamp(24px, 5vw, 70px); padding-top: clamp(16px, 2.2vw, 30px); }
 .memo-heading { grid-column: 1 / -1; }
 .memo-heading h1 { margin-bottom: 10px; }
 .memo-heading p { max-width: 58ch; }
@@ -125,7 +128,6 @@ html[data-display="accessible"] main .gallery-thumbs[hidden] { display: none!imp
   .equipment-feature { max-width: 570px; }
   .equipment-feature img { height: 125px; }
   .visit-plan { padding-bottom: 32px; }
-  .centre-archive .archive-list { gap: 16px; }
   .memo-jump { flex-flow: row wrap; gap: 0 20px; }
 }
 @media (max-width: 720px) {
@@ -147,19 +149,47 @@ html[data-display="accessible"] main .gallery-thumbs[hidden] { display: none!imp
   .model-heading .lead { margin: 0; }
   .model-documents .product-information { grid-template-columns: minmax(0,1fr); gap: 0; }
   .contacts-top { grid-template-columns: minmax(0,1fr); }
-  .contacts-call { border-radius: 13px 13px 0 0; }
+  .contacts-address { padding-inline: 0; }
   .contacts-more { flex-direction: column; align-items: start; }
   .contacts-more > div { display: grid; gap: 4px; }
-  .centre-archive .archive-list { display: block; }
   .health-index .journal-mast { align-items: start; }
   .journal-mast nav { gap: 2px 17px; }
 }
-html[data-display="accessible"] :is(.visit-opening,.visit-plan,.equipment-opening,.equipment-feature,.equipment-row,.contacts-top,.contacts-more,.contacts-more > div,.centre-archive .archive-list) {
+html[data-display="accessible"] :is(.visit-opening,.visit-plan,.equipment-opening,.equipment-feature,.equipment-row,.contacts-top,.contacts-more,.contacts-more > div) {
   display: grid!important; grid-template-columns: minmax(0,1fr)!important; gap: .55rem!important;
 }
-html[data-display="accessible"] :is(.model-spread > *, .equipment-row > *, .centre-archive .archive-list > .archive-item) {
+html[data-display="accessible"] :is(.model-spread > *, .equipment-row > *) {
   grid-column: auto!important; grid-row: auto!important; grid-area: auto!important;
 }
 html[data-display="accessible"] main .visit-opening > .reviews-preview { width: 100%!important; padding: 0!important; }
 html[data-display="accessible"] :is(.equipment-feature, .contacts-call, .contacts-address, .visit-prep) { padding: .4rem 0!important; }
 html[data-display="accessible"] .equipment-row > .icon { display: none!important; }
+
+.contact-entry { margin: 13px 0 0; max-width: 40ch; }
+.contact-save { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 22px; padding-block: 22px; border-bottom: 1px solid var(--line); }
+.contact-save p { margin: 0; max-width: 55ch; }
+.booking-call-plan { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); align-items: start; gap: 24px clamp(24px, 6vw, 80px); padding-block: clamp(16px, 2.2vw, 30px) 34px; }
+.booking-call-plan header .lead { max-width: 36ch; }
+.booking-call-plan h1 { font-size: clamp(35px, 4vw, 54px); }
+.booking-questions { padding: clamp(17px, 2.4vw, 32px); background: #f8f3ed; border-left: 2px solid var(--red); }
+.booking-questions h2 { font-size: 26px; }
+.booking-questions h3 { font-size: 19px; margin-bottom: 6px; }
+.booking-questions ul { margin: 0; padding-left: 1.2em; }
+.booking-questions li { margin-bottom: .3em; }
+.booking-questions ul + h3 { margin-top: 18px; }
+.booking-directions { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 22px; padding-block: 8px; border-top: 1px solid var(--line); }
+.booking-directions p { display: flex; align-items: center; gap: 8px; margin: 0; }
+.booking-directions p a, .visit-prep-links a { display: inline-flex; align-items: center; min-height: 44px; color: var(--red-dark); }
+.visit-prep-links { display: grid; justify-items: start; }
+@media(max-width: 720px) {
+  .booking-call-plan { grid-template-columns: minmax(0, 1fr); gap: 19px; }
+  .contact-save { flex-direction: column; align-items: start; }
+}
+html[data-display="accessible"] :is(.booking-call-plan, .booking-directions, .contact-save) {
+  display: grid!important; grid-template-columns: minmax(0,1fr)!important; gap: .55rem!important;
+}
+html[data-display="accessible"] .booking-questions { padding: .45rem 0; }
+html[data-display="accessible"] main h1 { font-family: Golos, Arial, sans-serif; }
+@media (max-width: 420px) {
+  .equipment-feature { grid-template-columns: minmax(0, .72fr) minmax(0, 1.28fr); }
+}

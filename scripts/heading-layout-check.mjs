@@ -1,7 +1,7 @@
 // Run `node scripts/heading-layout-check.mjs`, open the printed local URL,
 // and read the report after its real-browser checks finish. Never ships in dist.
 // Use ?articles-only for the article journey and add &noscript for the static HTML.
-// Use ?redesign for every page at four normal widths and three large-text widths.
+// Use ?redesign for every page on narrow phones through desktop, including large text.
 import http from 'node:http';
 import path from 'node:path';
 import { readFile, readdir } from 'node:fs/promises';
@@ -41,7 +41,7 @@ const frame=document.querySelector('iframe');
 if(noscript)frame.setAttribute('sandbox','allow-same-origin');
 if(redesign){
   frame.setAttribute('allow',"autoplay 'none'");
-  document.querySelector('h1 + p').textContent=routes.length+' pages. Normal presentation at 360, 390, 1280 and 1440 px; three text sizes in both contrast schemes at 360, 390 and 1280 px.';
+  document.querySelector('h1 + p').textContent=routes.length+' pages. Normal presentation at 320, 360, 390, 1280 and 1440 px; three text sizes in both contrast schemes at 320, 360, 390 and 1280 px.';
 }
 const report=document.querySelector('#report');
 const runButton=document.querySelector('#run');
@@ -151,7 +151,7 @@ async function run(){
     if(redesign){
       const preferences=doc.documentElement.dataset;
       delete preferences.display;delete preferences.textSize;delete preferences.contrast;
-      for(const width of [360,390,1280,1440]){
+      for(const width of [320,360,390,1280,1440]){
         frame.style.width=width+'px';await nextFrame();
         const result=measureOrdinary(doc);
         const label={route,width,mode:'ordinary'};
@@ -160,7 +160,7 @@ async function run(){
         report.textContent=JSON.stringify({status:'running',cases:cases.length,issues:issues.length,last:label},null,2);
       }
     }
-    const widths=redesign?[360,390,1280]:[320,390];
+    const widths=redesign?[320,360,390,1280]:[320,390];
     for(const width of widths)for(const [size,pixels] of [['large',22],['larger',26],['largest',30]])for(const theme of ['light','dark']){
       frame.style.width=width+'px';Object.assign(doc.documentElement.dataset,{display:'accessible',textSize:size,contrast:theme});
       await nextFrame();const result=measure(doc);const label={route,width,size,theme};

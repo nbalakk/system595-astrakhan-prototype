@@ -1,13 +1,22 @@
 .centre-masthead {
+  border-top: 3px solid var(--red);
   background: var(--white);
   color: var(--ink);
+}
+.masthead-link-hint {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 .masthead-main {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto auto;
   align-items: center;
   gap: 24px;
-  padding-block: 11px;
+  padding-block: 9px;
 }
 .centre-identity {
   display: inline-flex;
@@ -15,17 +24,17 @@
   width: fit-content;
   max-width: 100%;
   gap: 11px;
-  font-size: clamp(17px, 1.5vw, 21px);
-  font-weight: 650;
-  letter-spacing: -.025em;
+  font-size: clamp(18px, 1.6vw, 22px);
+  font-weight: 600;
+  letter-spacing: -.035em;
   line-height: 1.15;
 }
 .identity-text { min-width: 0; }
 .centre-identity small {
-  margin: 4px 0 0;
+  margin: 3px 0 0;
   font-size: 13px;
   line-height: 1.2;
-  letter-spacing: .015em;
+  letter-spacing: .025em;
 }
 .identity-symbol {
   width: 42px;
@@ -80,11 +89,11 @@
 .masthead-call .icon { width: 19px; height: 19px; }
 .masthead-call small, .masthead-call strong { display: block; }
 .masthead-call small { font-size: 12px; font-weight: 400; }
-.masthead-call strong { margin-top: 2px; font-size: 17px; font-weight: 600; }
+.masthead-call strong { margin-top: 2px; font-size: 17px; font-weight: 600; font-variant-numeric: tabular-nums; }
 .masthead-menu { margin: 0; padding: 6px 12px; font-weight: 600; }
 .masthead-directory {
-  border-block: 1px solid #e6dbdc;
-  background: #faf6f5;
+  border-block: 1px solid var(--line);
+  background: #faf8f6;
 }
 .directory-inner, .centre-navigation { display: flex; align-items: center; }
 .directory-inner { justify-content: space-between; gap: 24px; }
@@ -93,7 +102,7 @@
   position: relative;
   display: inline-flex;
   align-items: center;
-  min-height: 46px;
+  min-height: 44px;
   padding-block: 8px;
   font-size: 15px;
   font-weight: 500;
@@ -112,8 +121,8 @@
 .centre-footer {
   margin-block-start: 0;
   padding-block-start: 30px;
-  border-top: 1px solid var(--line);
-  background: #faf6f5;
+  border-top: 2px solid var(--red-dark);
+  background: #faf8f6;
 }
 .centre-footer .footer-main { grid-template-columns: minmax(0, 1.2fr) 1.1fr minmax(0, 1fr); gap: 32px; padding-bottom: 22px; }
 .centre-footer .footer-main nav {

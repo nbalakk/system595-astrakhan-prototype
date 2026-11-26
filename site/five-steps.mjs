@@ -18,13 +18,9 @@ export function fiveStepsPreview(p) {
     <div class="steps-feature">
       <header class="steps-preview-intro">
         <h2 id="steps-preview-title">Пять шагов программы посещений</h2>
-        <p>Посмотрите, как устроены занятия по системе 5/95: от знакомства с консультантом до повторной встречи.</p>
+        <p>В коротком фильме о системе 5/95 показан путь от первой беседы до повторной встречи. Любую из пяти глав можно открыть отдельно.</p>
+        <a class="text-link steps-film-link" href="${p}five-steps/">Открыть фильм · 57 секунд ${icon('arrow')}</a>
       </header>
-      <a class="steps-poster-link" href="${p}five-steps/">
-        <img src="${p}assets/five-steps-poster.jpg" alt="" width="848" height="480" loading="lazy">
-        <span class="steps-poster-action"><span class="steps-poster-label"><span class="steps-play-icon" aria-hidden="true"></span>Открыть фильм</span>
-          <span class="steps-duration">57 секунд</span></span>
-      </a>
       <ol class="steps-outline">${steps.map((step, index) => `<li>
         <a href="${p}five-steps/#step-${index + 1}"><span>${step.title}</span><time datetime="PT${step.start}S">${clockTime(step.start)}</time></a>
       </li>`).join('')}</ol>
@@ -40,10 +36,14 @@ export function fiveStepsPage(p) {
         <p class="lead">Короткий фильм о программе системы 5/95. В кадре участники знакомятся с консультантом, занимаются в группе и пробуют аппараты.</p>
       </header>
       <div class="steps-detail">
-        <figure class="steps-video"><video id="visit-film" controls playsinline preload="metadata" poster="${p}assets/five-steps-poster.jpg" aria-label="Пять шагов программы посещений">
-          <source src="${p}assets/five-steps.mp4" type="video/mp4">
-          <track kind="captions" srclang="ru" label="Русские" src="${p}assets/five-steps-ru.vtt" default></video>
-          <figcaption><span>57 секунд · Русские субтитры</span><a href="${p}assets/five-steps.mp4">Открыть видеофайл</a></figcaption>
+        <figure class="steps-video">
+          <details class="steps-film-disclosure"><summary>Смотреть видео «Пять шагов»</summary>
+            <video id="visit-film" controls playsinline preload="none" aria-label="Пять шагов программы посещений">
+              <source src="${p}assets/five-steps.mp4" type="video/mp4">
+              <track kind="captions" srclang="ru" label="Русские" src="${p}assets/five-steps-ru.vtt" default>
+            </video>
+          </details>
+          <figcaption><span>57 секунд · Русские субтитры</span><a href="${p}assets/five-steps.mp4">Открыть фильм в формате MP4</a></figcaption>
         </figure>
         <section class="steps-chapters" aria-labelledby="scenes-title"><h2 id="scenes-title">Главы фильма</h2>
           <ol class="steps-scenes">${steps.map((step, index) => `<li id="step-${index + 1}"><h3>${step.title}</h3><p>${step.scene}</p>

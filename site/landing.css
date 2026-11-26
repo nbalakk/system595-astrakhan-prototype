@@ -7,172 +7,156 @@
   --surface: #f6f4f1;
   --soft-red: #faedf0;
 }
-
 .footer-contact strong > a, .contact-panel .contact-phone {
   display: inline-flex;
   align-items: center;
   min-height: 44px;
 }
-.welcome-spread { padding-block: 22px 0; }
+
+.welcome-spread { background: var(--red); color: #fff; }
 .welcome-panel {
   display: grid;
-  grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr);
-  background: var(--red);
-  border-radius: 16px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(26px, 4vw, 58px);
+  padding-block: clamp(30px, 3.4vw, 52px);
 }
-.welcome-copy {
-  align-self: center;
-  padding: clamp(24px, 3.1vw, 42px);
-  color: #fff;
+.welcome-copy, .welcome-photo { min-width: 0; }
+.welcome-place {
+  margin: 0 0 14px;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+.welcome-place span { padding-inline: .24em; }
+.welcome-copy h1, .lesson-intro h2, .home-visit-desk h2 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: normal;
+  letter-spacing: -.04em;
 }
 .welcome-copy h1 {
-  margin: 0 0 16px;
-  font-size: clamp(38px, 3.55vw, 54px);
-  font-weight: 600;
-  line-height: 1.04;
-  letter-spacing: -.035em;
+  max-width: 14ch;
+  margin: 0 0 19px;
+  font-size: clamp(49px, 5.15vw, 78px);
+  line-height: 1.02;
   text-wrap: balance;
 }
-.welcome-lead { max-width: 48ch; margin: 0; font-size: 17px; line-height: 1.5; }
-.welcome-links, .home-model-links, .home-contact-links {
+.welcome-lead { max-width: 51ch; margin: 0; font-size: clamp(17px, 1.4vw, 20px); line-height: 1.48; }
+.welcome-links, .home-desk-links, .visit-equipment-links {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 4px 20px;
+  gap: 4px 22px;
 }
-.welcome-links { margin-top: 18px; }
-.welcome-links > a, .home-contact-links > a, .home-model-links > a {
+.welcome-links { margin-top: 19px; }
+.welcome-links > a, .home-desk-links > a, .visit-equipment-links > a, .home-directions > a {
   display: inline-flex;
   align-items: center;
   min-height: 44px;
+  font-size: 16px;
+  line-height: 1.4;
 }
-.welcome-links a { font-weight: 500; font-size: 15px; }
-.welcome-links .welcome-primary, .home-contact .button {
+.welcome-links .welcome-primary {
   border-color: #fff;
+  border-radius: 4px;
   background: #fff;
   color: var(--red-dark);
+  font-weight: 600;
 }
 .welcome-primary .icon { width: 18px; }
-.welcome-links .welcome-primary:hover, .home-contact .button:hover { background: var(--soft-red); color: var(--red-dark); }
-.welcome-links > a:not(.button), .home-contact a:not(.button) { color: white; text-decoration: underline; }
-.welcome-copy :focus-visible, .home-contact :focus-visible { outline-color: white; }
-.welcome-photo {
-  align-self: stretch;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 12px;
-  margin: 0;
-  padding: clamp(18px, 2.2vw, 30px);
-  border-radius: 0 16px 16px 0;
-  background: #f3eae5;
-}
-.welcome-photo img { width: 100%; height: auto; border-radius: 6px; }
-.welcome-photo figcaption {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 22px;
-  justify-content: space-between;
-  align-items: baseline;
-  color: var(--ink);
-  line-height: 1.45;
+.welcome-links .welcome-primary:hover { background: var(--soft-red); color: var(--red-dark); }
+.welcome-links > a:not(.button), .welcome-photo a { color: #fff; }
+.welcome-spread :focus-visible { outline-color: #fff; }
+.welcome-photo { margin: 0; }
+.welcome-photo img { width: 100%; height: auto; aspect-ratio: 1.75; object-fit: cover; object-position: 70% 50%; }
+.welcome-photo figcaption, .lesson-photo figcaption {
+  margin-top: 8px;
   font-size: 14px;
+  line-height: 1.45;
 }
-.welcome-photo time { color: var(--muted); }
-.welcome-photo a { max-width: 34ch; }
-.welcome-address {
-  display: flex;
-  gap: 9px;
-  align-items: center;
-  max-width: none;
-  min-height: 50px;
-  margin: 0;
-  padding-block: 4px;
-  font-size: 15px;
-  color: var(--muted);
-}
-.welcome-address a { padding-block: 8px; }
-@media (min-width: 821px) {
-  .welcome-spread { padding-bottom: 22px; }
-  .welcome-address { display: none; }
-}
+.welcome-photo figcaption { color: white; }
+.lesson-photo figcaption { color: var(--muted); }
+.lesson-photo figcaption a { color: var(--red-dark); }
 
-.first-meeting.reviews-preview { padding-block: clamp(22px, 3.2vw, 44px); }
-.first-meeting .reviews-preview-layout {
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr);
-  gap: clamp(28px, 7vw, 90px);
-}
-.first-meeting-copy h2, .home-model h2, .home-preparation h2, .home-contact h2 {
-  margin: 0 0 12px;
-  font-size: clamp(28px, 3vw, 38px);
-  letter-spacing: -.035em;
-}
-.first-meeting-copy p { max-width: 54ch; margin: 0 0 10px; }
-.first-meeting-copy p a, .lesson-context a { color: var(--red-dark); text-decoration-thickness: 1px; }
-.first-meeting .lesson-context { margin: 10px 0 0; max-width: 56ch; font-size: 16px; line-height: 1.55; }
-.first-meeting .interview-frame img { aspect-ratio: 606 / 255; object-fit: contain; }
-.first-meeting-caption { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px 12px; margin: 7px 0 0; color: var(--muted); font-size: 14px; }
-.first-meeting-caption a { color: var(--red-dark); }
-.home-model-strip { background: var(--surface); }
-.home-model, .home-preparation, .home-contact {
+.first-meeting { padding-block: clamp(30px, 3.75vw, 56px); }
+.lesson-intro {
   display: grid;
-  grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr);
-  align-items: center;
-  gap: clamp(25px, 5.5vw, 72px);
-  padding-block: clamp(25px, 3.3vw, 44px);
+  grid-template-columns: minmax(0, 1.12fr) minmax(0, .88fr);
+  gap: clamp(20px, 5vw, 72px);
+  align-items: end;
+  margin-bottom: clamp(20px, 2.3vw, 31px);
 }
-.home-model { grid-template-columns: minmax(180px, .6fr) minmax(0, 1.4fr); }
-.home-model-photo { text-align: center; }
-.home-model-photo img { margin: auto; width: 100%; height: 180px; object-fit: contain; }
-.home-model-photo figcaption, .home-model-credit { color: var(--muted); font-size: 14px; }
-.home-model h2 { max-width: 26ch; }
-.home-model-links > a { color: var(--red-dark); }
-.home-model-credit { margin-top: 6px; }
-.home-preparation { align-items: start; }
-.home-preparation .faq-list summary { padding-block: 13px; }
-.home-contact-strip { background: var(--red-dark); color: #fff; }
-.home-contact { grid-template-columns: minmax(0, 1fr) auto; }
-.home-contact p { max-width: 55ch; }
+.lesson-intro h2 { max-width: 20ch; margin: 0; font-size: clamp(35px, 3.8vw, 54px); line-height: 1.04; }
+.lesson-intro p, .lesson-examples p { margin: 0; max-width: 53ch; }
+.lesson-intro p { color: var(--muted); }
+.lesson-spread {
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(0, .88fr);
+  align-items: start;
+  gap: clamp(20px, 5vw, 72px);
+}
+.lesson-photo img { width: 100%; height: auto; aspect-ratio: 1.75; object-fit: cover; object-position: right center; }
+.lesson-examples article + article { margin-top: 10px; padding-top: 14px; border-top: 1px solid var(--line); }
+.lesson-examples .text-link, .visit-equipment-links > a:not(.button),
+.home-desk-links > a, .home-directions a { color: var(--red-dark); }
+.lesson-examples h3 { margin: 0 0 7px; font-size: clamp(22px, 2.15vw, 30px); line-height: 1.2; }
+.lesson-examples .text-link { margin-top: 5px; }
+.visit-equipment-links { margin-top: 22px; padding-top: 16px; border-top: 1px solid var(--line); gap: 4px 24px; }
+.visit-equipment-links > a:not(.button) { font-size: 15px; }
+@media (min-width: 1120px) { .visit-equipment-links > a:last-child { margin-left: auto; } }
+
+.home-visit-desk {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr);
+  gap: 26px clamp(22px, 4vw, 60px);
+  padding-block: clamp(30px, 3.4vw, 50px);
+}
+.home-account { border-left: 2px solid var(--red); padding-left: clamp(22px, 3.1vw, 45px); }
+.home-visit-desk h2 { margin: 0 0 10px; font-size: clamp(30px, 2.9vw, 42px); line-height: 1.1; }
+.home-visit-desk p { max-width: 53ch; margin: 0 0 8px; }
+.home-visit-desk .home-person-role { margin-bottom: 8px; color: var(--red-dark); font-size: 15px; font-weight: 600; }
+.home-desk-phone { gap: 8px; font-weight: 600; }
+.home-account > .text-link { min-height: 44px; }
+.home-directions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0 20px;
+  padding-top: 13px;
+  border-top: 1px solid var(--line);
+}
+.home-directions p { display: flex; align-items: center; gap: 8px; max-width: none; margin: 0; }
+.home-directions p > a { padding-block: 9px; }
+.home-directions > a { gap: 6px; }
+.home-directions .icon { width: 18px; color: var(--red); }
 
 @media (max-width: 760px) {
-  .welcome-spread { padding-top: 14px; }
-  .welcome-panel { grid-template-columns: minmax(0, 1fr); border-radius: 12px; }
-  .welcome-copy { padding: 21px; }
-  .welcome-copy h1 { max-width: 15ch; font-size: clamp(35px, 7.3vw, 43px); margin-bottom: 12px; }
-  .welcome-links { margin-top: 12px; }
-  .welcome-links .button { padding-inline: 14px; }
-  .welcome-photo { gap: 8px; padding: 12px; border-radius: 0 0 12px 12px; }
-  .welcome-photo img { width: min(100%, 450px); align-self: center; }
-  .welcome-photo figcaption { width: min(100%, 450px); align-self: center; font-size: 13px; }
-  .welcome-photo figcaption a { max-width: none; }
-  .welcome-address { font-size: 14px; }
-  .first-meeting .reviews-preview-layout, .home-model, .home-preparation, .home-contact {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 16px;
-  }
-  .home-model { grid-template-columns: 90px minmax(0, 1fr); gap: 14px; align-items: start; }
-  .home-model-photo img { height: auto; }
-  .home-model-photo figcaption { font-size: 12px; }
-  .home-model h2 { font-size: 25px; }
+  .welcome-panel, .lesson-intro, .lesson-spread, .home-visit-desk { grid-template-columns: minmax(0, 1fr); }
+  .welcome-panel { gap: 18px; padding-block: 25px 20px; }
+  .welcome-place { margin-bottom: 11px; font-size: 15px; }
+  .welcome-copy h1 { margin-bottom: 13px; font-size: clamp(39px, 8vw, 59px); }
+  .welcome-links { margin-top: 13px; gap: 2px 16px; }
+  .welcome-photo { width: min(100%, 520px); }
+  .lesson-intro { gap: 10px; margin-bottom: 16px; }
+  .lesson-spread { gap: 17px; }
+  .visit-equipment-links { margin-top: 17px; gap: 2px 17px; }
+  .home-visit-desk { gap: 20px; }
+  .home-account { padding: 17px 0 0; border: 0; border-top: 1px solid var(--line); }
 }
-@media(max-width: 440px) {
-  .welcome-copy { padding: 18px 16px; }
-  .welcome-copy h1 { max-width: none; font-size: clamp(30px, 8vw, 34px); }
-  .welcome-lead { font-size: 16px; }
-  .welcome-links { gap: 0 13px; }
-  .welcome-links a { font-size: 14px; }
-  .welcome-links .button { gap: 6px; padding-inline: 11px; }
-  .home-model { grid-template-columns: minmax(0, 1fr); }
-  .home-model-photo { order: 2; justify-self: start; }
-  .home-model-photo img { width: 118px; }
+@media (max-width: 440px) {
+  .welcome-photo figcaption { font-size: 13px; }
+  .welcome-copy h1 { font-size: clamp(38px, 10.5vw, 46px); }
+  .lesson-intro h2 { font-size: 34px; }
 }
-html[data-display="accessible"] :is(.welcome-panel, .home-model, .home-preparation, .home-contact, .first-meeting .reviews-preview-layout) {
+html[data-display="accessible"] :is(.welcome-panel, .lesson-intro, .lesson-spread, .home-visit-desk) {
   display: grid!important;
   grid-template-columns: minmax(0, 1fr)!important;
-  gap: .6rem!important;
+  gap: .65rem!important;
 }
-html[data-display="accessible"] :is(.welcome-copy, .welcome-photo) { padding: 0!important; }
 html[data-display="accessible"] .welcome-photo img { width: min(100%, 720px)!important; }
-html[data-display="accessible"] .welcome-links { flex-direction: column; align-items: start; }
-html[data-display="accessible"] .home-model-photo { order: initial; }
-html[data-display="accessible"] .home-model-photo img { height: auto; max-width: 240px!important; }
+html[data-display="accessible"] :is(.welcome-photo, .lesson-photo) img { height: auto!important; aspect-ratio: auto!important; object-fit: contain!important; }
+html[data-display="accessible"] :is(.welcome-links, .visit-equipment-links, .home-directions) { flex-direction: column; align-items: start; }
+html[data-display="accessible"] .visit-equipment-links > a:last-child { margin-left: 0; }
+html[data-display="accessible"] .home-account { border: 0; border-top: 1px solid currentColor; padding: .6rem 0 0; }

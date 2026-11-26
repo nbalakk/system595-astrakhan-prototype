@@ -3,11 +3,14 @@ import { readFile } from 'node:fs/promises';
 export const healthArticles = JSON.parse(await readFile(new URL('./articles.json', import.meta.url), 'utf8'));
 export const centreStories = JSON.parse(await readFile(new URL('./centre-stories.json', import.meta.url), 'utf8'));
 
-const address = 'Астрахань, ул. Савушкина, 46А, ТЦ «Факел»';
+const city = 'Астрахань';
+const streetAddress = 'ул. Савушкина, 46А, ТЦ «Факел»';
+const address = city + ', ' + streetAddress;
 
 export const centre = {
   name: 'Центр здоровья и долголетия',
-  city: 'Астрахань',
+  city,
+  streetAddress,
   contact: 'Светлана Михайловна Бабак',
   phone: '+7 909 373-80-94',
   phoneHref: 'tel:+79093738094',
@@ -61,37 +64,37 @@ export const products = [
   {
     slug: 'eyesystem', name: 'EyeSystem', category: 'eyes', area: 'Для области глаз',
     image: 'eyesystem.png', lifestyle: 'hero-source.jpg',
-    description: 'Маска для области глаз. Отдельный пульт соединён с ней проводом.',
+    description: 'Маска закрывает глаза. Ею управляют с небольшого пульта, который можно держать в руке.',
     question: 'Как располагается маска и как остановить работу с помощью пульта?'
   },
   {
     slug: 'spinesystem', name: 'SpineSystem', category: 'body', area: 'Для спины',
     image: 'spinesystem.png',
-    description: 'Мягкая накидка с двумя длинными ручками. Кнопки находятся на одной из них.',
+    description: 'Мягкая накидка ложится на плечи. На одной из её длинных ручек находятся кнопки.',
     question: 'Как расположить накидку, чтобы кнопки оставались под рукой?'
   },
   {
     slug: 'sleepsystem', name: 'SleepSystem', category: 'body', area: 'Для тела',
     image: 'sleepsystem.png', lifestyle: 'sleep-use.jpg',
-    description: 'Гибкий мат с проводным пультом. На экране пульта видны выбранные настройки.',
+    description: 'Гибкий мат можно накинуть на плечи. Настройки меняют на небольшом проводном пульте.',
     question: 'Как прочитать обозначения на пульте и где находится выключатель?'
   },
   {
     slug: 'footsystem', name: 'FootSystem', category: 'feet', area: 'Для стоп',
     image: 'footsystem.png', lifestyle: 'foot-use.jpg',
-    description: 'Аппарат с корпусом, внутрь которого помещают обе стопы.',
+    description: 'Аппарат ставят на пол перед стулом. Внутри достаточно места для обеих стоп.',
     question: 'Как устроено место для ног и где находится управление?'
   },
   {
     slug: 'moxi', name: 'Moxi', category: 'body', area: 'Для отдельного участка тела',
     image: 'moxi.png',
-    description: 'Ручной аппарат с длинной рукояткой и круглой рабочей частью.',
+    description: 'Ручной аппарат с длинной тонкой ручкой. На её конце — гладкий круглый наконечник.',
     question: 'Для чего предназначена рабочая часть и какие ограничения есть в инструкции?'
   },
   {
     slug: 'bodyhealth', name: 'BodyHealth', category: 'feet body', area: 'Для стоп и тела',
     image: 'bodyhealth.jpg', lifestyle: 'bodyhealth-use.jpg',
-    description: 'Аппарат с площадкой для обеих стоп и панелью управления на корпусе. Среди функций — прогрев и вибромассаж.',
+    description: 'Аппарат с прогревом и вибромассажем. Внутри есть площадка для обеих стоп, а кнопки находятся на краю корпуса.',
     source: 'https://novumedical.org/products/bodyhealth/'
   }
 ];

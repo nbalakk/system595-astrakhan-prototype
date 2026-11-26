@@ -41,15 +41,16 @@ const navigation = [
   ['rehabilitation/', 'Первое посещение'],
   ['five-steps/', 'Пять шагов'],
   ['equipment/', 'Об аппаратах'],
-  ['reviews/', 'Отклики'],
+  ['reviews/', 'Отзывы'],
   ['articles/', 'Статьи'],
   ['contacts/', 'Контакты']
 ];
 
 function identity(prefix) {
-  return `<a class="brand centre-identity" href="${prefix}" aria-label="Главная — ${centre.name} в Астрахани">
+  return `<a class="brand centre-identity" href="${prefix}">
     <span class="identity-symbol" aria-hidden="true"><i></i><i></i><i></i></span>
-    <span class="identity-text">${centre.name}<small>${centre.city}</small></span>
+    <span class="identity-text">${centre.name} <small>${centre.city}</small></span>
+    <span class="masthead-link-hint">— главная страница</span>
   </a>`;
 }
 
@@ -61,7 +62,7 @@ function sectionLinks(prefix, route) {
 }
 
 export function layout({ title, description, route, body, prefix }) {
-  const showEquipmentNote = !route.startsWith('articles/') || route === 'articles/first-visit/';
+  const showEquipmentNote = route.startsWith('equipment/') || route === 'five-steps/' || route === 'rehabilitation/';
   return `<!DOCTYPE html>
 <html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow"><meta name="theme-color" content="#b3153a"><meta name="description" content="${escapeHtml(description)}"><title>${escapeHtml(title)} — Астрахань</title><link rel="icon" href="${prefix}assets/favicon.svg" type="image/svg+xml"><link rel="preload" as="font" href="${prefix}assets/golos-0.ttf" type="font/ttf" crossorigin><link rel="stylesheet" href="${prefix}styles.css"><script src="${prefix}display.js"></script><script src="${prefix}app.js" defer></script></head><body>
 <a class="skip-link" href="#main">Перейти к содержимому</a>
@@ -69,14 +70,14 @@ export function layout({ title, description, route, body, prefix }) {
   <div class="container masthead-main">
     ${identity(prefix)}
     <button type="button" class="masthead-display" data-display-toggle aria-pressed="false" hidden disabled>${icon('eye')}<span data-display-label>Версия для слабовидящих</span></button>
-    <a class="masthead-call" href="${centre.phoneHref}" aria-label="Позвонить для записи в центр ${centre.phone}">
-      ${icon('phone')}<span><small>Запись по телефону</small><strong>${centre.phone}</strong></span>
+    <a class="masthead-call" href="${centre.phoneHref}">
+      ${icon('phone')}<span><small>Запись по телефону</small> <strong>${centre.phone}</strong></span>
     </a>
     <button type="button" class="menu-toggle masthead-menu" aria-controls="main-nav" aria-expanded="false" aria-label="Открыть меню" hidden>${icon('menu')}<span>Меню</span></button>
   </div>
   <div class="masthead-directory"><div class="container directory-inner">
     <nav class="centre-navigation" id="main-nav" aria-label="Основная навигация">${sectionLinks(prefix, route)}</nav>
-    <a class="masthead-address" href="${centre.mapUrl}" aria-label="Улица Савушкина, 46А. Открыть на карте">${icon('pin')}ул. Савушкина, 46А</a>
+    <a class="masthead-address" href="${centre.mapUrl}">${icon('pin')}ул. Савушкина, 46А <span class="masthead-link-hint">— открыть на карте</span></a>
   </div></div>
 </header>
 <section class="display-settings" id="display-settings" aria-labelledby="display-title" tabindex="-1" hidden><div class="container display-toolbar"><h2 id="display-title">Настройки отображения</h2><details data-display-options><summary>Размер текста и цвета</summary><div class="display-controls"><div class="display-choice" role="group" aria-label="Размер текста"><span class="display-group-label">Размер текста</span><button type="button" class="display-option" data-display-size="large" aria-pressed="true">Крупный</button><button type="button" class="display-option" data-display-size="larger" aria-pressed="false">Больше</button><button type="button" class="display-option" data-display-size="largest" aria-pressed="false">Максимальный</button></div><div class="display-choice" role="group" aria-label="Контрастная схема"><span class="display-group-label">Цвета</span><button type="button" class="display-option" data-display-theme="light" aria-pressed="true">Чёрный на белом</button><button type="button" class="display-option" data-display-theme="dark" aria-pressed="false">Белый на чёрном</button></div></div></details><button type="button" class="display-return" data-display-close>Обычная версия</button></div></section>
@@ -87,7 +88,7 @@ export function layout({ title, description, route, body, prefix }) {
     <div class="footer-contact"><strong><a href="${centre.phoneHref}">${centre.phone}</a></strong><p><a href="${centre.mapUrl}">${centre.address}</a></p></div>
   </div>
   ${showEquipmentNote ? `<p class="health-note">${centre.healthNote}</p>` : ''}
-  <div class="footer-bottom"><span>© 2026. ${centre.name}</span><a href="${prefix}media/">Фото и видео</a><a href="${prefix}privacy/">О данных на сайте</a></div>
+  <div class="footer-bottom"><span>© 2026. ${centre.name}</span><a href="${prefix}media/">Источники фото и видео</a><a href="${prefix}privacy/">О данных на сайте</a></div>
 </div></footer>
 </body></html>`;
 }

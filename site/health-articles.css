@@ -66,68 +66,41 @@
 .health-preview h2 { margin: 0; }
 .health-preview-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 15px 32px; margin-top: 14px; }
 .health-preview-list a { display: block; min-height: 44px; font-size: 20px; font-weight: 500; line-height: 1.45; }
-.health-topic-link { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; color: var(--red); margin-top: 5px; }
-.health-topic-link .icon { width: 17px; }
-
-.centre-archive { padding-block: 23px 27px; border-block: 1px solid var(--line); }
-.centre-archive > h2 { margin-bottom: 20px; }
-.archive-list {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  grid-auto-flow: row;
-  align-items: start;
-  gap: 14px clamp(25px, 5vw, 65px);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.archive-list > .archive-item { min-width: 0; }
-.archive-list > .archive-item:first-child { grid-column: 1; grid-row: 1 / span var(--archive-rows, 1); }
-.archive-list > .archive-item:where(:nth-child(n+2):nth-child(-n+4)) { grid-column: 2; }
-.archive-item article { display: flow-root; }
-.archive-item:nth-child(n+3) { border-top: 1px solid var(--line); padding-top: 13px; }
-.archive-headline { display: block; color: var(--ink); text-decoration: none; }
-.archive-headline img {
-  width: auto;
-  max-width: 100%;
-  max-height: 290px;
-  height: auto;
-  object-fit: contain;
-  margin-bottom: 12px;
-}
-.archive-headline h3 { font-size: 21px; line-height: 1.3; margin: 0 0 2px; text-decoration: underline; text-decoration-thickness: 1px; }
-.archive-headline:hover h3 { color: var(--red); text-decoration-thickness: 2px; }
-.archive-item:first-child h3 { font-size: 25px; }
-.archive-meta, .archive-story-date { font-size: 15px; line-height: 1.45; color: var(--muted); }
-.archive-item p { max-width: 62ch; margin: 5px 0 0; }
-.centre-archive .archive-item:not(:first-child) img {
-  float: right;
-  max-width: 25%;
-  max-height: 96px;
-  margin: 0 0 6px 12px;
-}
-.archive-headline img:is([src$="/den-rossii-astrakhan.jpg"], [src$="/novuheat-autumn.jpg"]) {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
-}
-.archive-headline img[src$="/den-rossii-astrakhan.jpg"] { object-position: 50% 24%; }
-.archive-headline img[src$="/novuheat-autumn.jpg"] { object-position: center bottom; }
-.archive-list-compact { margin-top: 15px; }
-.archive-list-compact .archive-headline img {
-  float: left;
-  max-width: 42%;
-  max-height: 150px;
-  margin: 0 18px 5px 0;
-}
-.archive-list-compact .archive-item:first-child h3 { font-size: 22px; }
-.archive-story-media { margin-block: 21px; }
-.archive-story-media > img { display: block; max-width: 100%; height: auto; }
-.archive-video:not(:has(img)) { min-height: 6rem; }
+.archive-meta, .archive-story-date { color: var(--muted); font-size: 15px; }
 .archive-story-date { margin: 0 0 8px; }
+.centre-story > header + p { margin-top: 16px; }
 .archive-related { margin-top: 22px; padding-top: 14px; border-top: 1px solid var(--line); }
 .archive-related p { margin: 0 0 4px; color: var(--muted); }
 .archive-related a { color: var(--red); }
+
+.journal-archive { padding-block: 15px; border-bottom: 1px solid var(--line); }
+.journal-archive summary, .archive-illustration summary {
+  cursor: pointer;
+  color: var(--red-dark);
+  padding-block: 10px;
+  line-height: 1.5;
+}
+.journal-archive summary { font-size: 21px; font-weight: 600; }
+.journal-archive ul { max-width: 780px; margin: 5px 0 10px; padding: 0; list-style: none; }
+.journal-archive li { padding: 9px 0; border-top: 1px solid var(--line); }
+.journal-archive .archive-meta { display: block; margin: 2px 0 0; }
+.archive-illustration { margin-block: 10px 18px; }
+.archive-illustration:not([open]) img { display: none; }
+.archive-illustration img { display: block; max-width: 100%; max-height: 430px; width: auto; height: auto; }
+.reader-play {
+  min-height: 46px;
+  padding: 8px 18px;
+  border: 1px solid var(--red-dark);
+  border-radius: 5px;
+  font: inherit;
+  font-weight: 600;
+  color: var(--red-dark);
+  background: white;
+  cursor: pointer;
+}
+.reader-play:hover { background: var(--soft-red); }
+.reader-video iframe { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; border: 0; }
+.visitor-recording .reader-video iframe { aspect-ratio: 199 / 294; max-height: 450px; }
 
 @media (max-width: 720px) {
   .health-index { padding-bottom: 28px; }
@@ -144,21 +117,14 @@
   .health-preview-list { grid-template-columns: minmax(0, 1fr); gap: 5px; margin-top: 10px; }
   .health-preview-list a { font-size: 18px; }
   .health-index .page-head { gap: 2px 18px; padding-bottom: 12px; }
-  .centre-archive { padding-block: 19px 23px; }
-  .archive-list { display: block; }
-  .archive-list > .archive-item + .archive-item { border-top: 1px solid var(--line); padding-top: 13px; margin-top: 14px; }
-  .archive-item:first-child h3 { font-size: 23px; }
-  .archive-list-compact .archive-headline img { max-width: 40%; margin-right: 14px; }
 }
 
-html[data-display="accessible"] :is(.health-index .page-head, .health-category, .health-preview-head, .health-preview-list, .health-visit-links, .archive-list) {
+html[data-display="accessible"] :is(.health-index .page-head, .health-category, .health-preview-head, .health-preview-list, .health-visit-links) {
   display: grid!important;
   grid-template-columns: minmax(0, 1fr)!important;
   gap: .55rem!important;
   align-items: start!important;
 }
-html[data-display="accessible"] .archive-list > .archive-item { grid-column: auto; grid-row: auto; }
-html[data-display="accessible"] .archive-list .archive-headline img { float: none; margin: 0 0 .4rem!important; }
 html[data-display="accessible"] main .health-reading { max-width: 65ch!important; }
 html[data-display="accessible"] main :is(.health-reading, .health-index) :is(h1, h2, h3, h4) {
   font-size: min(1.25rem, 9cqi)!important;

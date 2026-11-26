@@ -66,9 +66,14 @@ document.querySelectorAll('[data-ok-player]').forEach(button => {
 
 const visitFilm = document.querySelector('#visit-film');
 if (visitFilm) {
+  const disclosure = visitFilm.closest('details');
+  disclosure?.addEventListener('toggle', () => {
+    if (!disclosure.open) visitFilm.pause();
+  });
   document.querySelectorAll('[data-video-time]').forEach(button => {
     button.hidden = false;
     button.addEventListener('click', () => {
+      if (disclosure) disclosure.open = true;
       visitFilm.currentTime = Number(button.dataset.videoTime);
       visitFilm.scrollIntoView({ block: 'center' });
       visitFilm.focus({ preventScroll: true });

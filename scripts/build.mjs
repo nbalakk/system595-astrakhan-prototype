@@ -2,7 +2,8 @@ import { mkdir, cp, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import * as pages from '../site/pages.mjs';
 import { layout } from '../site/components.mjs';
-import { centreStories, healthArticles, products } from '../site/content.mjs';
+import { centre, centreStories, healthArticles, products } from '../site/content.mjs';
+import { contactCard } from './contact-card.mjs';
 import { fiveStepsPage } from '../site/five-steps.mjs';
 import { centreStory, healthArticle, healthIndex } from '../site/health-articles.mjs';
 
@@ -19,7 +20,7 @@ const routes = [
   ['rehabilitation/', 'Первое посещение центра', pages.rehabilitation, 'Что ждёт вас в центре и какие вопросы можно задать Светлане перед встречей.'],
   ['five-steps/', 'Пять шагов программы посещений', fiveStepsPage, 'Пять шагов программы системы 5/95 от первого знакомства до повторной встречи. Видео можно смотреть прямо на сайте.'],
   ['equipment/', 'Об аппаратах системы 5/95', pages.catalog, 'Иллюстрированный справочник для посетителя. Посмотрите, как устроены аппараты и что уточнить о конкретной модели.'],
-  ['reviews/', 'Отклики о посещении', pages.reviews, 'Как поделиться впечатлением о встрече и рассказать, что помогло вам при первом посещении центра.'],
+  ['reviews/', 'Отзывы о посещении центра', pages.reviews, 'Три месяца в центре. Рассказ посетительницы по записи от 27 января 2023 года, короткая цитата и оригинал видео.'],
   ['articles/', 'Статьи', p => healthIndex(p, healthArticles, centreStories), 'Истории и фотографии из архива центра в Астрахани. Статьи о давлении, сне, суставах, зрении и повседневном здоровье.'],
   ['articles/first-visit/', 'Как подготовиться к первому посещению', pages.article, 'О чём договориться по телефону, как найти центр и какие вопросы взять с собой.'],
   ...healthArticles.map(article => [`articles/${article.slug}/`, article.title, p => healthArticle(p, article), article.summary]),
@@ -32,7 +33,8 @@ const routes = [
 ];
 await mkdir('dist', { recursive: true });
 await mkdir('dist/assets', { recursive: true });
-const assets = ['eyesystem.png', 'spinesystem.png', 'sleepsystem.png', 'footsystem.png', 'moxi.png', 'hero-source.jpg', 'sleep-use.jpg', 'foot-use.jpg', 'bodyhealth.jpg', 'bodyhealth-use.jpg', 'bodyhealth-controls.jpg', 'zanyatie.jpg', 'feedback.jpg', 'den-rossii-astrakhan.jpg', 'novueye-ok.jpg', 'novuheat-autumn.jpg', 'vision-street-ok.jpg', 'den-pensionera.webp', 'five-steps.mp4', 'five-steps-ru.vtt', 'five-steps-poster.jpg', 'favicon.svg', 'OFL.txt', ...[0,1,2,3].map(i => `golos-${i}.ttf`)];
+await writeFile('dist/assets/centre-contact.vcf', contactCard(centre), 'utf8');
+const assets = ['eyesystem.png', 'spinesystem.png', 'sleepsystem.png', 'footsystem.png', 'moxi.png', 'hero-source.jpg', 'sleep-use.jpg', 'foot-use.jpg', 'bodyhealth.jpg', 'bodyhealth-use.jpg', 'bodyhealth-controls.jpg', 'novueye-studio.jpg', 'toprelax-studio.jpg', 'zanyatie.jpg', 'feedback.jpg', 'den-rossii-astrakhan.jpg', 'novueye-ok.jpg', 'novuheat-autumn.jpg', 'vision-street-ok.jpg', 'den-pensionera.webp', 'five-steps.mp4', 'five-steps-ru.vtt', 'five-steps-poster.jpg', 'favicon.svg', 'OFL.txt', ...[0,1,2,3].map(i => `golos-${i}.ttf`)];
 for (const asset of assets) await cp(`site/assets/${asset}`, `dist/assets/${asset}`);
 const styles = await Promise.all(['site/styles.css', 'site/refinement.css', 'site/bodyhealth.css', 'site/landing.css', 'site/reviews.css', 'site/five-steps.css', 'site/health-articles.css', 'site/navigation.css', 'site/interior.css', 'site/display.css'].map(file => readFile(file, 'utf8')));
 await writeFile('dist/styles.css', styles.join('\n'));
