@@ -132,6 +132,69 @@ test('home keeps the first visit and directions reachable', () => {
     'A first visit must not read like a list of models');
 });
 
+function homeSection(id) {
+  const matches = homeSections.filter(section => section.split('>')[0].includes('id="' + id + '"'));
+  assert.equal(matches.length, 1, 'Expected one home section #' + id);
+  return matches[0];
+}
+
+test('home explains the centre, reasons and audience before showing the visit, and answers questions before booking', () => {
+  const visit = homeSection('first-meeting');
+  const storiesSection = homeSections.find(section => section.includes('datetime="2023-01-27"'));
+  assert(storiesSection, 'The local visitor story is present');
+  const sequence = [homeHero, homeSection('about-centre'), homeSection('visit-reasons'), homeSection('for-families'),
+    visit, homeLesson, storiesSection, homeSection('visit-questions'), homeSection('appointment')];
+  let previous = -1;
+  for (const section of sequence) {
+    const position = homeMain.indexOf(section);
+    assert(position > previous, 'The home sections follow the visitor’s reading order');
+    previous = position;
+  }
+});
+
+test('the centre introduction offers three visit facts and four concrete reasons in lists', () => {
+  for (const [id, topics] of [
+    ['about-centre', [/бесплатно/iu, /сво[её]м\s+темпе/iu, /с\s+близкими/iu]],
+    ['visit-reasons', [/спин[уы]\s+и\s+сустав/iu, /массажн[а-яё]*\s+накидк/iu,
+      /круг\s+общения/iu, /привычк[а-яё]*\s+для\s+дома/iu]]
+  ]) {
+    const list = homeSection(id).match(/<ul\b[^>]*>([\s\S]*?)<\/ul>/iu);
+    assert(list, '#' + id + ' provides a list readable without scripts');
+    const items = [...list[1].matchAll(/<li\b[^>]*>([\s\S]*?)<\/li>/giu)].map(item => readableContent(item[1]));
+    assert.equal(items.length, topics.length, id);
+    for (const topic of topics) assert.equal(items.filter(item => topic.test(item)).length, 1, String(topic));
+  }
+});
+
+test('the two audience cards distinguish choosing a visit for oneself from calling for a parent', () => {
+  const cards = [...homeSection('for-families').matchAll(/<article\b[^>]*>([\s\S]*?)<\/article>/giu)].map(card => card[1]);
+  assert.equal(cards.length, 2);
+  const parents = cards.find(card => linksInMain(home, card).some(link =>
+    link.url.href === 'tel:+79093738094' && link.label === 'Уточнить расписание для родителей'));
+  assert(parents, 'The family can call the centre directly about the schedule');
+  const ownVisit = cards.find(card => card !== parents);
+  assert.match(readableContent(ownVisit), /себ[ея]|самостоятельно|самому|самой|старш[еа]|пенсионер|размя/iu);
+});
+
+test('five native questions have answers and the booking phone has a call-hours note', () => {
+  const questions = [...homeSection('visit-questions').matchAll(/<details\b[^>]*>\s*<summary\b[^>]*>([\s\S]*?)<\/summary>([\s\S]*?)<\/details>/giu)];
+  assert.equal(questions.length, 5);
+  const labels = questions.map(question => readableContent(question[1]));
+  for (const topic of [/стоим|стоит|платн|цен[ау]|плати/iu, /одежд|оде[вт]|справк/iu,
+    /накидк/iu, /посмотр|наблюдат/iu, /найти|дойти|добраться|факел|вход/iu]) {
+    assert(labels.some(label => topic.test(label)), 'Question about ' + String(topic));
+  }
+  for (const question of questions) assert.match(readableContent(question[2]), /[а-яё]/iu, 'Each disclosure has an answer');
+  assert(questions.some(question => {
+    const text = readableContent(question[1] + ' ' + question[2]);
+    return /одежд|оде[вт]/iu.test(text) && /справк/iu.test(text);
+  }), 'One answer covers both clothing and the need for a certificate');
+  const note = /Ответим на вопросы по телефону без навязывания\s*·\s*Пн\s*[-–—]\s*Сб/iu;
+  assert(homeSections.some(section => note.test(readableContent(section)) &&
+    linksInMain(home, section).some(link => link.url.href === 'tel:+79093738094' && link.label)),
+    'The phone-hours note appears with a direct call to the centre');
+});
+
 test('the articles hub leads with practical guides and keeps every archived story reachable', () => {
   const hub = rendered.find(page => page.route === 'articles/index.html');
   const main = mainContent(hub.html);

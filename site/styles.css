@@ -402,6 +402,37 @@ html[data-display="accessible"] .centre-masthead {
 .intro-image figcaption a { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 0 .3em; min-height: 48px; padding: 8px 15px; font-size: 13px; color: var(--ink); text-decoration: none; }
 .intro-image figcaption a span { text-decoration: underline; }
 
+/* Home · the centre, reasons to visit, and coming with family */
+.call-note { display: block; color: var(--muted); font-size: 15px; line-height: 1.5; }
+.centre-about, .visit-reasons { padding-block: var(--section-space); }
+.family-section, .visit-questions { padding-top: var(--section-space); }
+.centre-about-intro, .visit-questions {
+  display: grid;
+  grid-template-columns: minmax(0,.85fr) minmax(0,1.15fr);
+  align-items: start;
+  gap: clamp(24px,5vw,72px);
+}
+.centre-about-intro p { max-width: 56ch; font-size: clamp(19px,1.7vw,21px); }
+.centre-facts, .reason-cards, .family-cards { display: grid; gap: 24px; margin: 32px 0 0; padding: 0; list-style: none; }
+.centre-facts { grid-template-columns: repeat(3,minmax(0,1fr)); }
+.reason-cards, .family-cards { grid-template-columns: repeat(2,minmax(0,1fr)); }
+.centre-facts li, .reason-cards li, .family-cards article {
+  min-width: 0;
+  border-radius: var(--radius);
+  background: var(--tint);
+}
+.centre-facts li { padding: 24px; }
+.centre-facts h3 { font-size: clamp(21px,1.8vw,25px); }
+.centre-facts p, .reason-cards p, .family-cards p { margin-top: 12px; }
+.visit-reasons { background: var(--tint); }
+.reason-cards li { padding: 36px; background: var(--card); }
+.reason-cards li > .icon { display: block; width: 29px; height: 29px; margin-bottom: 20px; color: var(--accent); }
+.reason-cards h3, .family-cards h3 { font-size: clamp(23px,2.15vw,30px); }
+.family-cards article { display: flex; flex-direction: column; align-items: start; padding: 36px; }
+.family-tag { margin-bottom: 14px; color: var(--accent); font-size: 15px; font-weight: 600; }
+.family-cards .button { margin-top: 22px; background: var(--card); }
+.family-cards .button:hover { background: var(--ink); color: var(--card); }
+
 /* First visit · three steps on a single baseline */
 .first-visit-band { padding-block: var(--section-space); background: var(--canvas); }
 .first-visit-heading { margin-bottom: 32px; }
@@ -459,6 +490,40 @@ html[data-display="accessible"] .centre-masthead {
 .news-tag { font-weight: 600; }
 .news-meta time { color: var(--muted); }
 .news-body p { margin: 12px 0 16px; }
+
+/* Questions before a visit · native disclosure works without JavaScript */
+.visit-questions .faq-list { border-top: 1px solid var(--line); min-width: 0; }
+.visit-questions details { border-bottom: 1px solid var(--line); }
+.visit-questions summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 4px;
+  min-height: 56px;
+  font-size: clamp(19px,1.65vw,22px);
+  line-height: 1.35;
+  font-weight: 600;
+  letter-spacing: -.02em;
+  list-style: none;
+}
+.visit-questions summary::-webkit-details-marker { display: none; }
+.visit-questions summary .icon { width: 22px; height: 22px; color: var(--accent); transition: transform var(--motion); }
+.visit-questions details[open] summary .icon { transform: rotate(45deg); }
+.visit-questions .faq-answer { padding: 0 4px 20px; }
+@media (prefers-reduced-motion: no-preference) {
+  .visit-questions details[open] .faq-answer { animation: show-visit-answer .2s ease-out; }
+  @keyframes show-visit-answer { from { opacity: .3; transform: translateY(-3px); } to { opacity: 1; transform: none; } }
+}
+@media (max-width: 767px) {
+  .centre-about-intro, .centre-facts, .reason-cards, .family-cards, .visit-questions { grid-template-columns: minmax(0,1fr); gap: 16px; }
+  .reason-cards li, .family-cards article { padding: 28px; }
+  .call-note { margin-top: 5px; }
+}
+.reading-mode :is(.centre-about-intro, .centre-facts, .reason-cards, .family-cards, .visit-questions) { grid-template-columns: minmax(0,1fr); gap: .65rem; }
+.reading-mode :is(.centre-about, .visit-reasons, .family-section, .visit-questions) { padding-block: 1rem; }
+.reading-mode :is(.centre-facts li, .reason-cards li, .family-cards article) { padding: .45rem; border: 1px solid currentColor; }
+.reading-mode .visit-questions summary { margin-block: .3rem; }
 
 /* Contact invitation */
 .home-invite { padding-block: var(--section-space); }
@@ -1193,5 +1258,10 @@ html[data-display="accessible"] figcaption { margin-top: .5rem; }
 
 @media (max-width: 680px) {
   html[data-display="accessible"] .container { width: calc(100% - 1.1rem)!important; }
+  html[data-display="accessible"] :is(.centre-about.container, .visit-reasons > .container, .family-section.container, .visit-questions.container) {
+    padding-inline: 0;
+  }
+  html[data-display="accessible"] .visit-questions summary { display: block; padding-inline: .3rem; }
+  html[data-display="accessible"] .visit-questions summary .icon { display: inline-block; margin-inline-start: .25em; vertical-align: middle; }
   html[data-display="accessible"] .display-panel-inner .display-toolbar { align-items: flex-start; flex-direction: column; }
 }

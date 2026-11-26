@@ -1,10 +1,25 @@
 import { centre, centreStories, centreVideos } from './content.mjs';
-import { icon } from './components.mjs';
+import { faqMarkup, icon } from './components.mjs';
 import { centreLessonClip } from './reviews.mjs';
 
 const dateFormat = new Intl.DateTimeFormat('ru-RU', {
   day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC'
 });
+
+const visitReasons = [
+  ['movement', 'Мягко размять спину и суставы', 'Когда с утра трудно расходиться, хочется начать с малого. На занятии можно плавно подвигать плечами, размять спину и ноги. Темп и паузы вы выбираете сами.'],
+  ['wrap', 'Попробовать массажную накидку', 'Устройтесь в кресле и дайте плечам и спине отдохнуть. Консультант поможет надеть накидку, подобрать приятный режим и покажет, где кнопка выключения.'],
+  ['chat', 'Найти круг общения рядом с домом', 'В зале встречаются сверстники. За чашкой чая можно поделиться новостями или познакомиться с соседями по району. А по праздникам группа собирается на выступления и поздравления.'],
+  ['book', 'Узнать полезные привычки для дома', 'В школе здоровья обсуждают повседневные вещи. Например, как найти время для движения среди домашних дел. Можно задать свой вопрос и выбрать привычку, которую хочется попробовать дома.']
+];
+
+const visitQuestions = [
+  ['Сколько стоит первое занятие?', 'Ознакомительная встреча и проба массажной накидки бесплатны. Приходить ли ещё, вы решите после знакомства.'],
+  ['Нужна ли спортивная форма или справка от врача?', 'Для лёгкой разминки достаточно удобной повседневной одежды. Возьмите сменную обувь. Нужна ли справка для выбранного занятия, подскажет Светлана Михайловна при записи.'],
+  ['Я ни разу не пользовался массажной накидкой — разберусь ли я?', 'Да. Консультант поможет удобно сесть и надеть накидку, включит мягкий режим и покажет кнопки. Он будет рядом, если захочется что-то изменить или остановить массаж.'],
+  ['Можно ли прийти просто посмотреть, без участия?', 'Да. Можно посидеть в зале, познакомиться с группой и Светланой Михайловной. Если захочется попробовать накидку, скажите об этом консультанту.'],
+  ['Как добраться до центра в ТЦ «Факел»?', `Наш адрес — ${centre.address}. По телефону Светлана Михайловна подскажет, через какой вход удобнее зайти и на какой этаж подняться. <a href="${centre.mapUrl}">Открыть адрес на карте</a>`]
+];
 
 function newsCard(p, story, { id, tag, title, text, link, action }) {
   return `<article class="news-card" aria-labelledby="${id}">
@@ -30,11 +45,47 @@ export function home(p) {
         <a class="button button-secondary" href="#video-iz-zala"><span class="mini-play" aria-hidden="true"></span>Посмотреть занятие</a>
       </div>
       <div class="intro-contact"><a href="${centre.phoneHref}">${centre.phone}</a> <span aria-hidden="true">·</span> <span>Запись ведёт ${centre.contact}</span></div>
+      <small class="call-note">Ответим на вопросы по телефону без навязывания · Пн–Сб</small>
     </div>
     <figure class="intro-image">
       <img src="${p}assets/network-welcome.webp" width="1152" height="768" fetchpriority="high" alt="Посетительница и сотрудница центра рассматривают карточку у входа в зал">
       <figcaption><a href="${p}media/#centre-photographs">Встреча в центре NovuMedical · <span>Фото сети</span></a></figcaption>
     </figure>
+  </section>
+
+  <section id="about-centre" class="centre-about container" aria-labelledby="about-title">
+    <div class="centre-about-intro">
+      <h2 id="about-title">Что такое Центр здоровья и долголетия</h2>
+      <p>Наш зал на Савушкина в Астрахани открыт для людей старшего возраста. Сюда приходят на лёгкую суставную разминку, на разговор за чаем или на знакомство с массажной накидкой системы 5/95. Здесь нет больничных процедур и тяжёлых тренировок. Можно подвигаться вместе с группой, а когда хочется — сделать паузу.</p>
+    </div>
+    <ul class="centre-facts" role="list">
+      <li><h3>Бесплатно</h3><p>Первое занятие и проба накидки бесплатны. Дальше — только по вашему желанию.</p></li>
+      <li><h3>В своём темпе</h3><p>Даже если давно не делали зарядку, можно начать с пары простых движений и отдохнуть в любой момент.</p></li>
+      <li><h3>Можно с близкими</h3><p>Возьмите с собой дочь или сына, супруга или подругу. Скажите Светлане при записи, сколько вас будет.</p></li>
+    </ul>
+  </section>
+
+  <section id="visit-reasons" class="visit-reasons" aria-labelledby="reasons-title">
+    <div class="container">
+      <h2 id="reasons-title">Четыре причины заглянуть в зал на Савушкина</h2>
+      <ul class="reason-cards" role="list">${visitReasons.map(([symbol, title, description]) => `
+        <li>${icon(symbol)}<h3>${title}</h3><p>${description}</p></li>`).join('')}</ul>
+    </div>
+  </section>
+
+  <section id="for-families" class="family-section container" aria-labelledby="family-title">
+    <h2 id="family-title">Подходит и вам, и вашим родителям</h2>
+    <div class="family-cards">
+      <article><span class="family-tag">Для себя</span>
+        <h3>Если хочется больше движения и живого общения</h3>
+        <p>Когда дни дома становятся похожи один на другой, приятно договориться о встрече и выйти к людям. Приходите, даже если никого в зале пока не знаете. Светлана познакомит вас с группой, а к разминке можно присоединиться, когда освоитесь.</p>
+      </article>
+      <article><span class="family-tag">Для родителей</span>
+        <h3>Если ищете заботу и безопасную среду для близких</h3>
+        <p>Загляните вместе с мамой или папой. Вы сможете познакомиться с группой и рассказать, что важно вашему близкому. Если захочется попробовать накидку, консультант поможет удобно сесть, покажет кнопки и останется рядом.</p>
+        <a class="button button-secondary" href="${centre.phoneHref}">${icon('phone')}Уточнить расписание для родителей</a>
+      </article>
+    </div>
   </section>
 
   <section class="first-visit-band" id="first-meeting" aria-labelledby="meeting-title">
@@ -74,6 +125,11 @@ export function home(p) {
     })}
     </div>
   </div></section>
+
+  <section id="visit-questions" class="visit-questions container" aria-labelledby="questions-title">
+    <h2 id="questions-title">Частые вопросы перед первым визитом</h2>
+    ${faqMarkup(visitQuestions)}
+  </section>
 
   <section class="home-invite container" id="appointment" aria-labelledby="arrival-footer-title">
     <div class="invite-panel">
