@@ -2,6 +2,7 @@
   'use strict';
 
   const key = 'centre595.display';
+  const version = 2;
   const sizes = ['large', 'larger', 'largest'];
   const fontSizes = { large: '22px', larger: '26px', largest: '30px' };
   const themes = ['light', 'dark'];
@@ -17,16 +18,23 @@
   }
 
   function persist(value) {
-    try { localStorage.setItem(key, JSON.stringify(normalise(value))); } catch { /* Display controls remain usable when storage is unavailable. */ }
+    try { localStorage.setItem(key, JSON.stringify({ version, ...normalise(value) })); } catch { /* Display controls remain usable when storage is unavailable. */ }
   }
 
   function restore() {
     try {
       const raw = localStorage.getItem(key);
       if (raw === null) return { ...defaults };
-      const clean = normalise(JSON.parse(raw));
-      // Rewriting this owned key removes unknown properties from older or modified settings.
-      persist(clean);
+      const stored = JSON.parse(raw);
+      const clean = normalise(stored);
+      // The previous control saved this combination merely by opening its panel.
+      if (stored?.version === undefined && clean.size === defaults.size && clean.theme === defaults.theme) {
+        clean.enabled = false;
+      }
+      if (stored?.version !== version || Object.keys(stored).length !== 4 ||
+          stored.enabled !== clean.enabled || stored.size !== clean.size || stored.theme !== clean.theme) {
+        persist(clean);
+      }
       return clean;
     } catch { return { ...defaults }; }
   }
@@ -60,6 +68,7 @@
     const panel = document.querySelector('#display-settings');
     const sizeButtons = [...document.querySelectorAll('[data-display-size]')];
     const themeButtons = [...document.querySelectorAll('[data-display-theme]')];
+    const returnButtons = [...document.querySelectorAll('[data-display-close]')];
     let open = false;
 
     function synchronise() {
@@ -69,8 +78,9 @@
         button.setAttribute('aria-expanded', String(open));
       }
       if (panel) panel.hidden = !open;
-      for (const button of sizeButtons) button.setAttribute('aria-pressed', String(button.dataset.displaySize === preferences.size));
-      for (const button of themeButtons) button.setAttribute('aria-pressed', String(button.dataset.displayTheme === preferences.theme));
+      for (const button of returnButtons) button.hidden = !preferences.enabled;
+      for (const button of sizeButtons) button.setAttribute('aria-pressed', String(preferences.enabled && button.dataset.displaySize === preferences.size));
+      for (const button of themeButtons) button.setAttribute('aria-pressed', String(preferences.enabled && button.dataset.displayTheme === preferences.theme));
     }
 
     function change(next) {
@@ -83,8 +93,7 @@
     for (const button of toggles) {
       button.addEventListener('click', () => {
         open = !open;
-        if (open && !preferences.enabled) change({ ...preferences, enabled: true });
-        else synchronise();
+        synchronise();
         if (open) panel?.focus();
       });
     }
@@ -100,7 +109,7 @@
     for (const button of themeButtons) {
       button.addEventListener('click', () => change({ ...preferences, enabled: true, theme: button.dataset.displayTheme }));
     }
-    for (const button of document.querySelectorAll('[data-display-close]')) {
+    for (const button of returnButtons) {
       button.addEventListener('click', () => {
         open = false;
         change({ ...preferences, enabled: false });

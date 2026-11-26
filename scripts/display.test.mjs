@@ -70,7 +70,9 @@ function run({ raw, hash = '', readDenied = false, writeDenied = false } = {}) {
     readyState: 'loading',
     listeners: {},
     addEventListener(name, listener) { this.listeners[name] = listener; },
-    querySelector(selector) { return selector === '#display-settings' ? panel : null; },
+    querySelector(selector) {
+      return { '#display-settings': panel, '[data-display-close]': close, '[data-display-toggle]': toggle }[selector] ?? null;
+    },
     querySelectorAll(selector) {
       return {
         '[data-display-toggle]': [toggle],
@@ -102,11 +104,97 @@ test('head script restores valid display settings before page controls exist', (
   assert.equal(app.toggle.disabled, false);
   assert.equal(app.toggle.getAttribute('aria-expanded'), 'false');
   assert.equal(app.panel.hidden, true);
+  assert.equal(app.close.hidden, false);
   assert(app.classes.has('reading-mode'));
   assert(app.classes.has('reading-dark'));
   assert.equal(app.variables.get('--reading-font-size'), '30px');
   assert.equal(app.sizes[2].getAttribute('aria-pressed'), 'true');
   assert.equal(app.themes[1].getAttribute('aria-pressed'), 'true');
+});
+
+test('the only return-to-normal button belongs to the utility bar outside the settings panel', () => {
+  const html = layout({ title: '', description: '', route: '', prefix: './', body: '' });
+  const returns = html.match(/<button\b[^>]*\bdata-display-close\b[^>]*>/gu) ?? [];
+  assert.equal(returns.length, 1);
+  const utility = html.match(/<div class="masthead-utility">[\s\S]*?<\/div>\s*<\/div>/u)?.[0] ?? '';
+  const panel = html.match(/<section\b[^>]*\bid="display-settings"[^>]*>[\s\S]*?<\/section>/u)?.[0] ?? '';
+  assert(utility.includes(returns[0]));
+  assert.match(utility, /data-display-close\b[^>]*>[\s\S]*?Обычная версия/u);
+  assert.match(returns[0], /\bhidden\b/u);
+  assert(!panel.includes(returns[0]));
+  const staticChoices = panel.match(/<button\b[^>]*\bdata-display-(?:size|theme)="[^"]+"[^>]*>/gu) ?? [];
+  assert.equal(staticChoices.length, 5);
+  for (const choice of staticChoices) assert.match(choice, /aria-pressed="false"/u);
+});
+
+test('opening, cancelling and reopening settings leaves mode, pressed states and storage alone', () => {
+  const app = run();
+  app.ready();
+  function checkNormal() {
+    assert.deepEqual(app.root.dataset, {});
+    assert.equal(app.classes.size, 0);
+    assert.equal(app.variables.size, 0);
+    assert.equal(app.close.hidden, true);
+    for (const choice of [...app.sizes, ...app.themes]) assert.equal(choice.getAttribute('aria-pressed'), 'false');
+    assert.equal(app.writes.length, 0);
+  }
+  checkNormal();
+  app.toggle.click();
+  assert.equal(app.panel.hidden, false);
+  checkNormal();
+  app.panel.listeners.keydown({ key: 'Escape' });
+  assert.equal(app.panel.hidden, true);
+  checkNormal();
+  app.toggle.click();
+  assert.equal(app.panel.hidden, false);
+  app.toggle.click();
+  assert.equal(app.panel.hidden, true);
+  checkNormal();
+});
+
+test('any explicitly selected size or contrast activates and saves the chosen reading mode', () => {
+  for (const group of ['sizes', 'themes']) {
+    for (const index of (group === 'sizes' ? [0, 1, 2] : [0, 1])) {
+      const app = run();
+      app.ready();
+      app.toggle.click();
+      const choice = app[group][index];
+      choice.click();
+      assert.equal(app.root.dataset.display, 'accessible');
+      assert.equal(choice.getAttribute('aria-pressed'), 'true');
+      assert.equal(app.close.hidden, false);
+      assert.deepEqual(JSON.parse(app.values.get(key)), {
+        version: 2, enabled: true, size: choice.dataset.displaySize ?? 'large', theme: choice.dataset.displayTheme ?? 'light'
+      });
+    }
+  }
+});
+
+test('ambiguous legacy defaults are migrated once while explicit choices survive reload', () => {
+  for (const [size, theme, expected] of [
+    ['large', 'light', false], ['large', 'dark', true], ['larger', 'light', true], ['largest', 'dark', true]
+  ]) {
+    const app = run({ raw: JSON.stringify({ enabled: true, size, theme }) });
+    app.ready();
+    const migrated = { version: 2, enabled: expected, size, theme };
+    assert.deepEqual(JSON.parse(app.values.get(key)), migrated);
+    assert.equal(app.root.dataset.display, expected ? 'accessible' : undefined);
+    const next = run({ raw: app.values.get(key) });
+    next.ready();
+    assert.equal(next.writes.length, 0, 'A canonical v2 preference needs no further migration');
+    assert.equal(next.close.hidden, !expected);
+    assert.equal(next.panel.hidden, true);
+  }
+  const explicit = run({ raw: JSON.stringify({ version: 2, enabled: true, size: 'large', theme: 'light' }) });
+  explicit.ready();
+  assert.deepEqual(explicit.root.dataset, { display: 'accessible', textSize: 'large', contrast: 'light' });
+  assert.equal(explicit.close.hidden, false);
+  assert.equal(explicit.panel.hidden, true);
+  explicit.toggle.click();
+  explicit.panel.listeners.keydown({ key: 'Escape' });
+  explicit.toggle.click();
+  assert.equal(explicit.writes.length, 0, 'Inspecting a saved reading mode makes no new preference');
+  assert.equal(explicit.root.dataset.display, 'accessible');
 });
 
 test('panel fragments never open settings or move focus without button activation', () => {
@@ -139,14 +227,15 @@ test('only whitelisted settings are retained and written, never arbitrary fields
   for (const item of app.writes) {
     assert.equal(item.key, key);
     const value = JSON.parse(item.value);
-    assert.deepEqual(Object.keys(value).sort(), ['enabled', 'size', 'theme']);
+    assert.deepEqual(Object.keys(value).sort(), ['enabled', 'size', 'theme', 'version']);
+    assert.equal(value.version, 2);
     assert.equal(typeof value.enabled, 'boolean');
     assert(['large', 'larger', 'largest'].includes(value.size));
     assert(['light', 'dark'].includes(value.theme));
     assert(!item.value.includes('Private Name'));
     assert(!item.value.includes('79999999999'));
   }
-  assert.deepEqual(JSON.parse(app.values.get(key)), { enabled: true, size: 'larger', theme: 'dark' });
+  assert.deepEqual(JSON.parse(app.values.get(key)), { version: 2, enabled: true, size: 'larger', theme: 'dark' });
 });
 
 test('display preference persists to a subsequent page and can return to normal', () => {
@@ -159,8 +248,8 @@ test('display preference persists to a subsequent page and can return to normal'
   assert.equal(first.root.dataset.display, 'accessible', 'Closing the panel keeps the selected reading mode');
   const next = run({ raw: first.values.get(key) }); next.ready();
   assert.deepEqual(next.root.dataset, { display: 'accessible', textSize: 'largest', contrast: 'dark' });
-  next.toggle.click();
-  assert.equal(next.toggle.getAttribute('aria-expanded'), 'true');
+  assert.equal(next.panel.hidden, true);
+  assert.equal(next.close.hidden, false);
   next.close.click();
   assert.deepEqual(next.root.dataset, {});
   assert.equal(next.panel.hidden, true);
@@ -168,7 +257,9 @@ test('display preference persists to a subsequent page and can return to normal'
   assert.equal(next.classes.size, 0);
   assert.equal(next.variables.size, 0);
   assert.equal(next.toggle.focused, true);
-  assert.deepEqual(JSON.parse(next.values.get(key)), { enabled: false, size: 'largest', theme: 'dark' });
+  assert.equal(next.close.hidden, true);
+  for (const choice of [...next.sizes, ...next.themes]) assert.equal(choice.getAttribute('aria-pressed'), 'false');
+  assert.deepEqual(JSON.parse(next.values.get(key)), { version: 2, enabled: false, size: 'largest', theme: 'dark' });
 });
 
 test('malformed or unavailable storage does not block display controls', () => {
@@ -176,8 +267,9 @@ test('malformed or unavailable storage does not block display controls', () => {
     const app = run(options); app.ready();
     assert.deepEqual(app.root.dataset, {});
     app.toggle.click();
-    assert.equal(app.root.dataset.display, 'accessible');
+    assert.equal(app.root.dataset.display, undefined);
     app.sizes[1].click();
+    assert.equal(app.root.dataset.display, 'accessible');
     assert.equal(app.root.dataset.textSize, 'larger');
     app.close.click();
     assert.deepEqual(app.root.dataset, {});

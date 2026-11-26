@@ -64,26 +64,27 @@ function sectionLinks(prefix, route) {
 export function layout({ title, description, route, body, prefix }) {
   const showEquipmentNote = route.startsWith('equipment/') || route === 'five-steps/' || route === 'rehabilitation/';
   return `<!DOCTYPE html>
-<html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow"><meta name="theme-color" content="#FFFFFF"><meta name="description" content="${escapeHtml(description)}"><title>${escapeHtml(title)} — Астрахань</title><link rel="icon" href="${prefix}assets/favicon.svg" type="image/svg+xml"><link rel="preload" as="font" href="${prefix}assets/inter-cyrillic.woff2" type="font/woff2" crossorigin><link rel="stylesheet" href="${prefix}styles.css"><script src="${prefix}display.js"></script><script src="${prefix}app.js" defer></script></head><body>
+<html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow"><meta name="theme-color" content="#FFFFFF"><meta name="description" content="${escapeHtml(description)}"><title>${escapeHtml(title)} — Астрахань</title><link rel="icon" href="${prefix}assets/favicon.svg" type="image/svg+xml"><link rel="preload" as="font" href="${prefix}assets/inter-cyrillic.woff2" type="font/woff2" crossorigin><link rel="stylesheet" href="${prefix}styles.css"><script src="${prefix}display.js?v=2"></script><script src="${prefix}app.js" defer></script></head><body>
 <a class="skip-link" href="#main">Перейти к содержимому</a>
 <header class="site-header centre-masthead">
   <div class="masthead-utility"><div class="container utility-inner">
     <a class="masthead-address" href="${centre.mapUrl}">${icon('pin')}<span>${centre.city}, ул. Савушкина, 46А</span><span class="masthead-link-hint">— открыть на карте</span></a>
     <a class="utility-phone" href="${centre.phoneHref}">${icon('phone')}${centre.phone}</a>
     <button type="button" class="masthead-display" data-display-toggle aria-controls="display-settings" aria-expanded="false" hidden disabled>${icon('eye')}<span>Версия для слабовидящих</span></button>
+    <button class="display-return" type="button" data-display-close hidden>Обычная версия</button>
   </div></div>
   <section class="display-settings" id="display-settings" aria-labelledby="display-title" tabindex="-1" hidden>
     <div class="display-panel-inner"><h2 id="display-title" class="masthead-link-hint">Настройки отображения</h2><div class="container display-toolbar">
+      <p class="display-hint">Выберите размер текста или контрастность, чтобы включить режим чтения.</p>
       <div class="display-choice" role="group" aria-label="Размер текста"><span class="display-group-label">Размер текста</span>
-        <button type="button" data-display-size="large" aria-pressed="true">Крупный</button>
+        <button type="button" data-display-size="large" aria-pressed="false">Крупный</button>
         <button type="button" data-display-size="larger" aria-pressed="false">Больше</button>
         <button type="button" data-display-size="largest" aria-pressed="false">Максимальный</button>
       </div>
       <div class="display-choice" role="group" aria-label="Контрастность"><span class="display-group-label">Контрастность</span>
-        <button type="button" data-display-theme="light" aria-pressed="true">Чёрный на белом</button>
+        <button type="button" data-display-theme="light" aria-pressed="false">Чёрный на белом</button>
         <button type="button" data-display-theme="dark" aria-pressed="false">Белый на чёрном</button>
       </div>
-      <button class="display-return" type="button" data-display-close>Обычная версия</button>
     </div></div>
   </section>
   <div class="container masthead-main">
