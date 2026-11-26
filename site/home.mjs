@@ -1,54 +1,65 @@
-import { centre, centreStories, centreVideos } from './content.mjs';
+import { centre, centreStories } from './content.mjs';
 import { icon } from './components.mjs';
-import { visitFilm } from './reviews.mjs';
+import { centreLessonClip } from './reviews.mjs';
 
 export function home(p) {
   const account = centreStories.find(story => story.slug === 'otzyv-posetitelnitsy');
-  return `<section class="welcome-spread" aria-labelledby="welcome-title">
-    <div class="container welcome-panel">
-      <header class="welcome-title-block">
-        <p class="welcome-place">Астрахань <span aria-hidden="true">·</span> ул. Савушкина, 46А</p>
-        <h1 id="welcome-title">Разминка и общение для старшего поколения</h1>
-      </header>
-      <div class="welcome-copy">
-        <p class="welcome-lead">В центре здоровья и долголетия на Савушкина собираются, чтобы размяться вместе и провести время в компании. В первый раз можно познакомиться со Светланой, посмотреть занятие и решить, хочется ли присоединиться к группе.</p>
-        <div class="welcome-links">
-          <a class="button welcome-primary" href="${centre.phoneHref}">${icon('phone')} Позвонить и записаться</a>
-          <a href="#video-iz-zala">Видео из зала · ${centreVideos.lesson.duration}</a>
-        </div>
+  return `<section class="arrival container" aria-labelledby="welcome-title">
+    <h1 id="welcome-title">Центр здоровья и долголетия</h1>
+    <p class="arrival-intro">В нашем центре в Астрахани люди старшего возраста собираются, чтобы размяться и пообщаться. В первый раз можно посмотреть занятие и попробовать массажную накидку вместе с консультантом.</p>
+    <figure class="arrival-photo">
+      <img src="${p}assets/network-welcome.webp" width="1152" height="768" fetchpriority="high" alt="Посетительница и сотрудница центра рассматривают карточку у входа в зал">
+      <figcaption>Встреча посетителей в центре NovuMedical. <a href="${p}media/#centre-photographs">Фото сети</a></figcaption>
+    </figure>
+    <div class="arrival-desk">
+      <div class="arrival-booking">
+        <a class="arrival-call" href="${centre.phoneHref}">
+          <span><span class="call-label">Позвонить и записаться</span><strong>${centre.phone}</strong></span>
+          <span class="call-icon">${icon('phone')}</span>
+        </a>
+        <a class="arrival-address" href="${centre.mapUrl}">${icon('pin')}<span>ул. Савушкина, 46А, ТЦ «Факел»</span></a>
       </div>
-      <figure class="welcome-photo">
-        <img src="${p}assets/centre-ageing-better-seated-exercise.webp" width="1800" height="1200" alt="Женщины и мужчины на групповой разминке поднимают руки, сидя на стульях" fetchpriority="high">
-        <figcaption>Групповая разминка. <a href="${p}media/#centre-photographs">Фото из британской коллекции Centre for Ageing Better</a></figcaption>
-      </figure>
+      ${centreLessonClip(p, { inOpening: true })}
     </div>
   </section>
-  ${visitFilm(p, { firstMeeting: true })}
-  <div class="home-visit-desk container">
-    <section class="home-consultant" id="appointment" aria-labelledby="home-consultant-title">
-      <p class="home-person-role">Консультант центра</p>
-      <h2 id="home-consultant-title">${centre.contact}</h2>
-      <p>Расскажите Светлане, что вам важно — чаще гулять, самостоятельно ходить по делам или найти компанию для занятий. Она подскажет, когда собирается группа, сколько длится первое посещение и сколько оно стоит. Если хотите прийти вдвоём или вам нужен вход без ступеней, скажите об этом при звонке.</p>
-      <div class="home-desk-links">
-        <a class="home-desk-phone" href="${centre.phoneHref}" aria-label="Позвонить Светлане ${centre.phone}">${icon('phone')}${centre.phone}</a>
-        <a href="${p}booking/">Что уточнить перед поездкой</a>
+  <section class="meeting-notes" id="first-meeting" aria-labelledby="meeting-title">
+    <div class="container meeting-inner">
+      <div class="meeting-heading">
+        <h2 id="meeting-title">Первый раз в центре</h2>
+        <p>Запись ведёт ${centre.contact}. Если хотите прийти с близким человеком, скажите об этом при звонке.</p>
+        <a class="text-link" href="${p}rehabilitation/">Как проходит первое посещение ${icon('arrow')}</a>
       </div>
-    </section>
-    <section class="home-account" aria-labelledby="home-account-title">
-      <p class="home-person-role">Рассказ посетительницы</p>
+      <div class="meeting-details">
+        <div><h3>Познакомиться с группой</h3><p>Посмотрите, как проходит встреча, и пообщайтесь с теми, кто уже ходит в центр. В зале собираются и по праздникам.</p></div>
+        <div><h3>Попробовать оборудование</h3><p>Консультант покажет, как устроена массажная накидка системы 5/95, где менять режим и как её выключить.</p>
+          <a href="${p}equipment/">Об аппаратах в центре</a></div>
+        <div><h3 id="steps-preview-title">Пять шагов программы</h3><p>От первой беседы до следующей встречи. В коротком фильме можно заглянуть и в школу здоровья и долголетия.</p>
+          <a href="${p}five-steps/">Посмотреть пять шагов · 57 секунд</a></div>
+      </div>
+    </div>
+  </section>
+  <div class="container centre-reading">
+    <section aria-labelledby="home-account-title">
+      <p class="reading-label">Рассказ посетительницы</p>
       <h2 id="home-account-title">${account.title}</h2>
-      <p>«Три месяца», — отвечает посетительница, когда её спрашивают, давно ли она ходит в центр. В записи от <time datetime="${account.date}">27 января 2023 года</time> она рассказывает, почему пришла на занятия.</p>
-      <a class="text-link" href="${p}reviews/">Прочитать отзыв и посмотреть запись ${icon('arrow')}</a>
+      <p>В январе 2023 года посетительница рассказала, что привело её в центр. К тому времени она ходила на занятия уже три месяца.</p>
+      <a class="text-link" href="${p}reviews/">Посмотреть отзыв ${icon('arrow')}</a>
+    </section>
+    <section aria-labelledby="home-reading-title">
+      <p class="reading-label">Из жизни центра</p>
+      <h2 id="home-reading-title">День России в зале на Савушкина</h2>
+      <p>В июне 2024 года участницы подготовили праздничное выступление. Светлана сохранила запись встречи в Одноклассниках.</p>
+      <a class="text-link" href="${p}articles/den-rossii-v-centre/">Посмотреть встречу ${icon('arrow')}</a>
     </section>
   </div>
-  <section class="home-directions" aria-labelledby="home-directions-title">
-    <div class="container home-directions-inner">
-      <div><h2 id="home-directions-title">Как нас найти</h2>
-        <p><a href="${centre.mapUrl}">${centre.address}</a></p></div>
-      <div class="home-direction-links">
-        <a class="button" href="${centre.phoneHref}">${icon('phone')} Позвонить и записаться</a>
-        <a href="${p}contacts/">Контакты и карта ${icon('arrow')}</a>
+  <section class="arrival-footer" id="appointment" aria-labelledby="arrival-footer-title">
+    <div class="container arrival-footer-inner">
+      <div><h2 id="arrival-footer-title">Договоримся о встрече?</h2>
+        <p>Позвоните в центр, чтобы выбрать день и узнать, что будет в зале.</p>
+        <a href="${p}booking/">Что уточнить перед посещением</a>
       </div>
+      <div class="arrival-footer-contacts"><a class="arrival-footer-number" href="${centre.phoneHref}">${icon('phone')}${centre.phone}</a>
+        <a href="${p}contacts/">Как добраться до центра ${icon('arrow')}</a></div>
     </div>
   </section>`;
 }

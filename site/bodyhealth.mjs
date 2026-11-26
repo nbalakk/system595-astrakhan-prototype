@@ -15,8 +15,8 @@ export function bodyhealthPage(p, product) {
       <p class="photo-caption">Иллюстрации производителя. <a href="${product.source}">Фотографии и описание NovuMedical</a></p>
     </div>
     <div class="bodyhealth-summary"><p>У BodyHealth внутри корпуса есть площадка для стоп. Им пользуются сидя, поставив на неё обе ноги. Аппарат сочетает прогрев и вибромассаж. Для других участков тела производитель предусмотрел отдельные накладки.</p>
-      <p>При записи спросите у Светланы, будет ли BodyHealth в зале в день вашего визита.</p>
-      <a class="text-link" href="${centre.phoneHref}">Позвонить Светлане ${centre.phone}</a></div>
+      <p>При записи на посещение центра можно уточнить, будет ли BodyHealth в зале в этот день.</p>
+      <a class="text-link" href="${centre.phoneHref}">Позвонить в центр ${centre.phone}</a></div>
   </section>
   <section class="container section bodyhealth-device">
     <div class="bodyhealth-device-heading"><h2>Где находятся кнопки</h2><p>Экран и кнопки расположены на верхнем крае корпуса. Попросите Светлану показать, как на экране найти выбранный режим и какой кнопкой остановить аппарат.</p></div>

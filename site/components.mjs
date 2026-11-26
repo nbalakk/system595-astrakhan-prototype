@@ -39,11 +39,11 @@ export function productCard(product, prefix) {
 
 const navigation = [
   ['rehabilitation/', 'Первое посещение'],
-  ['reviews/', 'Отзывы'],
-  ['contacts/', 'Контакты'],
   ['five-steps/', 'Пять шагов'],
+  ['equipment/', 'Об аппаратах'],
+  ['reviews/', 'Отзывы'],
   ['articles/', 'Статьи'],
-  ['equipment/', 'Об аппаратах']
+  ['contacts/', 'Контакты']
 ];
 
 function identity(prefix) {
@@ -105,4 +105,4 @@ export function breadcrumbs(prefix, current, middle = null) {
   </nav>`;
 }
 export const pageHead = (heading, lead, cls = '') => `<div class="container page-head ${cls}"><h1>${heading}</h1><p class="lead">${lead}</p></div>`;
-export const consultation = () => `<section class="container consultation"><div><h2>Договориться о посещении</h2><p>Позвоните Светлане, чтобы подобрать время. Центр находится по адресу ${centre.address}.</p></div>${visitActions()}</section>`;
+export const consultation = () => `<section class="container consultation"><div><h2>Договориться о посещении</h2><p>Позвоните в центр, чтобы выбрать время первого визита. Центр находится по адресу ${centre.address}.</p></div>${visitActions()}</section>`;

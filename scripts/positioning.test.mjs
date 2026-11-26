@@ -41,6 +41,7 @@ const home = rendered.find(page => page.route === 'index.html');
 const homeMain = mainContent(home.html);
 const homeSections = [...homeMain.matchAll(/<section\b[^>]*>[\s\S]*?<\/section>/giu)].map(match => match[0]);
 const homeHero = homeSections[0];
+const heroFigures = [...homeHero.matchAll(/<figure\b[^>]*>[\s\S]*?<\/figure>/giu)].map(match => match[0]);
 const approvedStories = new Map([
   ['zanyatie-v-zale', ['2023-03-07', '4414548478691', 'zanyatie.jpg']],
   ['otzyv-posetitelnitsy', ['2023-01-27', '4274475829987', 'feedback.jpg']],
@@ -106,27 +107,25 @@ for (const { route, html } of rendered) {
   });
 }
 
-test('the first screen introduces the Astrakhan centre, the group and a first call', () => {
-  assert.match(homeHero, /<h1\b/iu);
+test('the first screen names the centre, locates the visit and offers a direct call', () => {
+  const heading = homeHero.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/iu);
+  assert(heading, 'The centre name is the main heading');
+  assert.equal(readableContent(heading[1]).trim(), 'Центр здоровья и долголетия');
   const copy = readableContent(homeHero.replace(/<figure\b[\s\S]*?<\/figure>/giu, ''));
-  for (const concept of [/здоров/iu, /долголети/iu, /Астрахан/iu, /старш|пожил|пенсионер/iu,
-    /двиг|движ|размя|размин|разомн|гимнастик/iu, /общ|ровесник|сверстник|знаком|компани/iu]) {
-    assert.match(copy, concept);
-  }
+  assert.match(copy, /Астрахан/iu);
+  assert.match(copy, /Савушкина,?\s+46\s*А/iu);
+  assert.match(copy, /знаком|размя|размин|разомн|общени|общать/iu, 'Explain what people can come to do');
   const links = linksInMain(home, homeHero);
-  assert(links.some(link => link.url.href === 'tel:+79093738094' && /позвон|запис|звонок/iu.test(link.label)),
-    'The hero needs a named direct call');
-  assert(links.some(link => link.url.hash === '#video-iz-zala' && /видео|заняти|запис[ьи]/iu.test(link.label)),
-    'The first-screen video link goes straight to the player');
-  assert.match(homeMain, /<figure\b[^>]*\bid="video-iz-zala"[^>]*>[\s\S]*?data-ok-player="4414548478691"/iu);
+  assert(links.some(link => link.url.href === 'tel:+79093738094' && /Позвонить и записаться/iu.test(link.label)),
+    'The named first-visit action dials the centre directly');
 });
 
 test('the homepage gives visitors named links to a person, a visit, directions and the programme', () => {
   const copy = readableContent(homeMain);
   assert.match(copy, /Светлана\s+Михайловна\s+Бабак/iu);
   assert.match(copy, /5\s*\/\s*95/u);
+  assert.match(homeMain, /\bid="first-meeting"/u, 'The first-meeting section remains directly addressable');
   assert.match(homeMain, /\bid="steps-preview-title"/u, 'Links to the programme still reach its compact introduction');
-  assert.doesNotMatch(readableContent(homeHero), /5\s*\/\s*95/u, 'The programme is introduced after the group and the first call');
   const links = linksInMain(home);
   for (const route of ['booking/', 'contacts/', 'reviews/', 'five-steps/', 'rehabilitation/']) {
     assert(links.some(link => link.url.pathname === '/prototype/' + route && link.label), route);
@@ -159,34 +158,31 @@ test('the articles hub leads with practical guides and keeps every archived stor
   }
 });
 
-test('the first screen pairs a wide group photograph with a visible source caption', () => {
-  const figure = homeHero.match(/<figure\b[^>]*>[\s\S]*?<\/figure>/iu)?.[0] ?? '';
-  const image = figure.match(/<img\b[^>]*>/iu)?.[0] ?? '';
-  assert.match(image, /\bsrc="\.\/assets\/centre-ageing-better-seated-exercise\.webp"/u);
-  assert.doesNotMatch(figure.split('>')[0], /\bhidden\b/iu);
-  const width = Number(image.match(/\bwidth="(\d+)"/iu)?.[1]);
-  const height = Number(image.match(/\bheight="(\d+)"/iu)?.[1]);
-  assert(width > height && height > 0, 'The opening photograph has landscape dimensions');
-  assert.match(image, /\balt="[^"]*(?:групп|люд|участни|пенсионер|пожил|женщин|мужчин|старш)[^"]*"/iu);
-  const caption = figure.match(/<figcaption\b[^>]*>([\s\S]*?)<\/figcaption>/iu)?.[1] ?? '';
-  assert.match(readableContent(caption), /Centre for Ageing Better/iu);
+test('the first screen identifies and credits the network welcome photograph', () => {
+  const photo = /<img\b[^>]*\bsrc="(?:\.\/)?assets\/network-welcome\.webp"[^>]*>/iu;
+  const figure = heroFigures.find(markup => photo.test(markup));
+  assert(figure, 'The hero includes the photograph from a network centre');
+  const image = figure.match(photo)[0];
+  assert.doesNotMatch(figure.split('>')[0] + image, /\bhidden\b|aria-hidden="true"/iu);
+  assert.match(image, /\balt="[^"]*[а-яё][^"]*"/iu, 'The photograph has a Russian text alternative');
+  const caption = figure.match(/<figcaption\b[^>]*>[\s\S]*?<\/figcaption>/iu)?.[0] ?? '';
+  assert.doesNotMatch(caption.split('>')[0], /\bhidden\b|aria-hidden="true"/iu);
+  assert.match(readableContent(caption), /NovuMedical|сети|сетев/iu);
   assert(linksInMain(home, caption).some(link => link.url.href === 'https://site.test/prototype/media/#centre-photographs' && link.label),
-    'Readers can check the illustration credit separately from the Astrakhan footage');
+    'Visitors can distinguish the network photograph from the local footage and check its credit');
 });
 
-test('the local lesson is an early, optionally playable example with its own poster and source', () => {
-  const index = homeSections.findIndex(section => /\bid="first-meeting"/u.test(section));
-  assert(index === 1 || index === 2, 'The local lesson belongs among the first sections after the introduction');
-  const lesson = homeSections[index];
-  const poster = lesson.match(/<img\b[^>]*>/iu)?.[0] ?? '';
-  assert.match(poster, /\bsrc="\.\/assets\/astrakhan-lesson-poster\.jpg"/u);
+test('the hero includes the local lesson with its poster, play control and original link', () => {
+  const lesson = heroFigures.find(markup => /^<figure\b[^>]*\bid="video-iz-zala"/iu.test(markup));
+  assert(lesson, 'The existing video address reaches the figure in the first screen');
+  assert.doesNotMatch(lesson.split('>')[0], /\bhidden\b|aria-hidden="true"/iu);
+  const poster = lesson.match(/<img\b[^>]*\bsrc="(?:\.\/)?assets\/astrakhan-lesson-poster\.jpg"[^>]*>/iu)?.[0] ?? '';
   assert.doesNotMatch(poster, /\bhidden\b|aria-hidden="true"/iu);
-  assert.match(poster, /\balt="[^"]*(?:ведущ|участни|показыва)[^"]*"/iu);
-  assert.deepEqual([...homeMain.matchAll(/<img\b[^>]*\bsrc="([^"]+)"/giu)].map(match => match[1]),
-    ['./assets/centre-ageing-better-seated-exercise.webp', './assets/astrakhan-lesson-poster.jpg'],
-    'The group photograph and the local video still are the two homepage images');
+  assert.match(poster, /\balt="[^"]*[а-яё][^"]*"/iu, 'The real lesson still has a Russian text alternative');
   assert.match(readableContent(lesson), /1\s*:\s*39|1\s*мин\S*\s+39\s*с/iu);
-  assert.match(lesson, /data-ok-player="4414548478691"/u);
+  assert.match(lesson, /<button\b[^>]*\bdata-ok-player="4414548478691"/iu);
+  assert(linksInMain(home, lesson).some(link => link.url.href === 'https://ok.ru/video/4414548478691' && link.label),
+    'The local lesson also opens on OK from the same figure');
 });
 
 test('every article has a distinct title, subheadings and named source links', () => {

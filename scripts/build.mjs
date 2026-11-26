@@ -16,7 +16,7 @@ for (const { slug } of [...healthArticles, ...centreStories]) {
 }
 
 const routes = [
-  ['', 'Центр здоровья и долголетия', pages.home, 'Встречи и групповые занятия для людей старшего возраста в Астрахани. Посмотрите видео из зала на Савушкина и договоритесь о первом визите со Светланой Бабак.'],
+  ['', 'Центр здоровья и долголетия', pages.home, 'Центр здоровья и долголетия на Савушкина в Астрахани. Познакомьтесь с группой, посмотрите занятие и запишитесь на первый визит по телефону.'],
   ['rehabilitation/', 'Первое посещение центра', pages.rehabilitation, 'Что ждёт вас в центре и какие вопросы можно задать Светлане перед встречей.'],
   ['five-steps/', 'Пять шагов программы посещений', fiveStepsPage, 'Пять шагов программы системы 5/95 от первого знакомства до повторной встречи. Видео можно смотреть прямо на сайте.'],
   ['equipment/', 'Об аппаратах системы 5/95', pages.catalog, 'Иллюстрированный справочник для посетителя. Посмотрите, как устроены аппараты и что уточнить о конкретной модели.'],
@@ -35,7 +35,7 @@ await mkdir('dist', { recursive: true });
 await mkdir('dist/assets', { recursive: true });
 await writeFile('dist/assets/centre-contact.vcf', contactCard(centre), 'utf8');
 const assets = ['eyesystem.png', 'spinesystem.png', 'sleepsystem.png', 'footsystem.png', 'moxi.png', 'hero-source.jpg', 'sleep-use.jpg', 'foot-use.jpg', 'bodyhealth.jpg', 'bodyhealth-use.jpg', 'bodyhealth-controls.jpg', 'novueye-studio.jpg', 'toprelax-studio.jpg', 'zanyatie.jpg', 'feedback.jpg', 'den-rossii-astrakhan.jpg', 'novueye-ok.jpg', 'novuheat-autumn.jpg', 'vision-street-ok.jpg', 'den-pensionera.webp', 'five-steps.mp4', 'five-steps-ru.vtt', 'five-steps-poster.jpg', 'favicon.svg', 'OFL.txt', ...[0,1,2,3].map(i => `golos-${i}.ttf`)];
-const centrePhotos = ['centre-ageing-better-seated-exercise.webp', 'astrakhan-lesson-poster.jpg', 'network-welcome.webp'];
+const centrePhotos = ['astrakhan-lesson-poster.jpg', 'network-welcome.webp'];
 for (const asset of [...assets, ...centrePhotos]) await cp(`site/assets/${asset}`, `dist/assets/${asset}`);
 const styles = await Promise.all(['site/styles.css', 'site/refinement.css', 'site/bodyhealth.css', 'site/landing.css', 'site/reviews.css', 'site/five-steps.css', 'site/health-articles.css', 'site/navigation.css', 'site/interior.css', 'site/display.css'].map(file => readFile(file, 'utf8')));
 await writeFile('dist/styles.css', styles.join('\n'));

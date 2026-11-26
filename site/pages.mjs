@@ -11,8 +11,8 @@ export function catalog(p) {
   return `${breadcrumbs(p, 'Аппараты системы 5/95')}
     <div class="container equipment-opening">
       <header><h1>Аппараты системы 5/95</h1>
-        <p class="lead">Если хотите посмотреть, как надевают массажную накидку или как устроен аппарат для стоп, скажите об этом Светлане при записи. Она подскажет, какие модели сможет показать в день встречи.</p>
-        <div class="visit-entry-actions"><a class="button" href="${centre.phoneHref}" aria-label="Позвонить Светлане для записи, ${centre.phone}">${icon('phone')}Позвонить Светлане</a>
+        <p class="lead">В центре на занятиях знакомят с массажными и тепловыми аппаратами системы 5/95. Если хотите увидеть определённую модель, при записи на посещение уточните, когда её покажут.</p>
+        <div class="visit-entry-actions"><a class="button" href="${centre.phoneHref}" aria-label="Позвонить в центр для записи, ${centre.phone}">${icon('phone')}Позвонить в центр</a>
           <a href="${p}articles/first-visit/#documents">Как посмотреть документы на аппарат</a></div></header>
       <a class="equipment-feature" href="${p}equipment/${featured.slug}/">
         <img src="${p}assets/bodyhealth-controls.jpg" width="545" height="473" alt="Площадка для стоп и панель управления аппарата BodyHealth">
@@ -49,8 +49,8 @@ export function productPage(p, product) {
       ${modelPhotos(p, product)}
       <div class="model-question">
         <h2>О чём спросить на занятии</h2><p>${product.question}</p>
-        <p>При записи спросите у Светланы, будет ли на занятии именно ${product.name}.</p>
-        <a class="text-link" href="${centre.phoneHref}">Позвонить Светлане ${centre.phone}</a>
+        <p>Чтобы прийти на занятие, позвоните в центр. Если вам интересен ${product.name}, уточните, будет ли он в зале в выбранный день.</p>
+        <a class="text-link" href="${centre.phoneHref}">Позвонить в центр ${centre.phone}</a>
       </div>
     </section>
     <section class="container model-documents"><div class="product-information">
@@ -62,7 +62,7 @@ export function productPage(p, product) {
 export function article(p) {
   return `${breadcrumbs(p, 'Памятка перед поездкой', ['articles/', 'Статьи'])}
     <article class="container article-layout visit-memo">
-      <header class="memo-heading"><h1>Памятка перед поездкой</h1><p class="article-lead">Выберите со Светланой время, запишите адрес и уточните, с какой стороны войти в ТЦ «Факел».</p></header>
+      <header class="memo-heading"><h1>Памятка перед поездкой</h1><p class="article-lead">Договоритесь о времени по телефону, запишите адрес и уточните, с какой стороны войти в ТЦ «Факел».</p></header>
       <nav class="memo-jump" aria-label="Содержание памятки"><a href="#before">До поездки</a><a href="#bring">Что взять</a><a href="#questions">Что спросить</a><a href="#documents">Документы к аппарату</a></nav>
       <div class="article-body">
         <h2 id="before">До поездки</h2><p>Спросите, сколько продлится встреча и сколько она стоит. Если вам нужен вход без ступеней или вы собираетесь с близким человеком, скажите об этом при записи.</p>
@@ -82,7 +82,7 @@ export function contacts(p) {
       <div class="contacts-top">
         <div class="contacts-call"><h2>Телефон для записи</h2>
           <p>Консультант центра — ${centre.contact}.</p>
-          <a class="contact-main-number" href="${centre.phoneHref}" aria-label="Позвонить Светлане ${centre.phone}">${icon('phone')}${centre.phone}</a>
+          <a class="contact-main-number" href="${centre.phoneHref}" aria-label="Позвонить в центр, ${centre.phone}">${icon('phone')}${centre.phone}</a>
           <p class="contact-alternate">Дополнительный телефон<br><a href="${centre.secondaryPhoneHref}">${centre.secondaryPhone}</a></p>
         </div>
         <div class="contacts-address"><h2>Адрес</h2><p class="contact-street">${centre.address}</p>
@@ -103,8 +103,8 @@ export function booking(p) {
   return `${breadcrumbs(p, 'Договориться о посещении')}
     <div class="container booking-call-plan">
       <header><h1>Договориться о первом визите</h1>
-        <p class="lead">Позвоните Светлане Бабак и скажите, что хотите прийти впервые. Она подскажет, когда собирается группа и что можно посмотреть в этот день.</p>
-        <a class="button" href="${centre.phoneHref}" aria-label="Позвонить Светлане ${centre.phone}">${icon('phone')}${centre.phone}</a>
+        <p class="lead">Позвоните в Центр здоровья и долголетия и скажите, что хотите прийти впервые. Уточните, как пройдёт ближайшее занятие, и договоритесь об удобном времени.</p>
+        <a class="button" href="${centre.phoneHref}" aria-label="Позвонить в центр, ${centre.phone}">${icon('phone')}${centre.phone}</a>
         <p class="booking-alternate">Дополнительный телефон<br><a href="${centre.secondaryPhoneHref}">${centre.secondaryPhone}</a></p>
       </header>
       <section class="booking-questions" aria-labelledby="questions-for-call"><h2 id="questions-for-call">Что уточнить по телефону</h2>
@@ -127,9 +127,8 @@ export function media(p) {
       <ul>${Object.values(centreVideos).map(video => `<li><a href="${video.url}">${video.title}</a>, ${video.published} года, ${video.duration}.</li>`).join('')}</ul>
       <p><a href="${p}articles/">Фотографии и заметки из жизни центра</a>. В каждой истории указаны дата и ссылка на оригинальную публикацию.</p>
       <p>Светлана Бабак предоставила <a href="${p}five-steps/">фильм о пяти шагах программы</a>. Он длится 57 секунд.</p>
-      <h2 id="centre-photographs">Фотографии из других центров</h2>
-      <p>Групповую разминку для британской организации Centre for Ageing Better снял Дэвид Поултни (David Poultney). <a href="https://www.pexels.com/photo/seniors-exercising-11674389/">Оригинал фотографии</a> опубликован по <a href="https://www.pexels.com/license/">лицензии Pexels</a>.</p>
-      <p>Встреча у стойки на странице первого посещения — <a href="https://novumedical.org/wp-content/uploads/2020/07/slides-2.jpg">фотография из серии NovuMedical</a>.</p>
+      <h2 id="centre-photographs">Фотография встречи в центре NovuMedical</h2>
+      <p>На главной и на странице первого посещения использована фотография из серии NovuMedical. На ней посетительницу встречают у стойки одного из центров сети. <a href="https://novumedical.org/wp-content/uploads/2020/07/slides-2.jpg">Открыть оригинал NovuMedical</a>.</p>
       <h2 id="equipment">Фотографии аппаратов</h2><p>Студийные фотографии и описание функций опубликованы на страницах производителя — <a href="https://novumedical.org/products/novueye/">маска NovuEye</a> и <a href="https://novumedical.org/products/toprelax/">накидка TopRelax</a>. Изображения EyeSystem, SpineSystem, SleepSystem, FootSystem и Moxi опубликованы <a href="https://system595la.com/ru/">System 5/95</a>.</p>
       <p>Фотографии BodyHealth, панели управления и пример использования опубликованы <a href="https://novumedical.org/products/bodyhealth/">на странице модели NovuMedical</a>.</p>
       <h2>Об Ассоциации</h2><p>${association.description} <a href="${association.url}">Официальная страница Ассоциации</a>.</p>
@@ -139,7 +138,7 @@ export function media(p) {
 
 export function privacy(p) {
   return `${breadcrumbs(p, 'О сайте')}
-    ${pageHead('О сайте', 'Сайт поможет подготовиться к поездке. Договориться о посещении можно напрямую со Светланой Бабак.')}
+    ${pageHead('О сайте', 'Договориться о первом посещении Центра здоровья и долголетия в Астрахани можно по телефону.')}
     <section class="container legal-copy"><h2>Звонок и маршрут</h2>
       <p>Ссылка с номером телефона открывает набор номера, ссылка с адресом — карту. Имя и телефон для этого вводить не нужно.</p>
       ${visitActions()}
