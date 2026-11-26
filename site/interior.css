@@ -25,18 +25,11 @@ main > .page-head h1 {
 .visit-entry-actions a { min-height: 44px; display: inline-flex; align-items: center; }
 .visit-entry-actions a:not(.button) { color: var(--red-dark); }
 .visit-opening-copy .lead, .equipment-opening .lead { max-width: 44ch; }
-.visit-opening .reviews-preview {
-  width: 100%; margin: 0; padding: 0 0 15px;
-  border: 0; border-bottom: 1px solid var(--line); border-radius: 0; background: #f8f3ed;
-}
-.visit-opening .reviews-preview-layout { display: block; }
-.visit-opening .interview-frame { border-radius: 0; }
-.visit-opening .interview-frame img { width: 100%; height: auto; aspect-ratio: auto; object-fit: contain; }
-.visit-opening .interview-copy { padding: 16px 22px 0; }
-.visit-opening .interview-copy h2 { font-size: 25px; margin-bottom: 5px; }
-.visit-opening .interview-copy > p { margin-bottom: 5px; }
-.visit-opening .interview-copy > p:last-child { display: inline; margin-left: 8px; }
-.visit-opening .interview-copy > p:last-child a { display: inline-block; padding: 7px 0; }
+.visit-welcome-photo { align-self: start; margin: 0; }
+.visit-welcome-photo img { display: block; width: 100%; height: auto; border-radius: 6px; }
+.visit-welcome-photo figcaption { padding-top: 6px; font-size: 15px; color: var(--muted); }
+.visit-welcome-photo a { color: var(--red-dark); text-underline-offset: .15em; }
+.visit-support { display: grid; gap: clamp(18px, 2.5vw, 32px); min-width: 0; }
 .visit-plan {
   display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, .8fr);
   gap: clamp(24px, 6vw, 88px); align-items: start; padding-bottom: 46px;
@@ -123,7 +116,7 @@ html[data-display="accessible"] main .gallery-thumbs[hidden] { display: none!imp
 @media (max-width: 800px) {
   .equipment-opening, .visit-opening, .visit-plan { grid-template-columns: minmax(0,1fr); gap: 22px; }
   .visit-opening-copy .lead, .equipment-opening .lead { max-width: 65ch; }
-  .visit-opening .reviews-preview { max-width: 606px; margin-inline: 0; }
+  .visit-welcome-photo { max-width: 606px; }
   .equipment-opening { margin-bottom: 24px; }
   .equipment-feature { max-width: 570px; }
   .equipment-feature img { height: 125px; }
@@ -137,8 +130,6 @@ html[data-display="accessible"] main .gallery-thumbs[hidden] { display: none!imp
   .reading-crumbs > a { display: inline-flex; min-height: 44px; align-items: center; font-size: 15px; color: var(--red-dark); text-decoration: underline; }
   .reading-crumbs > [aria-current] { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
   .visit-opening h1, .equipment-opening h1, .contacts-spread h1 { font-size: 35px; }
-  .visit-opening .interview-copy { padding-inline: 17px; }
-  .visit-opening .interview-copy > p:last-child { display: block; margin-left: 0; }
   .equipment-row { grid-template-columns: 72px minmax(0,1fr) 17px; gap: 5px 13px; }
   .equipment-row > img { width: 70px; grid-row: span 2; }
   .equipment-row > .icon { grid-column: 3; grid-row: 1; }
@@ -161,7 +152,6 @@ html[data-display="accessible"] :is(.visit-opening,.visit-plan,.equipment-openin
 html[data-display="accessible"] :is(.model-spread > *, .equipment-row > *) {
   grid-column: auto!important; grid-row: auto!important; grid-area: auto!important;
 }
-html[data-display="accessible"] main .visit-opening > .reviews-preview { width: 100%!important; padding: 0!important; }
 html[data-display="accessible"] :is(.equipment-feature, .contacts-call, .contacts-address, .visit-prep) { padding: .4rem 0!important; }
 html[data-display="accessible"] .equipment-row > .icon { display: none!important; }
 

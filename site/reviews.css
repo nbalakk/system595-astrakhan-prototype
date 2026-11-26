@@ -45,26 +45,49 @@
 .interview-play:hover { background: var(--soft-red); }
 .interview-play:focus-visible { outline: 3px solid white; outline-offset: 3px; box-shadow: 0 0 0 7px var(--red-dark); }
 .interview-frame .interview-play[hidden] { display: none!important; }
-.interview-frame.on-demand-frame { background: transparent; }
-.on-demand-frame:has(> button[hidden]), .on-demand-frame > button[hidden] { display: none!important; }
-.on-demand-play {
+.centre-lesson-clip {
+  align-self: start;
+  width: 100%;
+  max-width: 606px;
+  margin: 0;
+}
+.lesson-player { position: relative; }
+.lesson-player :is(img, iframe) {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 0;
+  border-radius: 6px;
+}
+.lesson-player iframe { aspect-ratio: 16/9; }
+.lesson-player > button[hidden] { display: none!important; }
+.lesson-play {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
   min-height: 46px;
-  max-width: 100%;
+  max-width: calc(100% - 20px);
   padding: 9px 15px;
-  border: 1px solid var(--red-dark);
+  border: 1px solid white;
   border-radius: 5px;
-  background: var(--white);
-  color: var(--red-dark);
+  background: var(--red-dark);
+  color: white;
   font: inherit;
   font-weight: 600;
   cursor: pointer;
 }
-.on-demand-play:hover { background: var(--soft-red); }
-.interview-copy .on-demand-frame { margin-block: 12px 2px; }
+.lesson-play:hover { background: #790c29; }
+.lesson-play:focus-visible { outline: 3px solid white; outline-offset: 2px; box-shadow: 0 0 0 7px var(--red-dark); }
+.centre-lesson-clip figcaption { padding: 10px 0 0; }
+.centre-lesson-clip figcaption strong { display: block; font-size: 20px; line-height: 1.35; }
+.centre-lesson-clip .lesson-clip-meta { display: block; margin-top: 2px; color: var(--muted); font-size: 15px; }
+.centre-lesson-clip figcaption p { margin: 7px 0 0; }
+.centre-lesson-clip figcaption a { display: inline-flex; align-items: center; min-height: 44px; color: var(--red-dark); }
+html[data-display="accessible"] .lesson-play { position: static; margin-top: .4rem; }
 .reviews-next { padding-block: 28px 36px; border-top: 1px solid var(--line); }
 .reviews-next-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 18px; }
 @media(max-width: 720px) {

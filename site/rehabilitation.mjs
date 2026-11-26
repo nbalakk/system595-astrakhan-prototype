@@ -6,12 +6,15 @@ export function rehabilitation(p) {
   return `${breadcrumbs(p, 'Первое посещение')}
   <div class="container visit-opening">
     <header class="visit-opening-copy"><h1>Первое посещение</h1>
-      <p class="lead">Приходите посмотреть, как проходит занятие. Можно познакомиться с группой, понаблюдать за разминкой и попросить показать аппарат, который вас заинтересовал.</p>
-      <p>Время встречи подскажет консультант ${centre.contact}. По телефону вы сможете выбрать день и узнать, что будет в зале.</p>
+      <p class="lead">На первой встрече можно познакомиться со Светланой и другими участниками. Посмотрите, как проходит разминка, и решите, хочется ли присоединиться.</p>
+      <p>Позвоните консультанту центра. ${centre.contact} подскажет, когда собирается группа и в какой день можно прийти впервые.</p>
       <div class="visit-entry-actions"><a class="button" href="${centre.phoneHref}" aria-label="Позвонить Светлане для записи ${centre.phone}">${icon('phone')}Позвонить Светлане</a>
         <a href="${p}booking/">Что уточнить при записи</a></div>
     </header>
-    ${visitFilm(p)}
+    <figure class="visit-welcome-photo">
+      <img src="${p}assets/network-welcome.webp" width="1152" height="768" alt="У входа сотрудница и посетительница в платье с цветами держат жёлтую карточку. За ними ждёт мужчина.">
+      <figcaption>Встреча посетителей в одном из центров NovuMedical. <a href="${p}media/#centre-photographs">Фото сети</a></figcaption>
+    </figure>
   </div>
   <div class="container visit-plan">
     <div class="visit-chapters">
@@ -25,11 +28,14 @@ export function rehabilitation(p) {
         <p>Спросите у Светланы, когда снова соберётся группа или пройдёт показ интересующего вас аппарата.</p>
         <div class="visit-plan-links"><a href="${p}equipment/">Описания аппаратов</a><a href="${p}reviews/">Прочитать отзыв посетительницы</a></div></section>
     </div>
-    <aside class="visit-prep"><h2>Перед поездкой</h2>
-      <nav class="visit-prep-links" aria-label="Подготовиться к поездке">
-        <a href="${p}contacts/">Открыть карту и сохранить телефон центра</a>
-        <a href="${p}articles/first-visit/">Что взять и какие вопросы задать в зале</a>
-      </nav>
-    </aside>
+    <div class="visit-support">
+      ${visitFilm(p)}
+      <aside class="visit-prep"><h2>Перед поездкой</h2>
+        <nav class="visit-prep-links" aria-label="Подготовиться к поездке">
+          <a href="${p}contacts/">Открыть карту и сохранить телефон центра</a>
+          <a href="${p}articles/first-visit/">Что взять и какие вопросы задать в зале</a>
+        </nav>
+      </aside>
+    </div>
   </div>`;
 }

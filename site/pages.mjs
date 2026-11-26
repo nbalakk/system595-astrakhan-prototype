@@ -120,13 +120,16 @@ export function booking(p) {
 
 export function media(p) {
   return `${breadcrumbs(p, 'Фотографии и видео')}
-    ${pageHead('Фотографии и видео', 'Записи занятий и встреч сняты в Астрахани. Студийные фотографии аппаратов — из материалов производителя.')}
+    ${pageHead('Фотографии и видео', 'Здесь можно найти оригиналы записей из астраханского зала и авторов фотографий с других площадок.')}
     <section class="container legal-copy"><h2>Материалы центра</h2>
       <p>Страница в Одноклассниках называется <a href="${centre.okUrl}">«Центр Здоровья и Долголетия»</a>. Порядок записи по телефону указан <a href="https://ok.ru/profile/583466162659/statuses/157577238805987">в сообщении центра</a>.</p>
       <p>Две записи из зала можно открыть в Одноклассниках.</p>
       <ul>${Object.values(centreVideos).map(video => `<li><a href="${video.url}">${video.title}</a>, ${video.published} года, ${video.duration}.</li>`).join('')}</ul>
       <p><a href="${p}articles/">Фотографии и заметки из жизни центра</a>. В каждой истории указаны дата и ссылка на оригинальную публикацию.</p>
       <p>Светлана Бабак предоставила <a href="${p}five-steps/">фильм о пяти шагах программы</a>. Он длится 57 секунд.</p>
+      <h2 id="centre-photographs">Фотографии из других центров</h2>
+      <p>Групповую разминку для британской организации Centre for Ageing Better снял Дэвид Поултни (David Poultney). <a href="https://www.pexels.com/photo/seniors-exercising-11674389/">Оригинал фотографии</a> опубликован по <a href="https://www.pexels.com/license/">лицензии Pexels</a>.</p>
+      <p>Встреча у стойки на странице первого посещения — <a href="https://novumedical.org/wp-content/uploads/2020/07/slides-2.jpg">фотография из серии NovuMedical</a>.</p>
       <h2 id="equipment">Фотографии аппаратов</h2><p>Студийные фотографии и описание функций опубликованы на страницах производителя — <a href="https://novumedical.org/products/novueye/">маска NovuEye</a> и <a href="https://novumedical.org/products/toprelax/">накидка TopRelax</a>. Изображения EyeSystem, SpineSystem, SleepSystem, FootSystem и Moxi опубликованы <a href="https://system595la.com/ru/">System 5/95</a>.</p>
       <p>Фотографии BodyHealth, панели управления и пример использования опубликованы <a href="https://novumedical.org/products/bodyhealth/">на странице модели NovuMedical</a>.</p>
       <h2>Об Ассоциации</h2><p>${association.description} <a href="${association.url}">Официальная страница Ассоциации</a>.</p>

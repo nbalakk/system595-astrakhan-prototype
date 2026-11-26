@@ -37,6 +37,10 @@ const healthSlugs = ['blood-pressure', 'swollen-ankles', 'sleep', 'back-pain', '
 const healthPaths = new Set(healthSlugs.map(slug => `articles/${slug}/index.html`));
 const articles = rendered.filter(page => healthPaths.has(page.route));
 const mainContent = html => html.match(/<main\b[\s\S]*?<\/main>/iu)?.[0] ?? '';
+const home = rendered.find(page => page.route === 'index.html');
+const homeMain = mainContent(home.html);
+const homeSections = [...homeMain.matchAll(/<section\b[^>]*>[\s\S]*?<\/section>/giu)].map(match => match[0]);
+const homeHero = homeSections[0];
 const approvedStories = new Map([
   ['zanyatie-v-zale', ['2023-03-07', '4414548478691', 'zanyatie.jpg']],
   ['otzyv-posetitelnitsy', ['2023-01-27', '4274475829987', 'feedback.jpg']],
@@ -102,41 +106,33 @@ for (const { route, html } of rendered) {
   });
 }
 
-test('the homepage explains the audience and purpose of a visit', () => {
-  const home = rendered.find(page => page.route === 'index.html');
-  assert(home, 'Homepage must be built');
-  const main = readableContent(home.html.match(/<main\b[\s\S]*?<\/main>/iu)?.[0] || '');
-  for (const concept of [/здоров/iu, /долголети/iu, /(?:старшего|своего)\s+поколения|старшего\s+возраста|ровесник|пенсионер/iu, /5\s*\/\s*95/u, /Светлан/iu, /Бабак/iu]) {
-    assert.match(main, concept);
+test('the first screen introduces the Astrakhan centre, the group and a first call', () => {
+  assert.match(homeHero, /<h1\b/iu);
+  const copy = readableContent(homeHero.replace(/<figure\b[\s\S]*?<\/figure>/giu, ''));
+  for (const concept of [/здоров/iu, /долголети/iu, /Астрахан/iu, /старш|пожил|пенсионер/iu,
+    /двиг|движ|размя|размин|разомн|гимнастик/iu, /общ|ровесник|сверстник|знаком|компани/iu]) {
+    assert.match(copy, concept);
   }
-  const hero = mainContent(home.html).split('id="first-meeting"')[0];
-  const links = linksInMain(home, hero);
-  assert(links.some(link => link.url.href === 'tel:+79093738094' && /позвонить и записаться/iu.test(link.label)));
-  assert(links.some(link => link.url.pathname.endsWith('/rehabilitation/') && /первый визит/iu.test(link.label)));
-  assert.match(readableContent(hero), /Астрахан/iu);
-  assert.match(readableContent(hero), /накидк|массажн.{0,18}маск/iu);
+  const links = linksInMain(home, homeHero);
+  assert(links.some(link => link.url.href === 'tel:+79093738094' && /позвон|запис|звонок/iu.test(link.label)),
+    'The hero needs a named direct call');
+  assert(links.some(link => link.url.hash === '#video-iz-zala' && /видео|заняти|запис[ьи]/iu.test(link.label)),
+    'The first-screen video link goes straight to the player');
+  assert.match(homeMain, /<figure\b[^>]*\bid="video-iz-zala"[^>]*>[\s\S]*?data-ok-player="4414548478691"/iu);
 });
 
-test('the first screen explains the personal value and leads to examples before the programme', () => {
-  const home = rendered.find(page => page.route === 'index.html');
-  const main = mainContent(home.html);
-  const hero = main.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>([\s\S]*?)<\/p>/iu);
-  assert(hero, 'The first screen needs a heading and a short introduction');
-  const introduction = readableContent(hero[0]);
-  assert.doesNotMatch(readableContent(hero[1]), /аппарат|оборудован/iu);
-  assert.match(introduction, /знаком|общать|общение|в\s+компании|сверстник|ровесник/iu);
-  assert.match(introduction, /двиг|движ|размять|размин|разомн/iu);
-  assert.match(introduction, /подход|подойд|реши|по\s+душе|удобн|хочет|захоч|понрав/iu);
-
-  const firstMeeting = main.indexOf('id="first-meeting"');
-  const programme = main.indexOf('aria-labelledby="steps-preview-title"');
-  assert(firstMeeting >= 0 && programme > firstMeeting, 'Examples belong before the programme');
-  const links = linksInMain(home, main.slice(firstMeeting, programme));
-  for (const route of ['articles/zanyatie-v-zale/', 'articles/novueye-v-kresle/', 'equipment/', 'articles/first-visit/#documents']) {
-    const destination = new URL(route, 'https://site.test/prototype/');
-    assert(links.some(link => link.url.href === destination.href && /[а-яё]/iu.test(link.label)),
-      `The first meeting needs a named link to ${route}`);
+test('the homepage gives visitors named links to a person, a visit, directions and the programme', () => {
+  const copy = readableContent(homeMain);
+  assert.match(copy, /Светлана\s+Михайловна\s+Бабак/iu);
+  assert.match(copy, /5\s*\/\s*95/u);
+  assert.match(homeMain, /\bid="steps-preview-title"/u, 'Links to the programme still reach its compact introduction');
+  assert.doesNotMatch(readableContent(homeHero), /5\s*\/\s*95/u, 'The programme is introduced after the group and the first call');
+  const links = linksInMain(home);
+  for (const route of ['booking/', 'contacts/', 'reviews/', 'five-steps/', 'rehabilitation/']) {
+    assert(links.some(link => link.url.pathname === '/prototype/' + route && link.label), route);
   }
+  assert.doesNotMatch(copy, /NovuEye|TopRelax|EyeSystem|SpineSystem|SleepSystem|FootSystem|BodyHealth|NovuHeat|\bMoxi\b/iu,
+    'A first visit must not read like a list of models');
 });
 
 test('the articles hub leads with practical guides and keeps every archived story reachable', () => {
@@ -163,20 +159,34 @@ test('the articles hub leads with practical guides and keeps every archived stor
   }
 });
 
-test('the landing keeps old video stills and players on the thematic pages', () => {
-  const home = rendered.find(page => page.route === 'index.html');
-  const main = mainContent(home.html);
-  for (const filename of [...approvedStories.values()].map(entry => entry[2]).concat('five-steps-poster.jpg')) {
-    assert(!main.includes('assets/' + filename), `Keep archive image ${filename} off the homepage`);
-  }
-  for (const filename of ['novueye-studio.jpg', 'toprelax-studio.jpg']) {
-    assert(main.includes('assets/' + filename), `Missing studio photograph ${filename}`);
-  }
-  assert.match(readableContent(main), /Фото NovuMedical/iu);
-  assert.doesNotMatch(main, /data-ok-player|<(video|iframe|audio)\b/iu);
-  for (const route of ['articles/zanyatie-v-zale/', 'articles/novueye-v-kresle/', 'reviews/', 'five-steps/']) {
-    assert(linksInMain(home).some(link => link.url.href === 'https://site.test/prototype/' + route && link.label));
-  }
+test('the first screen pairs a wide group photograph with a visible source caption', () => {
+  const figure = homeHero.match(/<figure\b[^>]*>[\s\S]*?<\/figure>/iu)?.[0] ?? '';
+  const image = figure.match(/<img\b[^>]*>/iu)?.[0] ?? '';
+  assert.match(image, /\bsrc="\.\/assets\/centre-ageing-better-seated-exercise\.webp"/u);
+  assert.doesNotMatch(figure.split('>')[0], /\bhidden\b/iu);
+  const width = Number(image.match(/\bwidth="(\d+)"/iu)?.[1]);
+  const height = Number(image.match(/\bheight="(\d+)"/iu)?.[1]);
+  assert(width > height && height > 0, 'The opening photograph has landscape dimensions');
+  assert.match(image, /\balt="[^"]*(?:групп|люд|участни|пенсионер|пожил|женщин|мужчин|старш)[^"]*"/iu);
+  const caption = figure.match(/<figcaption\b[^>]*>([\s\S]*?)<\/figcaption>/iu)?.[1] ?? '';
+  assert.match(readableContent(caption), /Centre for Ageing Better/iu);
+  assert(linksInMain(home, caption).some(link => link.url.href === 'https://site.test/prototype/media/#centre-photographs' && link.label),
+    'Readers can check the illustration credit separately from the Astrakhan footage');
+});
+
+test('the local lesson is an early, optionally playable example with its own poster and source', () => {
+  const index = homeSections.findIndex(section => /\bid="first-meeting"/u.test(section));
+  assert(index === 1 || index === 2, 'The local lesson belongs among the first sections after the introduction');
+  const lesson = homeSections[index];
+  const poster = lesson.match(/<img\b[^>]*>/iu)?.[0] ?? '';
+  assert.match(poster, /\bsrc="\.\/assets\/astrakhan-lesson-poster\.jpg"/u);
+  assert.doesNotMatch(poster, /\bhidden\b|aria-hidden="true"/iu);
+  assert.match(poster, /\balt="[^"]*(?:ведущ|участни|показыва)[^"]*"/iu);
+  assert.deepEqual([...homeMain.matchAll(/<img\b[^>]*\bsrc="([^"]+)"/giu)].map(match => match[1]),
+    ['./assets/centre-ageing-better-seated-exercise.webp', './assets/astrakhan-lesson-poster.jpg'],
+    'The group photograph and the local video still are the two homepage images');
+  assert.match(readableContent(lesson), /1\s*:\s*39|1\s*мин\S*\s+39\s*с/iu);
+  assert.match(lesson, /data-ok-player="4414548478691"/u);
 });
 
 test('every article has a distinct title, subheadings and named source links', () => {
@@ -232,9 +242,9 @@ test('each centre story identifies its original dated OK publication', () => {
   }
 });
 
-test('the association and equipment illustrations have sources for visitors', () => {
+test('the association and equipment illustrations have sources on the relevant pages', () => {
   const main = route => rendered.find(page => page.route === route)?.html.match(/<main\b[\s\S]*?<\/main>/iu)?.[0] ?? '';
-  assert.match(main('index.html'), /href="https:\/\/novumedical\.org\/o-nas\/"/);
+  assert.match(main('media/index.html'), /href="https:\/\/novumedical\.org\/o-nas\/"/);
   assert.match(main('equipment/bodyhealth/index.html'), /href="https:\/\/novumedical\.org\/products\/bodyhealth\/"/);
   const sources = readableContent(main('media/index.html'));
   assert.match(sources, /(?:фото|иллюстрац)/iu);
@@ -259,11 +269,11 @@ test('the feedback area does not reuse the retired sample testimonials or rating
   }
 });
 
-test('visit and feedback pages offer the matching approved clip with a direct fallback', () => {
+test('home, visit and feedback pages offer the matching approved clip with a direct fallback', () => {
   const visit = { id: '4414548478691', duration: /1\s*:\s*39|1\s*мин\S*\s+39\s*с/iu };
   const feedback = { id: '4274475829987', duration: /1\s*:\s*36|1\s*мин\S*\s+36\s*с/iu };
   const approvedLinks = [visit, feedback].map(clip => 'https://ok.ru/video/' + clip.id);
-  const clips = new Map([['rehabilitation/index.html', visit], ['reviews/index.html', feedback]]);
+  const clips = new Map([['index.html', visit], ['rehabilitation/index.html', visit], ['reviews/index.html', feedback]]);
   for (const { route, html } of rendered) {
     if (!archiveRoutes.has(route) && route !== 'index.html') {
       for (const match of html.matchAll(/href="(https?:\/\/(?:www\.)?ok\.ru\/video(?:embed)?\/[^"]+)"/giu)) {
@@ -275,21 +285,24 @@ test('visit and feedback pages offer the matching approved clip with a direct fa
     const main = mainContent(html);
     const clip = clips.get(route);
     assert.match(readableContent(main), clip.duration);
-    if (clip === visit) assert.match(readableContent(main), /Занятие в центре/iu);
-    assert(main.includes(`href="https://ok.ru/video/${clip.id}"`), `${route}: video must be reachable without JavaScript`);
+    if (clip === visit) assert.match(readableContent(main), /Занятие в (?:астраханском )?центре/iu);
+    const original = 'https://ok.ru/video/' + clip.id;
+    assert(linksInMain({route, html}).some(link => link.url.href === original && link.label), `${route}: labelled link to the original`);
+    const source = [...main.matchAll(/<a\b[^>]*>/giu)].find(match => match[0].includes(`href="${original}"`));
+    assert.doesNotMatch(source[0], /\bhidden\b|aria-hidden="true"/iu, `${route}: source link remains visible without JavaScript`);
     const controls = [...main.matchAll(/<button\b[^>]*\bdata-ok-player="([^"]+)"[^>]*>/gi)];
     assert.deepEqual(controls.map(match => match[1]), [clip.id], `${route}: one native play button supports keyboard and pointer activation`);
     assert(!/\bdisabled\b/i.test(controls[0][0]), `${route}: the play button can be activated`);
-    assert.doesNotMatch(main, /<iframe\b/i, `${route}: no player before the visitor presses play`);
+    assert.doesNotMatch(main, /<(?:iframe|video|audio)\b/i, `${route}: no player before the visitor presses play`);
   }
 });
 
 test('visitors can read the dated account and follow it from the homepage', () => {
-  const home = rendered.find(page => page.route === 'index.html');
   const review = rendered.find(page => page.route === 'reviews/index.html');
   const account = mainContent(review.html);
-  assert(linksInMain(home).some(link =>
-    /\/(?:reviews|articles\/otzyv-posetitelnitsy)\/$/.test(link.url.pathname) && /Три месяца/iu.test(link.label)));
+  const teaser = homeSections.find(section => /<h2\b[^>]*>Три месяца в центре<\/h2>/iu.test(section));
+  assert(teaser, 'Homepage visitors can identify the specific visitor account');
+  assert(linksInMain(home, teaser).some(link => /\/(?:reviews|articles\/otzyv-posetitelnitsy)\/$/.test(link.url.pathname) && link.label));
   assert.match(account, /«Три месяца»/u);
   assert.match(account, /datetime="2023-01-27"/u);
   assert.match(account, /href="https:\/\/ok\.ru\/video\/4274475829987"/u);
@@ -314,11 +327,9 @@ test('the downloadable contact includes both phone numbers and the address in UT
   ]) assert(lines.includes(expected), expected);
 });
 
-test('the five-step preview leads to the chapters and an optional local recording', () => {
-  const home = rendered.find(page => page.route === 'index.html').html.match(/<main\b[\s\S]*?<\/main>/iu)?.[0] ?? '';
+test('the five-step guide linked from the homepage keeps every old chapter address and optional film', () => {
   const stepsTitle = /(?:пять|5)\s+шагов/iu;
-  assert.match(readableContent(home), stepsTitle);
-  assert.match(home, /href="(?:\.\/)?five-steps\/(?:#[^"]*)?"/i);
+  assert(linksInMain(home).some(link => link.url.pathname === '/prototype/five-steps/' && link.label));
   const steps = rendered.find(page => page.route === 'five-steps/index.html');
   assert(steps, 'The five-step guide must be built');
   const main = steps.html.match(/<main\b[\s\S]*?<\/main>/iu)?.[0] ?? '';
@@ -336,17 +347,9 @@ test('the five-step preview leads to the chapters and an optional local recordin
   });
   assert(times.every((seconds, index) => Number.isFinite(seconds) && (!index || seconds > times[index - 1])),
     'Each scene must start after the preceding scene');
-  const preview = home.match(/<section\b[^>]*aria-labelledby="steps-preview-title"[^>]*>([\s\S]*?)<\/section>/iu)?.[1] ?? '';
-  assert.match(preview, /href="\.\/five-steps\/"/iu);
-  assert.match(readableContent(preview), /57\s*(?:секунд|с\b)/iu);
-  const sceneLinks = [...preview.matchAll(/<li\b[^>]*>\s*<a\b[^>]*href="\.\/five-steps\/#([^"]+)"[^>]*>([\s\S]*?)<\/a>/giu)];
-  assert.equal(sceneLinks.length, chapters.length);
-  for (const [index, [, fragment, link]] of sceneLinks.entries()) {
-    assert(main.includes(`id="${fragment}"><h3>${titles[index]}</h3>`), 'Every preview step opens its own chapter description');
-    assert.equal(readableContent(link.match(/<span>([\s\S]*?)<\/span>/iu)?.[1] ?? '').trim(), titles[index]);
-    assert(link.includes(`datetime="PT${times[index]}S"`), 'The preview and player must use the same chapter times');
+  for (const [index, chapter] of chapters.entries()) {
+    assert(chapter[0].split('>')[0].includes(`id="step-${index + 1}"`), 'The original chapter links must still resolve');
   }
-  assert.doesNotMatch(preview, /<(video|iframe|audio)\b/iu, 'The landing preview cannot play media');
   const video = main.match(/(<video\b[^>]*>)[\s\S]*?<\/video>/i);
   assert(video, 'The recording plays directly in the guide');
   assert.match(video[1], /\bcontrols\b/i, 'The visitor controls playback');

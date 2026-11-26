@@ -1,51 +1,44 @@
-import { association, centre, centreStories, centreVideos } from './content.mjs';
+import { centre, centreStories, centreVideos } from './content.mjs';
 import { breadcrumbs, icon } from './components.mjs';
 
-function filmFrame(_p, video, kind) {
-  return `<div class="interview-frame on-demand-frame" data-video-frame data-video-kind="${kind}">
-    <button type="button" class="on-demand-play" data-ok-player="${video.id}" aria-label="Смотреть видео «${video.title}»" hidden><span class="steps-play-icon" aria-hidden="true"></span>Смотреть видео</button>
-  </div>`;
+export function centreLessonClip(p, {
+  poster = centreVideos.lesson.poster,
+  alt = centreVideos.lesson.alt,
+  width = centreVideos.lesson.width,
+  height = centreVideos.lesson.height,
+  description = ''
+} = {}) {
+  const video = centreVideos.lesson;
+  return `<figure class="centre-lesson-clip" id="video-iz-zala">
+    <div class="lesson-player" data-video-frame data-video-kind="lesson">
+      <img src="${p}assets/${poster}" width="${width}" height="${height}" alt="${alt}" decoding="async">
+      <button type="button" class="lesson-play" data-ok-player="${video.id}" aria-label="Смотреть видео «${video.title}», ${video.duration}" hidden><span class="steps-play-icon" aria-hidden="true"></span>Смотреть видео</button>
+    </div>
+    <figcaption>
+      <strong>${video.title}</strong>
+      <span class="lesson-clip-meta"><time datetime="${video.date}">${video.published}</time> · ${video.duration}</span>
+      ${description ? `<p>${description}</p>` : ''}
+      <a href="${video.url}">Видео занятия в Одноклассниках</a>
+    </figcaption>
+  </figure>`;
 }
 
 export function visitFilm(p, { firstMeeting = false } = {}) {
-  const video = centreVideos.lesson;
   const headingId = 'film-lesson-title';
   if (firstMeeting) {
-    return `<section class="container first-meeting" id="first-meeting" aria-labelledby="${headingId}">
-      <header class="lesson-intro"><h2 id="${headingId}">Что показывают на занятии</h2>
-        <p>В зале можно сначала посмотреть, как работает аппарат, и задать вопросы консультанту.</p></header>
-      <div class="lesson-spread">
-        <figure class="lesson-photo">
-          <img src="${p}assets/toprelax-studio.jpg" width="1920" height="1080" alt="Мягкая массажная накидка TopRelax лежит на светлом диване" loading="lazy">
-          <figcaption>Массажная накидка TopRelax. <a href="https://novumedical.org/wp-content/uploads/2021/11/tr_comp001.jpg" aria-label="Фото NovuMedical — массажная накидка TopRelax">Фото NovuMedical</a></figcaption>
-        </figure>
-        <div class="lesson-examples">
-        <article><h3>Накидка для плеч</h3>
-          <p>Мягкая накидка ложится на шею и плечи. У модели TopRelax на фотографии есть вибромассаж и подогрев. В записи из Астрахани видно, как ведущая помогает посетительнице надеть накидку.</p>
-          <a class="text-link" href="${p}articles/zanyatie-v-zale/">Как надевают накидку ${icon('arrow')}</a></article>
-        <article><h3>Маска для глаз NovuEye</h3>
-          <p>У маски есть режимы вибрации и прогрева. Ею управляют с пульта. Перед примеркой можно попросить консультанта показать, как выбрать режим и остановить аппарат.</p>
-          <a class="text-link" href="${p}articles/novueye-v-kresle/">Маска и пульт в записи занятия ${icon('arrow')}</a></article>
+    return `<section class="first-meeting" id="first-meeting" aria-labelledby="${headingId}">
+      <div class="container lesson-spread">
+        <div class="lesson-intro">
+          <h2 id="${headingId}">Как проходит занятие</h2>
+          <p>Загляните в зал на Савушкина. В коротком видео ведущая помогает участнице надеть накидку и показывает, как ею управлять.</p>
+          <a class="text-link" href="${p}rehabilitation/">Как проходит первый визит ${icon('arrow')}</a>
+          <p class="lesson-programme" id="steps-preview-title">В программу встреч входит знакомство с системой 5/95. <a href="${p}five-steps/">Пять шагов программы посещений</a></p>
         </div>
-      </div>
-      <div class="visit-equipment-links">
-        <a class="button" href="${centre.phoneHref}">${icon('phone')} Позвонить и записаться</a>
-        <a href="${p}equipment/">Аппараты на занятиях</a>
-        <a href="${p}articles/first-visit/#documents">Как посмотреть документы на аппарат</a>
-        <a href="${association.url}">Об Ассоциации NovuMedical</a>
+        ${centreLessonClip(p)}
       </div>
     </section>`;
   }
-  return `<section class="container reviews-preview" aria-labelledby="${headingId}">
-    <div class="reviews-preview-layout">
-      <div class="interview-copy"><h2 id="${headingId}">${video.title}</h2>
-        <p class="interview-meta"><time datetime="${video.date}">${video.published}</time> · ${video.duration}</p>
-        <p>${video.description}</p>
-        ${filmFrame(p, video, 'lesson')}
-        <a class="text-link" href="${video.url}">Видео занятия в Одноклассниках ${icon('arrow')}</a>
-      </div>
-    </div>
-  </section>`;
+  return centreLessonClip(p, { description: centreVideos.lesson.description });
 }
 
 export function reviewsPage(p) {

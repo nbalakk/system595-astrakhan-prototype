@@ -39,11 +39,11 @@ export function productCard(product, prefix) {
 
 const navigation = [
   ['rehabilitation/', 'Первое посещение'],
-  ['five-steps/', 'Пять шагов'],
-  ['equipment/', 'Об аппаратах'],
   ['reviews/', 'Отзывы'],
+  ['contacts/', 'Контакты'],
+  ['five-steps/', 'Пять шагов'],
   ['articles/', 'Статьи'],
-  ['contacts/', 'Контакты']
+  ['equipment/', 'Об аппаратах']
 ];
 
 function identity(prefix) {
