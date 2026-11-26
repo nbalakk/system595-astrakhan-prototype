@@ -8,12 +8,12 @@ const dateFormat = new Intl.DateTimeFormat('ru-RU', {
 
 function newsCard(p, story, { id, tag, title, text, link, action }) {
   return `<article class="news-card" aria-labelledby="${id}">
-    <div class="news-heading">
-      <img class="news-portrait" src="${p}assets/${story.image}" width="${story.width}" height="${story.height}" loading="lazy" alt="${story.alt}">
+    <img class="news-cover" src="${p}assets/${story.image}" width="${story.width}" height="${story.height}" loading="lazy" alt="${story.alt}">
+    <div class="news-body">
       <div class="news-meta"><span class="news-tag">${tag}</span><time datetime="${story.date}">${dateFormat.format(new Date(story.date))}</time></div>
+      <h3 id="${id}">${title}</h3><p>${text}</p>
+      <a class="text-link" href="${p}${link}">${action} ${icon('arrow')}</a>
     </div>
-    <h2 id="${id}">${title}</h2><p>${text}</p>
-    <a class="button button-secondary" href="${p}${link}">${action} ${icon('arrow')}</a>
   </article>`;
 }
 
@@ -22,14 +22,14 @@ export function home(p) {
   const holiday = centreStories.find(story => story.slug === 'den-rossii-v-centre');
   return `<section class="home-intro container" aria-labelledby="welcome-title">
     <div class="home-intro-copy">
-      <span class="place-tag">${icon('pin')}Астрахань · ТЦ «Факел»</span>
+      <span class="place-tag">Астрахань · ТЦ «Факел»</span>
       <h1 id="welcome-title">Центр здоровья и долголетия</h1>
-      <p>В нашем центре люди старшего возраста собираются, чтобы размяться и пообщаться. На бесплатном ознакомительном занятии вы познакомитесь с группой и сможете попробовать массажную накидку вместе с консультантом.</p>
+      <p>Приходите на бесплатное ознакомительное занятие для людей старшего возраста. Вы сможете размяться, пообщаться с группой и попробовать массажную накидку вместе с консультантом.</p>
       <div class="intro-actions">
         <a class="button" href="${centre.phoneHref}">${icon('phone')}Позвонить и записаться</a>
-        <div class="intro-contact"><a href="${centre.phoneHref}">${centre.phone}</a><span>Запись ведёт Светлана Михайловна Бабак</span></div>
+        <a class="button button-secondary" href="#video-iz-zala"><span class="mini-play" aria-hidden="true"></span>Посмотреть занятие</a>
       </div>
-      <a class="intro-film-link" href="#video-iz-zala"><span class="mini-play" aria-hidden="true"></span>Посмотреть занятие в центре</a>
+      <div class="intro-contact"><a href="${centre.phoneHref}">${centre.phone}</a> <span aria-hidden="true">·</span> <span>Запись ведёт ${centre.contact}</span></div>
     </div>
     <figure class="intro-image">
       <img src="${p}assets/network-welcome.webp" width="1152" height="768" fetchpriority="high" alt="Посетительница и сотрудница центра рассматривают карточку у входа в зал">
@@ -59,7 +59,9 @@ export function home(p) {
     ${centreLessonClip(p, { featured: true, description: centreVideos.lesson.description })}
   </section>
 
-  <div class="centre-news container">
+  <section class="stories-band" aria-labelledby="stories-title"><div class="container">
+    <h2 id="stories-title">Истории и жизнь центра</h2>
+    <div class="centre-news">
     ${newsCard(p, account, {
       id: 'home-account-title', tag: 'Рассказ посетительницы', title: account.title,
       text: 'Посетительница рассказала, что привело её в центр. К тому времени она ходила на занятия уже три месяца.',
@@ -70,7 +72,8 @@ export function home(p) {
       text: 'В июне 2024 года участницы подготовили праздничное выступление. Светлана сохранила запись встречи в Одноклассниках.',
       link: 'articles/den-rossii-v-centre/', action: 'Посмотреть встречу'
     })}
-  </div>
+    </div>
+  </div></section>
 
   <section class="home-invite container" id="appointment" aria-labelledby="arrival-footer-title">
     <div class="invite-panel">

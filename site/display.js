@@ -107,16 +107,8 @@
         toggles[0]?.focus();
       });
     }
-    function openLinkedSettings() {
-      if (!['#display-title', '#display-settings'].includes(document.location?.hash)) return;
-      open = true;
-      synchronise();
-      panel?.focus();
-    }
-    document.defaultView?.addEventListener('hashchange', openLinkedSettings);
     apply();
     synchronise();
-    openLinkedSettings();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initialise, { once: true });

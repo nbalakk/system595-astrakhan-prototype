@@ -176,7 +176,7 @@ async function run(){
 }
 runButton.addEventListener('click',run);run();
 </script></html>`;
-const types={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.ttf':'font/ttf','.png':'image/png','.jpg':'image/jpeg','.webp':'image/webp','.vtt': 'text/vtt; charset=utf-8', '.mp4':'video/mp4','.svg':'image/svg+xml'};
+const types={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.ttf':'font/ttf', '.woff2': 'font/woff2','.png':'image/png','.jpg':'image/jpeg','.webp':'image/webp','.vtt': 'text/vtt; charset=utf-8', '.mp4':'video/mp4','.svg':'image/svg+xml'};
 http.createServer(async(req,res)=>{
   try{
     const url=new URL(req.url,'http://localhost');

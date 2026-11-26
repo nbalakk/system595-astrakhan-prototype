@@ -47,7 +47,7 @@ class Element {
   click() { this.listeners.click?.(); }
 }
 
-function run({ raw, readDenied = false, writeDenied = false } = {}) {
+function run({ raw, hash = '', readDenied = false, writeDenied = false } = {}) {
   const root = new Element();
   const variables = new Map();
   root.style = {
@@ -65,6 +65,8 @@ function run({ raw, readDenied = false, writeDenied = false } = {}) {
   const values = new Map(raw === undefined ? [] : [[key, raw]]);
   const document = {
     documentElement: root,
+    location: { hash },
+    defaultView: new EventTarget(),
     readyState: 'loading',
     listeners: {},
     addEventListener(name, listener) { this.listeners[name] = listener; },
@@ -105,6 +107,25 @@ test('head script restores valid display settings before page controls exist', (
   assert.equal(app.variables.get('--reading-font-size'), '30px');
   assert.equal(app.sizes[2].getAttribute('aria-pressed'), 'true');
   assert.equal(app.themes[1].getAttribute('aria-pressed'), 'true');
+});
+
+test('panel fragments never open settings or move focus without button activation', () => {
+  const saved = JSON.stringify({ enabled: true, size: 'largest', theme: 'dark' });
+  for (const raw of [undefined, saved]) {
+    for (const hash of ['#display-title', '#display-settings']) {
+      const app = run({ raw, hash });
+      app.ready();
+      app.document.location.hash = hash === '#display-title' ? '#display-settings' : '#display-title';
+      app.document.defaultView.dispatchEvent(new Event('hashchange'));
+      assert.equal(app.panel.hidden, true);
+      assert.equal(app.panel.focused, false);
+      assert.equal(app.toggle.getAttribute('aria-expanded'), 'false');
+      assert.equal(app.root.dataset.display, raw ? 'accessible' : undefined);
+      app.toggle.click();
+      assert.equal(app.panel.hidden, false);
+      assert.equal(app.panel.focused, true);
+    }
+  }
 });
 
 test('only whitelisted settings are retained and written, never arbitrary fields', () => {

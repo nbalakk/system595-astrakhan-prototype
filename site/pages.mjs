@@ -132,7 +132,7 @@ export function media(p) {
       <h2 id="equipment">Фотографии аппаратов</h2><p>Студийные фотографии и описание функций опубликованы на страницах производителя — <a href="https://novumedical.org/products/novueye/">маска NovuEye</a> и <a href="https://novumedical.org/products/toprelax/">накидка TopRelax</a>. Изображения EyeSystem, SpineSystem, SleepSystem, FootSystem и Moxi опубликованы <a href="https://system595la.com/ru/">System 5/95</a>.</p>
       <p>Фотографии BodyHealth, панели управления и пример использования опубликованы <a href="https://novumedical.org/products/bodyhealth/">на странице модели NovuMedical</a>.</p>
       <h2>Об Ассоциации</h2><p>${association.description} <a href="${association.url}">Официальная страница Ассоциации</a>.</p>
-      <h2>Шрифт</h2><p>Golos Text распространяется по лицензии SIL Open Font License. <a href="${p}assets/OFL.txt">Текст лицензии</a>.</p>
+      <h2>Шрифт</h2><p>Сайт использует шрифт <a href="https://fonts.google.com/specimen/Inter">Inter из коллекции Google Fonts</a>. <a href="${p}assets/inter-OFL.txt">Лицензия SIL Open Font License 1.1</a>.</p>
     </section>`;
 }
 

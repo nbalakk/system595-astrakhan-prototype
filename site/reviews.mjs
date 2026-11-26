@@ -3,16 +3,16 @@ import { breadcrumbs, icon } from './components.mjs';
 
 export function centreLessonClip(p, { featured = false, description = '' } = {}) {
   const video = centreVideos.lesson;
-  return `<figure class="centre-lesson-clip${featured ? ' feature-film' : ''}" id="video-iz-zala">
+  const meta = `<span class="lesson-clip-meta">${featured ? 'Из архива Светланы Бабак' : `<time datetime="${video.date}">${video.published}</time>`} · ${video.duration}</span>`;
+  return `<figure class="centre-lesson-clip${featured ? ' feature-film' : ''}" id="video-iz-zala" tabindex="-1">
     <div class="lesson-player" data-video-frame data-video-kind="lesson">
       <img src="${p}assets/${video.poster}" width="${video.width}" height="${video.height}" alt="${video.alt}" decoding="async">
       <button type="button" class="lesson-play" data-ok-player="${video.id}" aria-label="Смотреть видео «${video.title}», ${video.duration}" hidden><span class="steps-play-icon" aria-hidden="true"></span><span>Смотреть видео</span></button>
     </div>
     <figcaption>
-      ${featured ? `<h2 id="home-film-title">${video.title}</h2>` : `<strong>${video.title}</strong>`}
-      <span class="lesson-clip-meta">${featured ? 'Из архива Светланы Бабак' : `<time datetime="${video.date}">${video.published}</time>`} · ${video.duration}</span>
+      ${featured ? `${meta}<h2 id="home-film-title">${video.title}</h2>` : `<strong>${video.title}</strong>${meta}`}
       ${description ? `<p>${description}</p>` : ''}
-      <a${featured ? ' class="button button-secondary"' : ''} href="${video.url}">${featured ? 'Смотреть в ОК' : 'Видео занятия в Одноклассниках'}</a>
+      <a${featured ? ' class="button"' : ''} href="${video.url}">${featured ? 'Смотреть в ОК' : 'Видео занятия в Одноклассниках'}</a>
     </figcaption>
   </figure>`;
 }

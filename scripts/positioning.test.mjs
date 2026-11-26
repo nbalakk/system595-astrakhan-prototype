@@ -118,6 +118,8 @@ test('the first screen names the centre in Astrakhan and offers a free introduct
   const links = linksInMain(home, homeHero);
   assert(links.some(link => link.url.href === 'tel:+79093738094' && /позвон|запис/iu.test(link.label)),
     'The named first-visit action dials the centre directly');
+  assert(links.some(link => link.url.hash === '#video-iz-zala' && /смотр|видео|заняти/iu.test(link.label)),
+    'A separate hero action takes the visitor to the local lesson');
 });
 
 test('home keeps the first visit and directions reachable', () => {
@@ -161,6 +163,9 @@ test('the first screen identifies and credits the network welcome photograph', (
   const image = figure.match(photo)[0];
   assert.doesNotMatch(figure.split('>')[0] + image, /\bhidden\b|aria-hidden="true"/iu);
   assert.match(image, /\balt="[^"]*[а-яё][^"]*"/iu, 'The photograph has a Russian text alternative');
+  const width = Number(image.match(/\bwidth="(\d+)"/iu)?.[1]);
+  const height = Number(image.match(/\bheight="(\d+)"/iu)?.[1]);
+  assert(width > height && height > 0, 'The landscape photograph reserves space while loading');
   const caption = figure.match(/<figcaption\b[^>]*>[\s\S]*?<\/figcaption>/iu)?.[0] ?? '';
   assert.doesNotMatch(caption.split('>')[0], /\bhidden\b|aria-hidden="true"/iu);
   assert.match(readableContent(caption), /NovuMedical|сети|сетев/iu);
@@ -302,16 +307,23 @@ test('two dated stories follow the film and a final call action follows those st
   const afterLesson = homeMain.slice(homeMain.indexOf(homeLesson) + homeLesson.length);
   const cards = [...afterLesson.matchAll(/<article\b[^>]*>[\s\S]*?<\/article>/giu)];
   assert.equal(cards.length, 2, 'Exactly two archive stories follow the local film');
-  for (const [route, title] of [
-    ['reviews/', /Три месяца в центре/iu],
-    ['articles/den-rossii-v-centre/', /День России в зале на Савушкина/iu]
+  for (const [route, title, date] of [
+    ['reviews/', /Три месяца в центре/iu, '2023-01-27'],
+    ['articles/den-rossii-v-centre/', /День России в зале на Савушкина/iu, '2024-06-19']
   ]) {
-    assert(cards.some(card => title.test(readableContent(card[0])) &&
-      linksInMain(home, card[0]).some(link => link.url.pathname === '/prototype/' + route && link.label)), title);
+    const story = cards.find(card => linksInMain(home, card[0]).some(link => link.url.pathname === '/prototype/' + route && link.label));
+    assert(story, 'Each home story links to its corresponding visitor account or event');
+    assert.match(readableContent(story[0]), title);
+    assert(story[0].includes(`datetime="${date}"`), 'The story keeps its original publication date');
+    assert.match(story[0], /<img\b(?=[^>]*\bsrc="[^"]+")(?=[^>]*\balt="[^"]*[а-яё][^"]*")[^>]*>/iu,
+      'Each story includes a photograph with a Russian text alternative');
   }
   const afterStories = afterLesson.slice(cards[1].index + cards[1][0].length);
-  assert(linksInMain(home, afterStories).some(link => link.url.href === 'tel:+79093738094' && link.label),
+  const lastLinks = linksInMain(home, afterStories);
+  assert(lastLinks.some(link => link.url.href === 'tel:+79093738094' && link.label),
     'Readers can call the centre directly after the archive stories');
+  assert(lastLinks.some(link => /^https:\/\/(?:www\.)?yandex\.[^/]+\/maps\//u.test(link.url.href) && link.label),
+    'The final section includes a direct link to the map');
   assert.match(account, /«Три месяца»/u);
   assert.match(account, /datetime="2023-01-27"/u);
   assert.match(account, /href="https:\/\/ok\.ru\/video\/4274475829987"/u);

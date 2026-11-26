@@ -64,7 +64,7 @@ function sectionLinks(prefix, route) {
 export function layout({ title, description, route, body, prefix }) {
   const showEquipmentNote = route.startsWith('equipment/') || route === 'five-steps/' || route === 'rehabilitation/';
   return `<!DOCTYPE html>
-<html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow"><meta name="theme-color" content="#FAF8F5"><meta name="description" content="${escapeHtml(description)}"><title>${escapeHtml(title)} — Астрахань</title><link rel="icon" href="${prefix}assets/favicon.svg" type="image/svg+xml"><link rel="preload" as="font" href="${prefix}assets/golos-0.ttf" type="font/ttf" crossorigin><link rel="stylesheet" href="${prefix}styles.css"><script src="${prefix}display.js"></script><script src="${prefix}app.js" defer></script></head><body>
+<html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow"><meta name="theme-color" content="#FFFFFF"><meta name="description" content="${escapeHtml(description)}"><title>${escapeHtml(title)} — Астрахань</title><link rel="icon" href="${prefix}assets/favicon.svg" type="image/svg+xml"><link rel="preload" as="font" href="${prefix}assets/inter-cyrillic.woff2" type="font/woff2" crossorigin><link rel="stylesheet" href="${prefix}styles.css"><script src="${prefix}display.js"></script><script src="${prefix}app.js" defer></script></head><body>
 <a class="skip-link" href="#main">Перейти к содержимому</a>
 <header class="site-header centre-masthead">
   <div class="masthead-utility"><div class="container utility-inner">

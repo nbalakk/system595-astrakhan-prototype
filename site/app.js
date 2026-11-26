@@ -30,6 +30,37 @@ if (menu && nav) {
   adaptMenu();
 }
 
+const masthead = document.querySelector('.centre-masthead');
+if (masthead) {
+  function updateHeaderOffset() {
+    const sticky = window.getComputedStyle(masthead).position === 'sticky';
+    const offset = sticky ? Math.ceil(masthead.getBoundingClientRect().height) : 0;
+    document.documentElement.style.setProperty('--header-offset', offset + 'px');
+  }
+  updateHeaderOffset();
+  window.addEventListener('resize', updateHeaderOffset);
+  if (window.ResizeObserver) {
+    new window.ResizeObserver(updateHeaderOffset).observe(masthead);
+  } else {
+    masthead.addEventListener('click', () => window.requestAnimationFrame(updateHeaderOffset));
+    document.fonts?.ready.then(updateHeaderOffset);
+  }
+
+  // Keyboard focus can move to a link the browser considers visible behind a sticky bar.
+  document.addEventListener('focusin', event => {
+    const target = event.target;
+    if (masthead.contains(target) || !target.matches(':focus-visible') || target.matches('.skip-link')) return;
+    window.requestAnimationFrame(() => {
+      if (target !== document.activeElement || window.getComputedStyle(masthead).position !== 'sticky') return;
+      const rect = target.getBoundingClientRect();
+      const toolbarBottom = masthead.getBoundingClientRect().bottom;
+      if (rect.bottom > 0 && rect.top < toolbarBottom + 4) {
+        window.scrollBy({ top: rect.top - toolbarBottom - 12, behavior: 'instant' });
+      }
+    });
+  });
+}
+
 document.querySelectorAll('.gallery-thumbs[hidden]').forEach(group => {
   group.hidden = false;
 });

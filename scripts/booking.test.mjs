@@ -82,6 +82,33 @@ test('the menu keeps disclosure, keyboard focus and layout changes in sync', () 
   assert.equal(document.activeElement, menu);
 });
 
+test('fragment and focus clearance tracks the visible sticky header', () => {
+  const document = new EventTarget();
+  const window = new EventTarget();
+  let height = 92.3;
+  let position = 'sticky';
+  let resizeHeader;
+  const properties = new Map();
+  const masthead = { getBoundingClientRect: () => ({ height }) };
+  document.documentElement = { style: { setProperty: (name, value) => properties.set(name, value) } };
+  document.querySelector = selector => selector === '.centre-masthead' ? masthead : null;
+  document.querySelectorAll = () => [];
+  window.getComputedStyle = () => ({ position });
+  window.ResizeObserver = class {
+    constructor(callback) { resizeHeader = callback; }
+    observe(element) { assert.equal(element, masthead); }
+  };
+
+  vm.runInNewContext(script, { document, window });
+  assert.equal(properties.get('--header-offset'), '93px');
+  height = 311;
+  resizeHeader();
+  assert.equal(properties.get('--header-offset'), '311px');
+  position = 'static';
+  window.dispatchEvent(new Event('resize'));
+  assert.equal(properties.get('--header-offset'), '0px');
+});
+
 const oldLinks = [
   '/booking/?purpose=price',
   '/booking/?purpose=equipment',

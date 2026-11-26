@@ -34,9 +34,10 @@ const routes = [
 await mkdir('dist', { recursive: true });
 await mkdir('dist/assets', { recursive: true });
 await writeFile('dist/assets/centre-contact.vcf', contactCard(centre), 'utf8');
-const assets = ['eyesystem.png', 'spinesystem.png', 'sleepsystem.png', 'footsystem.png', 'moxi.png', 'hero-source.jpg', 'sleep-use.jpg', 'foot-use.jpg', 'bodyhealth.jpg', 'bodyhealth-use.jpg', 'bodyhealth-controls.jpg', 'novueye-studio.jpg', 'toprelax-studio.jpg', 'zanyatie.jpg', 'feedback.jpg', 'den-rossii-astrakhan.jpg', 'novueye-ok.jpg', 'novuheat-autumn.jpg', 'vision-street-ok.jpg', 'den-pensionera.webp', 'five-steps.mp4', 'five-steps-ru.vtt', 'five-steps-poster.jpg', 'favicon.svg', 'OFL.txt', ...[0,1,2,3].map(i => `golos-${i}.ttf`)];
+const assets = ['eyesystem.png', 'spinesystem.png', 'sleepsystem.png', 'footsystem.png', 'moxi.png', 'hero-source.jpg', 'sleep-use.jpg', 'foot-use.jpg', 'bodyhealth.jpg', 'bodyhealth-use.jpg', 'bodyhealth-controls.jpg', 'novueye-studio.jpg', 'toprelax-studio.jpg', 'zanyatie.jpg', 'feedback.jpg', 'den-rossii-astrakhan.jpg', 'novueye-ok.jpg', 'novuheat-autumn.jpg', 'vision-street-ok.jpg', 'den-pensionera.webp', 'five-steps.mp4', 'five-steps-ru.vtt', 'five-steps-poster.jpg', 'favicon.svg', 'inter-OFL.txt', 'inter-cyrillic.woff2', 'inter-latin.woff2'];
+const previousFontFiles = ['OFL.txt', ...[0, 1, 2, 3].map(i => `golos-${i}.ttf`)];
 const centrePhotos = ['astrakhan-lesson-poster.jpg', 'network-welcome.webp'];
-for (const asset of [...assets, ...centrePhotos]) await cp(`site/assets/${asset}`, `dist/assets/${asset}`);
+for (const asset of [...assets, ...centrePhotos, ...previousFontFiles]) await cp(`site/assets/${asset}`, `dist/assets/${asset}`);
 await cp('site/styles.css', 'dist/styles.css');
 await cp('site/app.js', 'dist/app.js');
 await cp('site/display.js', 'dist/display.js');
