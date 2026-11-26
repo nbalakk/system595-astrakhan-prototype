@@ -14,8 +14,9 @@ test('header and footer link names retain the complete visible wording in readin
   const text = markup => markup.replace(/<[^>]+>/gu, ' ').replace(/\s+/gu, ' ').trim();
   for (const [className, expected, count] of [
     ['centre-identity', `${centre.name} ${centre.city}`, 2],
-    ['masthead-call', `Запись по телефону ${centre.phone}`, 1],
-    ['masthead-address', 'ул. Савушкина, 46А', 1]
+    ['masthead-call', centre.phone, 1],
+    ['masthead-book', 'Записаться', 1],
+    ['masthead-address', 'Астрахань, ул. Савушкина, 46А', 1]
   ]) {
     const matching = anchors.filter(([, tag]) => tag.match(/class="([^"]*)"/u)?.[1].split(' ').includes(className));
     assert.equal(matching.length, count, className);
@@ -48,6 +49,13 @@ class Element {
 
 function run({ raw, readDenied = false, writeDenied = false } = {}) {
   const root = new Element();
+  const variables = new Map();
+  root.style = {
+    setProperty: (name, value) => variables.set(name, value),
+    removeProperty: name => variables.delete(name)
+  };
+  const classes = new Set();
+  const body = { classList: { toggle(name, enabled) { if (enabled) classes.add(name); else classes.delete(name); } } };
   const toggle = new Element();
   const panel = new Element();
   const close = new Element();
@@ -79,7 +87,8 @@ function run({ raw, readDenied = false, writeDenied = false } = {}) {
   };
   const context = vm.createContext({ document, localStorage });
   vm.runInContext(source, context);
-  return { document, root, toggle, panel, close, sizes, themes, writes, values, ready: () => document.listeners.DOMContentLoaded() };
+  return { document, root, classes, variables, toggle, panel, close, sizes, themes, writes, values,
+    ready() { document.body = body; document.listeners.DOMContentLoaded(); } };
 }
 
 test('head script restores valid display settings before page controls exist', () => {
@@ -89,9 +98,11 @@ test('head script restores valid display settings before page controls exist', (
   app.ready();
   assert.equal(app.toggle.hidden, false);
   assert.equal(app.toggle.disabled, false);
-  assert.equal(app.toggle.textContent, 'Обычная версия');
-  assert.equal(app.toggle.getAttribute('aria-pressed'), 'true');
-  assert.equal(app.panel.hidden, false);
+  assert.equal(app.toggle.getAttribute('aria-expanded'), 'false');
+  assert.equal(app.panel.hidden, true);
+  assert(app.classes.has('reading-mode'));
+  assert(app.classes.has('reading-dark'));
+  assert.equal(app.variables.get('--reading-font-size'), '30px');
   assert.equal(app.sizes[2].getAttribute('aria-pressed'), 'true');
   assert.equal(app.themes[1].getAttribute('aria-pressed'), 'true');
 });
@@ -121,13 +132,20 @@ test('display preference persists to a subsequent page and can return to normal'
   const first = run(); first.ready();
   first.toggle.click(); first.sizes[2].click(); first.themes[1].click();
   assert.equal(first.panel.focused, true);
+  first.panel.listeners.keydown({ key: 'Escape' });
+  assert.equal(first.panel.hidden, true);
+  assert.equal(first.toggle.focused, true);
+  assert.equal(first.root.dataset.display, 'accessible', 'Closing the panel keeps the selected reading mode');
   const next = run({ raw: first.values.get(key) }); next.ready();
   assert.deepEqual(next.root.dataset, { display: 'accessible', textSize: 'largest', contrast: 'dark' });
+  next.toggle.click();
+  assert.equal(next.toggle.getAttribute('aria-expanded'), 'true');
   next.close.click();
   assert.deepEqual(next.root.dataset, {});
   assert.equal(next.panel.hidden, true);
-  assert.equal(next.toggle.textContent, 'Версия для слабовидящих');
-  assert.equal(next.toggle.getAttribute('aria-pressed'), 'false');
+  assert.equal(next.toggle.getAttribute('aria-expanded'), 'false');
+  assert.equal(next.classes.size, 0);
+  assert.equal(next.variables.size, 0);
   assert.equal(next.toggle.focused, true);
   assert.deepEqual(JSON.parse(next.values.get(key)), { enabled: false, size: 'largest', theme: 'dark' });
 });

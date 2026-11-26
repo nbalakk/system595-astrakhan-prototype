@@ -28,7 +28,8 @@ test('the static header exposes the navigation and telephone without JavaScript'
   assert.match(nav, /href="\.\.\/articles\/" aria-current="page"/u);
   assert.match(nav, /href="\.\.\/five-steps\/"/u);
   assert.match(header, /<button\b[^>]*aria-controls="main-nav"[^>]*\bhidden\b/u);
-  assert.equal((header.match(/href="tel:\+79093738094"/gu) || []).length, 1);
+  assert.match(header, /class="masthead-call" href="tel:\+79093738094"/u);
+  assert.match(header, /class="masthead-book" href="tel:\+79093738094">Записаться/u);
   assert.match(html, /href="#main"/u);
   assert.match(html, /<main id="main" tabindex="-1">/u);
 });

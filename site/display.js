@@ -3,6 +3,7 @@
 
   const key = 'centre595.display';
   const sizes = ['large', 'larger', 'largest'];
+  const fontSizes = { large: '22px', larger: '26px', largest: '30px' };
   const themes = ['light', 'dark'];
   const defaults = { enabled: false, size: 'large', theme: 'light' };
 
@@ -38,10 +39,16 @@
       data.display = 'accessible';
       data.textSize = preferences.size;
       data.contrast = preferences.theme;
+      document.documentElement.style.setProperty('--reading-font-size', fontSizes[preferences.size]);
     } else {
       delete data.display;
       delete data.textSize;
       delete data.contrast;
+      document.documentElement.style.removeProperty('--reading-font-size');
+    }
+    if (document.body) {
+      document.body.classList.toggle('reading-mode', preferences.enabled);
+      document.body.classList.toggle('reading-dark', preferences.enabled && preferences.theme === 'dark');
     }
   }
 
@@ -53,18 +60,15 @@
     const panel = document.querySelector('#display-settings');
     const sizeButtons = [...document.querySelectorAll('[data-display-size]')];
     const themeButtons = [...document.querySelectorAll('[data-display-theme]')];
+    let open = false;
 
     function synchronise() {
       for (const button of toggles) {
         button.hidden = false;
         button.disabled = false;
-        button.setAttribute('aria-pressed', String(preferences.enabled));
-        button.setAttribute('aria-expanded', String(preferences.enabled));
-        button.setAttribute('aria-controls', 'display-settings');
-        const label = button.querySelector('[data-display-label]') || button;
-        label.textContent = preferences.enabled ? 'Обычная версия' : 'Версия для слабовидящих';
+        button.setAttribute('aria-expanded', String(open));
       }
-      if (panel) panel.hidden = !preferences.enabled;
+      if (panel) panel.hidden = !open;
       for (const button of sizeButtons) button.setAttribute('aria-pressed', String(button.dataset.displaySize === preferences.size));
       for (const button of themeButtons) button.setAttribute('aria-pressed', String(button.dataset.displayTheme === preferences.theme));
     }
@@ -78,27 +82,41 @@
 
     for (const button of toggles) {
       button.addEventListener('click', () => {
-        change({ ...preferences, enabled: !preferences.enabled });
-        if (preferences.enabled && panel) {
-          const options = panel.querySelector('[data-display-options]');
-          if (options) options.open = true;
-          panel.focus();
-        }
+        open = !open;
+        if (open && !preferences.enabled) change({ ...preferences, enabled: true });
+        else synchronise();
+        if (open) panel?.focus();
       });
     }
+    panel?.addEventListener('keydown', event => {
+      if (event.key !== 'Escape' || !open) return;
+      open = false;
+      synchronise();
+      toggles[0]?.focus();
+    });
     for (const button of sizeButtons) {
-      button.addEventListener('click', () => change({ ...preferences, size: button.dataset.displaySize }));
+      button.addEventListener('click', () => change({ ...preferences, enabled: true, size: button.dataset.displaySize }));
     }
     for (const button of themeButtons) {
-      button.addEventListener('click', () => change({ ...preferences, theme: button.dataset.displayTheme }));
+      button.addEventListener('click', () => change({ ...preferences, enabled: true, theme: button.dataset.displayTheme }));
     }
     for (const button of document.querySelectorAll('[data-display-close]')) {
       button.addEventListener('click', () => {
+        open = false;
         change({ ...preferences, enabled: false });
         toggles[0]?.focus();
       });
     }
+    function openLinkedSettings() {
+      if (!['#display-title', '#display-settings'].includes(document.location?.hash)) return;
+      open = true;
+      synchronise();
+      panel?.focus();
+    }
+    document.defaultView?.addEventListener('hashchange', openLinkedSettings);
+    apply();
     synchronise();
+    openLinkedSettings();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initialise, { once: true });

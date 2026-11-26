@@ -1,7 +1,7 @@
 const menu = document.querySelector('.menu-toggle');
 const nav = document.querySelector('#main-nav');
 if (menu && nav) {
-  const compact = window.matchMedia('(max-width: 820px)');
+  const compact = window.matchMedia('(max-width: 1000px)');
   function setMenu(open) {
     menu.setAttribute('aria-expanded', String(open));
     menu.setAttribute('aria-label', open ? 'Закрыть меню' : 'Открыть меню');

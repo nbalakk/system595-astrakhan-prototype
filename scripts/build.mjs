@@ -1,4 +1,4 @@
-import { mkdir, cp, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, cp, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import * as pages from '../site/pages.mjs';
 import { layout } from '../site/components.mjs';
@@ -37,8 +37,7 @@ await writeFile('dist/assets/centre-contact.vcf', contactCard(centre), 'utf8');
 const assets = ['eyesystem.png', 'spinesystem.png', 'sleepsystem.png', 'footsystem.png', 'moxi.png', 'hero-source.jpg', 'sleep-use.jpg', 'foot-use.jpg', 'bodyhealth.jpg', 'bodyhealth-use.jpg', 'bodyhealth-controls.jpg', 'novueye-studio.jpg', 'toprelax-studio.jpg', 'zanyatie.jpg', 'feedback.jpg', 'den-rossii-astrakhan.jpg', 'novueye-ok.jpg', 'novuheat-autumn.jpg', 'vision-street-ok.jpg', 'den-pensionera.webp', 'five-steps.mp4', 'five-steps-ru.vtt', 'five-steps-poster.jpg', 'favicon.svg', 'OFL.txt', ...[0,1,2,3].map(i => `golos-${i}.ttf`)];
 const centrePhotos = ['astrakhan-lesson-poster.jpg', 'network-welcome.webp'];
 for (const asset of [...assets, ...centrePhotos]) await cp(`site/assets/${asset}`, `dist/assets/${asset}`);
-const styles = await Promise.all(['site/styles.css', 'site/refinement.css', 'site/bodyhealth.css', 'site/landing.css', 'site/reviews.css', 'site/five-steps.css', 'site/health-articles.css', 'site/navigation.css', 'site/interior.css', 'site/display.css'].map(file => readFile(file, 'utf8')));
-await writeFile('dist/styles.css', styles.join('\n'));
+await cp('site/styles.css', 'dist/styles.css');
 await cp('site/app.js', 'dist/app.js');
 await cp('site/display.js', 'dist/display.js');
 for (const [route, title, render, description] of routes) {
